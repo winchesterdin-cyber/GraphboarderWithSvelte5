@@ -10,6 +10,7 @@
 	import { getSortedAndOrderedEndpoints } from '$lib/utils/usefulFunctions';
 	import Tabs from '$lib/components/Tabs.svelte';
 	import Modal from '$lib/components/Modal.svelte';
+	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 
 	const localStorageEndpoints = getContext('localStorageEndpoints');
 
@@ -35,6 +36,7 @@
 	];
 
 	let showAddEndpoint = $state(false);
+	let showConfirmationModal = $state(false);
 	let selectedRows = $state([]);
 	let activeTab = $state('local');
 
@@ -43,6 +45,10 @@
 	};
 
 	const deleteSelectedEndpoint = () => {
+		showConfirmationModal = true;
+	};
+
+	const confirmDelete = () => {
 		localStorageEndpoints.set(
 			$localStorageEndpoints.filter((endpoint) => {
 				return !selectedRows.some((row) => {
@@ -51,6 +57,7 @@
 			})
 		);
 		selectedRows = [];
+		showConfirmationModal = false;
 	};
 
 	const tabs = [
@@ -61,7 +68,21 @@
 </script>
 
 <div class="p-4">
-	<Tabs {tabs} bind:activeTab />
+	<div class="flex justify-between items-center mb-4">
+		<Tabs {tabs} bind:activeTab />
+		<button class="btn btn-sm btn-primary" onclick={() => (showAddEndpoint = true)}>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="h-6 w-6"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+			>
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+			</svg>
+			Add Endpoint
+		</button>
+	</div>
 
 	<div class="mt-4">
 		{#if activeTab === 'local'}
@@ -86,11 +107,19 @@
 					Delete Selected Rows
 				</button>
 			{/if}
-			<button class="btn btn-sm btn-primary mb-2" onclick={() => (showAddEndpoint = true)}>
-				Add Endpoint
-			</button>
 			<div class="mx-auto pl-4 pt-4 h-[50vh]">
-				{#key $localStorageEndpoints}
+				{#if $localStorageEndpoints.length === 0}
+					<div class="text-center p-8">
+						<h2 class="text-2xl font-bold mb-4">Welcome!</h2>
+						<p class="mb-4">
+							You don't have any local endpoints configured yet. Get started by adding a new
+							endpoint.
+						</p>
+						<button class="btn btn-primary" onclick={() => (showAddEndpoint = true)}>
+							Add Your First Endpoint
+						</button>
+					</div>
+				{:else}
 					<ExplorerTable
 						onRowSelectionChange={handleRowSelectionChange}
 						onRowClicked={(detail) => {
@@ -106,6 +135,7 @@
 						{columns}
 					/>
 				{/key}
+				{/if}
 			</div>
 		{/if}
 
@@ -147,3 +177,9 @@
 <Modal bind:show={showAddEndpoint}>
 	<AddEndpointToLocalStorage onHide={() => (showAddEndpoint = false)} />
 </Modal>
+
+<ConfirmationModal
+	bind:show={showConfirmationModal}
+	onConfirm={confirmDelete}
+	onCancel={() => (showConfirmationModal = false)}
+/>
