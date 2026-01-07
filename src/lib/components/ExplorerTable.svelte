@@ -23,6 +23,7 @@
 		onRowSelectionChange?: (detail: any) => void;
 		onHideColumn?: (detail: { column: string }) => void;
 		onRowClicked?: (detail: any) => void;
+		onDeleteRow?: (detail: any) => void;
 	}
 
 	let {
@@ -38,7 +39,8 @@
 		requiredColNames,
 		onRowSelectionChange,
 		onHideColumn,
-		onRowClicked
+		onRowClicked,
+		onDeleteRow
 	}: Props = $props();
 
 	if (rowSelectionState === undefined) {
@@ -178,6 +180,7 @@
 							</div>
 						</th>
 					{/each}
+					<th>Actions</th>
 				</tr>
 			{/each}
 		</thead>
@@ -217,6 +220,14 @@
 							<!-- <svelte:component this={flexRender(cell.column.columnDef.cell, cell.getContext())} /> -->
 						</td>
 					{/each}
+
+					<td class="break-no">
+						{#if onDeleteRow}
+							<button class="btn btn-sm btn-error" onclick={() => onDeleteRow?.(row.original)}>
+								Delete
+							</button>
+						{/if}
+					</td>
 				</tr>
 			{/each}
 		</tbody>

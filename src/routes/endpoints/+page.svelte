@@ -16,12 +16,6 @@
 
 	let columns = [
 		{
-			accessorFn: (row) => row.id,
-			header: 'id',
-			footer: 'id',
-			enableHiding: true
-		},
-		{
 			accessorFn: (row) => row.description,
 			header: 'description',
 			footer: 'description',
@@ -37,26 +31,19 @@
 
 	let showAddEndpoint = $state(false);
 	let showConfirmationModal = $state(false);
-	let selectedRows = $state([]);
 	let activeTab = $state('local');
+	let endpointToDelete = $state(null);
 
-	const handleRowSelectionChange = (detail) => {
-		selectedRows = detail.rows.map((row) => row.original);
-	};
-
-	const deleteSelectedEndpoint = () => {
+	const deleteEndpoint = (endpoint) => {
+		endpointToDelete = endpoint;
 		showConfirmationModal = true;
 	};
 
 	const confirmDelete = () => {
 		localStorageEndpoints.set(
-			$localStorageEndpoints.filter((endpoint) => {
-				return !selectedRows.some((row) => {
-					return row.id == endpoint.id;
-				});
-			})
+			$localStorageEndpoints.filter((endpoint) => endpoint.id !== endpointToDelete.id)
 		);
-		selectedRows = [];
+		endpointToDelete = null;
 		showConfirmationModal = false;
 	};
 
@@ -102,18 +89,27 @@
 		{/if}
 
 		{#if activeTab === 'localstorage'}
-			{#if selectedRows.length > 0}
-				<button class="btn btn-sm btn-warning mb-2" onclick={deleteSelectedEndpoint}>
-					Delete Selected Rows
-				</button>
-			{/if}
 			<div class="mx-auto pl-4 pt-4 h-[50vh]">
 				{#if $localStorageEndpoints.length === 0}
-					<div class="text-center p-8">
+					<div class="text-center p-8 flex flex-col items-center justify-center h-full">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-24 w-24 text-gray-400 mb-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+							/>
+						</svg>
 						<h2 class="text-2xl font-bold mb-4">Welcome!</h2>
-						<p class="mb-4">
+						<p class="mb-4 max-w-md">
 							You don't have any local endpoints configured yet. Get started by adding a new
-							endpoint.
+							endpoint to explore your GraphQL API.
 						</p>
 						<button class="btn btn-primary" onclick={() => (showAddEndpoint = true)}>
 							Add Your First Endpoint
@@ -121,7 +117,7 @@
 					</div>
 				{:else}
 					<ExplorerTable
-						onRowSelectionChange={handleRowSelectionChange}
+						onDeleteRow={deleteEndpoint}
 						onRowClicked={(detail) => {
 							if (browser) {
 								window.open(
@@ -130,11 +126,10 @@
 								);
 							}
 						}}
-						enableMultiRowSelectionState
+						enableMultiRowSelectionState={false}
 						data={$localStorageEndpoints}
 						{columns}
 					/>
-				{/key}
 				{/if}
 			</div>
 		{/if}
