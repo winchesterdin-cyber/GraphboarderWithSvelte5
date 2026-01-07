@@ -23,7 +23,7 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import { browser } from '$app/environment';
 	import TypeList from './TypeList.svelte';
-	import CodeEditor from './fields/CodeEditor.svelte';
+	import CodeEditor from '$lib/components/fields/CodeEditor.svelte';
 	import GraphqlCodeDisplay from './GraphqlCodeDisplay.svelte';
 
 	interface Props {

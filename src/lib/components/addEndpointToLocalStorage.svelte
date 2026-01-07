@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { stringToJs } from '$lib/utils/usefulFunctions';
 	import { getContext } from 'svelte';
-	import CodeEditor from './fields/CodeEditor.svelte';
+	import CodeEditor from '$lib/components/fields/CodeEditor.svelte';
 	import { getSortedAndOrderedEndpoints } from '$lib/utils/usefulFunctions';
 
 	interface Props {

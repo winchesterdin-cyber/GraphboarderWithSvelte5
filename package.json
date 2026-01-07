@@ -42,10 +42,10 @@
 		"svelte": "^5.0.0"
 	},
 	"devDependencies": {
-		"@fontsource/fira-mono": "^4.5.10",
 		"@chromatic-com/storybook": "^4.1.2",
 		"@eslint/compat": "^1.4.0",
 		"@eslint/js": "^9.38.0",
+		"@fontsource/fira-mono": "^4.5.10",
 		"@inlang/paraglide-js": "^2.4.0",
 		"@playwright/test": "^1.56.1",
 		"@storybook/addon-a11y": "^10.0.7",
@@ -60,6 +60,7 @@
 		"@tailwindcss/forms": "^0.5.10",
 		"@tailwindcss/typography": "^0.5.19",
 		"@tailwindcss/vite": "^4.1.14",
+		"@testing-library/svelte": "^5.3.1",
 		"@types/better-sqlite3": "^7.6.13",
 		"@types/node": "^22",
 		"@vitest/browser-playwright": "^4.0.5",
@@ -91,12 +92,12 @@
 		"svelte"
 	],
 	"dependencies": {
-		"better-sqlite3": "^12.4.1",
 		"@codemirror/lang-javascript": "^6.2.2",
 		"@lukeed/uuid": "^2.0.0",
 		"@tanstack/svelte-table": "npm:tanstack-table-8-svelte-5@^0.1",
 		"@urql/core": "^2.4.4",
 		"@urql/svelte": "^4.0.4",
+		"better-sqlite3": "^12.4.1",
 		"bootstrap-icons": "^1.8.1",
 		"cm6-graphql": "^0.0.14",
 		"codemirror": "^6.0.1",
