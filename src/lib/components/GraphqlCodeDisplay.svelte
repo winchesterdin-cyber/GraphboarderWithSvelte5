@@ -12,7 +12,6 @@
 	import { updateStoresFromAST } from '$lib/utils/astToUIState';
 	import { parse, print, visit } from 'graphql';
 	import JSON5 from 'json5';
-	import CodeMirrorCustom from './fields/CodeMirrorCustom.svelte';
 
 	interface Props {
 		showNonPrettifiedQMSBody: any;
