@@ -21,7 +21,6 @@
 	import 'highlight.js/styles/base16/solarized-dark.css';
 	import RowCount from '$lib/components/UI/rowCount.svelte';
 	import Modal from '$lib/components/Modal.svelte';
-	import { parseAll, stigifyAll } from '$lib/stores/testData/testEndpoints';
 	import MainWraper from './MainWraper.svelte';
 	import Sidebar from './Sidebar.svelte';
 

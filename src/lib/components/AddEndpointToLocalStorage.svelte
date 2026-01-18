@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { stringToJs } from '$lib/utils/usefulFunctions';
-	import { getContext } from 'svelte';
-	import { getSortedAndOrderedEndpoints } from '$lib/utils/usefulFunctions';
+	import { addEndpoint } from '$lib/stores/endpointsStore';
+	import { localEndpoints } from '$lib/stores/testData/testEndpoints';
 
 	interface Props {
 		onEndpointAdded?: () => void;
@@ -9,8 +8,6 @@
 	}
 
 	let { onEndpointAdded, onHide }: Props = $props();
-
-	let localStorageEndpoints = getContext('localStorageEndpoints');
 
 	let id = $state('');
 	let url = $state('');
@@ -20,7 +17,21 @@
 	const placeholderHeaders = '{"Authorization": "Bearer token"}';
 
 	const handleSave = () => {
+		error = '';
 		try {
+			if (!id.trim()) throw new Error('ID is required');
+			if (!url.trim()) throw new Error('URL is required');
+
+			try {
+				new URL(url);
+			} catch {
+				throw new Error('Invalid URL format');
+			}
+
+			if (localEndpoints.some((e) => e.id === id)) {
+				throw new Error(`Cannot overwrite built-in endpoint '${id}'.`);
+			}
+
 			let headersObj = {};
 			if (headers) {
 				headersObj = JSON.parse(headers);
@@ -34,26 +45,12 @@
 				description: 'User added endpoint'
 			};
 
-			let indexOfNewEndpointIdInLocalStorage;
-			if ($localStorageEndpoints?.length > 0) {
-				indexOfNewEndpointIdInLocalStorage = $localStorageEndpoints.findIndex(
-					(endpoint) => endpoint.id == newEndpoint.id
-				);
-			} else {
-				indexOfNewEndpointIdInLocalStorage = -1;
-			}
-
-			if (indexOfNewEndpointIdInLocalStorage > -1) {
-				$localStorageEndpoints[indexOfNewEndpointIdInLocalStorage] = newEndpoint;
-			} else {
-				$localStorageEndpoints.push(newEndpoint);
-			}
-			localStorageEndpoints.set(getSortedAndOrderedEndpoints($localStorageEndpoints));
+			addEndpoint(newEndpoint);
 
 			onEndpointAdded?.();
 			onHide?.();
-		} catch (e) {
-			error = 'Invalid Headers JSON: ' + e.message;
+		} catch (e: any) {
+			error = e.message;
 		}
 	};
 </script>
@@ -66,21 +63,38 @@
 		<label class="label" for="endpoint-id">
 			<span class="label-text">ID (Unique Name)</span>
 		</label>
-		<input type="text" id="endpoint-id" bind:value={id} placeholder="my-endpoint" class="input input-bordered w-full" />
+		<input
+			type="text"
+			id="endpoint-id"
+			bind:value={id}
+			placeholder="my-endpoint"
+			class="input input-bordered w-full"
+		/>
 	</div>
 
 	<div class="form-control w-full mb-4">
 		<label class="label" for="endpoint-url">
 			<span class="label-text">URL</span>
 		</label>
-		<input type="text" id="endpoint-url" bind:value={url} placeholder="https://example.com/graphql" class="input input-bordered w-full" />
+		<input
+			type="text"
+			id="endpoint-url"
+			bind:value={url}
+			placeholder="https://example.com/graphql"
+			class="input input-bordered w-full"
+		/>
 	</div>
 
 	<div class="form-control w-full mb-4">
 		<label class="label" for="endpoint-headers">
 			<span class="label-text">Headers (JSON)</span>
 		</label>
-		<textarea id="endpoint-headers" bind:value={headers} class="textarea textarea-bordered h-24" placeholder={placeholderHeaders}></textarea>
+		<textarea
+			id="endpoint-headers"
+			bind:value={headers}
+			class="textarea textarea-bordered h-24"
+			placeholder={placeholderHeaders}
+		></textarea>
 	</div>
 
 	{#if error}
@@ -96,10 +110,6 @@
 				onHide?.();
 			}}>Cancel</button
 		>
-		<button
-			class="btn btn-primary"
-			onclick={handleSave}
-			disabled={!id || !url}
-		>Save</button>
+		<button class="btn btn-primary" onclick={handleSave} disabled={!id || !url}>Save</button>
 	</div>
 </div>
