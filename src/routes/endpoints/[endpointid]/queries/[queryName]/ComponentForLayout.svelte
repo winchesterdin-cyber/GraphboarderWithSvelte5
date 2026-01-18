@@ -72,10 +72,8 @@
 		currentQMS_info = schemaData.get_QMS_Field(QMSName, 'query', schemaData);
 	}
 
-	console.log({ QMS_bodyPart_StoreDerived_rowsCount }, { QMSWraperContext });
 
 	run(() => {
-		console.log('$QMS_bodyPartsUnifier_StoreDerived', $QMS_bodyPartsUnifier_StoreDerived);
 	});
 	onDestroy(() => {
 		document.getElementById('my-drawer-3')?.click();
@@ -92,10 +90,12 @@
 	});
 	let activeArgumentsDataGrouped_Store_IS_SET = $state(false);
 	run(() => {
-		console.log({
+		// Just to react to changes, empty body or logging if needed
+		// But this was causing syntax error due to incorrect structure in previous content
+		const _ = {
 			QMSWraperContext,
-			$activeArgumentsDataGrouped_Store
-		});
+			val: $activeArgumentsDataGrouped_Store
+		};
 
 		activeArgumentsDataGrouped_Store_IS_SET =
 			$activeArgumentsDataGrouped_Store.length > 0 ? true : false;
@@ -151,7 +151,6 @@
 					currentQMS_info.dd_displayName,
 					...endpointInfo.get_rowsLocation(currentQMS_info, schemaData)
 				];
-				console.log({ stepsOfFieldsInput }, currentQMS_info.dd_displayName);
 				rowsCurrent = getDataGivenStepsOfFields(undefined, queryData.data, stepsOfFieldsInput);
 				if (rowsCurrent && !Array.isArray(rowsCurrent)) {
 					rowsCurrent = [rowsCurrent];
@@ -188,13 +187,10 @@
 					paginationTypeInfo?.name == 'pageBased'
 				) {
 					loadedF && loadedF();
-					console.log('loadedF ');
 				} else {
 					completeF && completeF();
-					console.log('completeF');
 				}
 
-				console.log({ rows }, { rowsCurrent });
 				rowsCurrent = [];
 			});
 	};
@@ -205,7 +201,6 @@
 	});
 
 	run(() => {
-		console.log({ queryData });
 	});
 	if (scalarFields.length == 0) {
 		queryData = { fetching: false, error: false, data: false };
@@ -214,11 +209,9 @@
 	}
 
 	const hideColumn = (e) => {
-		console.log('hideColumn', e.detail.column);
 		tableColsData_Store.removeColumn(e.detail.column);
 	};
 	tableColsData_Store.subscribe((data) => {
-		console.log(data);
 	});
 
 	let column_stepsOfFields = $state('');
@@ -267,7 +260,6 @@
 		{QMSName}
 		{currentQMS_info}
 		onNewColumnAddRequest={(tableColData) => {
-			console.log('aaaaaaaaa', { tableColData });
 			tableColsData_Store.addColumn(tableColData);
 		}}
 	/>
@@ -280,7 +272,6 @@
 		{QMSName}
 		QMS_info={currentQMS_info}
 		onNewColumnAddRequest={(tableColData) => {
-			console.log('aaaaaaaaa', { tableColData });
 			tableColsData_Store.addColumn(tableColData);
 		}}
 	/>

@@ -54,10 +54,8 @@
 		QMSType,
 		QMSName
 	} = QMSWraperContext;
-	console.log({ QMS_info });
 
 	run(() => {
-		console.log('$QMS_bodyPartsUnifier_StoreDerived', $QMS_bodyPartsUnifier_StoreDerived);
 	});
 	onDestroy(() => {
 		document.getElementById('my-drawer-3')?.click();
@@ -87,7 +85,6 @@
 	let loadedF;
 	let completeF;
 	let infiniteId = $state(Math.random());
-	console.log({ infiniteId });
 	function infiniteHandler({ detail: { loaded, complete } }) {
 		loadedF = loaded;
 		completeF = complete;
@@ -130,7 +127,6 @@
 					QMS_info.dd_displayName,
 					...endpointInfo.get_rowsLocation(QMS_info, schemaData)
 				];
-				console.log({ stepsOfFieldsInput }, QMS_info.dd_displayName);
 				rowsCurrent = getDataGivenStepsOfFields(undefined, queryData.data, stepsOfFieldsInput);
 				if (rowsCurrent && !Array.isArray(rowsCurrent)) {
 					rowsCurrent = [rowsCurrent];
@@ -166,13 +162,10 @@
 					paginationTypeInfo?.name == 'pageBased'
 				) {
 					loadedF && loadedF();
-					console.log('loadedF ');
 				} else {
 					completeF && completeF();
-					console.log('completeF');
 				}
 
-				console.log({ rows }, { rowsCurrent });
 				rowsCurrent = [];
 			});
 	};
@@ -183,7 +176,6 @@
 	});
 
 	run(() => {
-		console.log({ queryData });
 	});
 	if (scalarFields.length == 0) {
 		queryData = { fetching: false, error: false, data: false };
@@ -195,7 +187,6 @@
 		tableColsData_Store.removeColumn(e.detail.column);
 	};
 	tableColsData_Store.subscribe((data) => {
-		console.log(data);
 	});
 
 	let column_stepsOfFields = $state('');
@@ -318,7 +309,6 @@
 				colsData={$tableColsData_Store}
 				{rows}
 				on:addColumnDropdown={() => {
-					//console.log('add column dropdown');
 				}}
 				on:hideColumn={(e) => {
 					hideColumn(e);

@@ -42,7 +42,6 @@
 		}
 	});
 	run(() => {
-		console.log({ endpointid });
 	});
 </script>
 

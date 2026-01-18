@@ -16,7 +16,7 @@
 	let { prefix = '' } = $props();
 
 	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
-	const schemaData = QMSMainWraperContext?.schemaData; //console.log($schemaData);
+	const schemaData = QMSMainWraperContext?.schemaData;
 
 	let rootTypes = $schemaData.rootTypes;
 	let queries = $schemaData.queryFields;
@@ -70,7 +70,6 @@
 		});
 	};
 	const showRootTypes = () => {
-		//console.log(rootTypes);
 		whatToShow = rootTypes?.sort((a, b) => {
 			let ea = a.dd_rootName;
 			let eb = b.dd_rootName;
@@ -87,7 +86,6 @@
 
 	const showQueries = () => {
 		if (queries) {
-			//console.log(queries);
 			whatToShow = queries?.sort((a, b) => {
 				let ea = a.dd_rootName;
 				let eb = b.dd_rootName;
@@ -306,7 +304,6 @@
 				<button
 					class="btn btn-xs btn-primary"
 					onclick={() => {
-						console.log(selectedRowsOriginal);
 						if (selectedRowsOriginal.length == 0) {
 							return alert('no rows selected');
 						}
@@ -373,7 +370,6 @@
 							template="default"
 							depth={0}
 							on:colAddRequest={(e) => {
-								//console.log(e);
 							}}
 						/>
 					{/each}

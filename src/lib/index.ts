@@ -76,8 +76,8 @@ import TanTable from './components/TanTable.svelte';
 import Type from './components/Type.svelte';
 import TypeInfoDisplay from './components/TypeInfoDisplay.svelte';
 import TypeList from './components/TypeList.svelte';
-import addEndpointToLocalStorage from './components/addEndpointToLocalStorage.svelte';
-import endpointPicker from './components/endpointPicker.svelte';
+import AddEndpointToLocalStorage from './components/AddEndpointToLocalStorage.svelte';
+import EndpointPicker from './components/EndpointPicker.svelte';
 
 export {
 	ActiveArgument,
@@ -128,6 +128,6 @@ export {
 	Type,
 	TypeInfoDisplay,
 	TypeList,
-	addEndpointToLocalStorage,
-	endpointPicker
+	AddEndpointToLocalStorage,
+	EndpointPicker
 };

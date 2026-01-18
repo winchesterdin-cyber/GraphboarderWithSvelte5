@@ -15,7 +15,6 @@ export const Create_tableColsData_Store = (
 		addColumns: (newCollsData: TableColumnData[]) => {
 			_paginationState_Store.resetToDefault();
 			update((storeData) => {
-				console.log('qwerrt', { storeData });
 				return [...storeData, ...newCollsData];
 			});
 		},
@@ -23,7 +22,6 @@ export const Create_tableColsData_Store = (
 		addColumn: (newCollData: TableColumnData) => {
 			_paginationState_Store.resetToDefault();
 			update((storeData) => {
-				console.log('qwerrt', { storeData });
 				return [...storeData, newCollData];
 			});
 		},

@@ -11,7 +11,6 @@
 		createChoisesWithId
 	} from '$lib/utils/filterStateUtils';
 	
-	console.log({ chosen });
 
 	let chosenInternal = $state(JSON.parse(JSON.stringify(chosen)));
 	let extraInfo = $state('');
@@ -39,9 +38,7 @@
 			titlePreChange = title;
 		} else {
 			//toggle
-			console.log('pre', { chosen });
 			chosen = toggleFilterChoice(type, choises, chosen);
-			console.log({ chosen });
 			applyFilter();
 		}
 	};
@@ -56,7 +53,6 @@
 			modalVisible = false;
 			chosen = chosenInternal;
 		}
-		//console.log('filterApplied', { id: id, chosen: chosen, extraData });
 		onFilterApplied?.({ id: id, chosen: chosen, extraData, choises: choises });
 	};
 
@@ -115,7 +111,6 @@
 
 	function handleSort(e) {
 		choisesWithId = e.detail.items;
-		//console.log('choisesWithId', choisesWithId);
 		syncOrder();
 
 		dragDisabled = true;
@@ -170,8 +165,6 @@
 			if (type !== 'radio') {
 				syncOrder();
 			}
-			//console.log('chosen:', chosen);
-			//console.log('chosenInternal:', chosenInternal);
 			if (!modalVisible) {
 				chosenInternal = chosen;
 			}
@@ -184,8 +177,6 @@
 			title = displayInfo.title;
 			extraInfo = displayInfo.extraInfo;
 		} else {
-			//console.log('chosen:', chosen);
-			//console.log('chosenInternal:', chosenInternal);
 			if (!modalVisible) {
 				chosenInternal = chosen;
 			}

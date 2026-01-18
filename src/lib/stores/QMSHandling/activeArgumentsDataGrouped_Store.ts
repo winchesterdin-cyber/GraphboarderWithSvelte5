@@ -31,7 +31,6 @@ export const Create_activeArgumentsDataGrouped_Store = (
 		) => {
 			const QMS_infoRoot = getRootType(null, QMS_info.dd_rootName, schemaData)
 			const argsInfo = QMS_info?.args;
-			console.log({ argsInfo });
 			//handle generating activeArgumentsDataGrouped
 			const activeArgumentsDataGrouped = [];
 			const hasRootArgs = argsInfo?.find((el) => {
@@ -42,7 +41,6 @@ export const Create_activeArgumentsDataGrouped_Store = (
 
 			////-------- all encompassing group !!!put this first to have it overriden by other groups,or last for opposite result
 			const addAllArgsGroup = () => {
-				console.log('ppppp', QMS_info, QMS_infoRoot)
 				const newGroupData = {
 					originType: QMS_info,
 
@@ -151,7 +149,6 @@ export const Create_activeArgumentsDataGrouped_Store = (
 			});
 			//
 			//Handle QMSarguments data if present
-			console.log({ QMSarguments });
 			if (QMSarguments) {
 				gqlArgObjToActiveArgumentsDataGrouped(QMSarguments, activeArgumentsDataGrouped, schemaData, endpointInfo);
 			}
@@ -160,7 +157,6 @@ export const Create_activeArgumentsDataGrouped_Store = (
 			set(activeArgumentsDataGrouped);
 		},
 		update_groups: (groupNewData: ActiveArgumentGroup) => {
-			console.log({ groupNewData });
 			update((activeArgumentsDataGrouped) => {
 				let index = activeArgumentsDataGrouped.findIndex((group) => {
 					return group.group_name == groupNewData.group_name;
@@ -183,7 +179,6 @@ export const Create_activeArgumentsDataGrouped_Store = (
 					return activeArgumentsDataGrouped;
 				}
 
-				console.log('ppppp group', group);
 				const activeArgumentIndex = group.group_args?.findIndex((arg) => {
 					return arg.id == activeArgumentData.id;
 				});
@@ -196,12 +191,10 @@ export const Create_activeArgumentsDataGrouped_Store = (
 				}
 
 				if (activeArgumentNode) {
-					console.log('updated activeArgumentNode', activeArgumentNode);
 					// Create new object to maintain immutability for better reactivity
 					group.group_argsNode[activeArgumentData.id] = { ...activeArgumentNode, ...activeArgumentData };
 				}
 				if (activeArgument && activeArgumentIndex >= 0) {
-					console.log('updated activeArgument', activeArgument);
 					// Replace the argument in the array to maintain immutability
 					group.group_args[activeArgumentIndex] = { ...activeArgument, ...activeArgumentData };
 				}
@@ -302,10 +295,8 @@ export const add_activeArgumentOrContainerTo_activeArgumentsDataGrouped = (
 	group?: ActiveArgumentGroup
 ): ActiveArgumentGroup[] => {
 	const dataIsForContainer = newArgumentOrContainerData?.items;
-	console.log({ dataIsForContainer, newArgumentOrContainerData })
 	if (!group) {
 		group = activeArgumentsDataGrouped?.find((currGroup) => {
-			console.log('currGroup', currGroup, currGroup.group_name, groupName, currGroup.group_name == groupName, currGroup.group_name === groupName);
 			return currGroup.group_name == groupName;
 		})
 	}
@@ -355,7 +346,6 @@ export const add_activeArgumentOrContainerTo_activeArgumentsDataGrouped = (
 			) {
 				group.group_args.push(newArgumentOrContainerData);
 			} else {
-				console.log('already added');
 			}
 		}
 	}
@@ -426,7 +416,6 @@ const addAllRootArgs = (
 		return group.group_name == 'root';
 	});
 	if (!group) {
-		console.log('no root group');
 		return
 	}
 	const groupName = group.group_name;
@@ -436,7 +425,6 @@ const addAllRootArgs = (
 	});
 	groupArgs.forEach((argType, i) => {
 		const argData = generateArgData([argType.dd_displayName], argType, schemaData);
-		console.log({ argData });
 		add_activeArgumentOrContainerTo_activeArgumentsDataGrouped(
 			argData,
 			groupName,
@@ -511,7 +499,6 @@ const gqlArgObjToActiveArgumentsDataGrouped = (
 			// Handle non-root groups
 			if (!group.group_argsNode) {
 				// For groups without argsNode structure, we skip for now
-				console.log('Skipping non-root group without argsNode:', groupName);
 				return;
 			}
 
@@ -548,7 +535,6 @@ const gqlArgObjToActiveArgumentsDataGrouped = (
 				);
 			});
 		}
-		console.log({ groupName, group_isRoot, groupGqlArgObj, groupOriginType });
 	});
 	return activeArgumentsDataGrouped;
 };

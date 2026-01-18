@@ -22,7 +22,6 @@ export const Create_QMS_bodyPart_StoreDerived = (
 				paginationState = paginationState_derived_Store?.get_value()
 			}
 			const get_QMS_args = () => {
-				console.log({ initialGqlArgObj })
 				// const merged = _.merge({}, initialGqlArgObj || {},
 				// 	$finalGqlArgObj_Store?.finalGqlArgObj || {},
 				// 	paginationState,
@@ -35,7 +34,6 @@ export const Create_QMS_bodyPart_StoreDerived = (
 				return merged;
 			}
 
-			console.log('$mergedChildren_finalGqlArgObj_Store', $mergedChildren_finalGqlArgObj_Store)
 			set(
 				build_QMS_bodyPart(
 					QMS_name,

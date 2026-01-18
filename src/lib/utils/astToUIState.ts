@@ -235,7 +235,6 @@ export const argumentsToActiveArgumentGroups = (
 ): void => {
 	// This function will be used to populate the activeArgumentsDataGrouped store
 	// For now, it focuses on converting the args object to a format the store can handle
-	console.log('argumentsToActiveArgumentGroups', { args, qmsInfo });
 };
 
 /**
@@ -252,7 +251,6 @@ export const updateStoresFromAST = (
 ): void => {
 	const parsed = parseQueryAST(ast);
 
-	console.log('updateStoresFromAST', { parsed, qmsInfo });
 
 	// Update table columns
 	if (parsed.fields.length > 0) {

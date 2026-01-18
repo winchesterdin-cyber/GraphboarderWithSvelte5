@@ -14,7 +14,6 @@
 	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
 	const endpointInfo = QMSMainWraperContext?.endpointInfo;
 	const schemaData = QMSMainWraperContext?.schemaData;
-	console.log({ schemaData, QMSMainWraperContext });
 	let queryFields = $derived($schemaData.queryFields);
 </script>
 

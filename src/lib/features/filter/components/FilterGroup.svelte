@@ -44,7 +44,6 @@
 	// 	chosen = [chosen];
 	// }
 	run(() => {
-		console.log('changed', { chosen });
 	});
 </script>
 
@@ -66,7 +65,6 @@
 			isINPUT_OBJECT = detail.extraData.dd_displayInterface == 'INPUT_OBJECT';
 			choises = detail.choises;
 			chosen = detail.chosen;
-			//console.log('changed', { detail });
 			const dispatchObject = {
 				// chd_dispatchValue: chosen,
 				chd_rawValue: chosen,

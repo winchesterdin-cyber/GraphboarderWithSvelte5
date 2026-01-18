@@ -24,7 +24,6 @@ export const Create_finalGqlArgObj_Store = (
 			if (finalGqlArgObjAndCanRunQuery.final_canRunQuery) {
 				set(finalGqlArgObjAndCanRunQuery);
 			} else {
-				console.log('Did not update finalGqlArgObj and final_canRunQuery because there was some error in arguments')
 			}
 		}
 	};

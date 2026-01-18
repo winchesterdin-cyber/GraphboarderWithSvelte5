@@ -9,7 +9,6 @@
 	let { children }: Props = $props();
 
 	let queryName = page.params.queryName;
-	console.log(queryName);
 </script>
 
 {@render children?.()}

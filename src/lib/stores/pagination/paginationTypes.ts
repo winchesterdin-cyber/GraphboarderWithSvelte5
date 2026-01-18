@@ -21,7 +21,6 @@ export const get_paginationTypes = (
 				return [];
 			},
 			get_initialState: (paginationArgs: FieldWithDerivedData[]): PaginationState => {
-				console.log('notAvailable');
 				return {};
 			},
 			get_defaultPaginationStateForDynamic: (state: PaginationState): PaginationState => {
@@ -31,11 +30,9 @@ export const get_paginationTypes = (
 				return [];
 			},
 			get_nextPageState: (state: PaginationState, paginationArgs: FieldWithDerivedData[]): PaginationState => {
-				console.log('notAvailable');
 				return state;
 			},
 			get_prevPageState: (state: PaginationState, paginationArgs: FieldWithDerivedData[]): PaginationState => {
-				console.log('notAvailable');
 				return state;
 			},
 			isFirstPage: (_paginationState_Store: PaginationStateStore, paginationArgs: FieldWithDerivedData[]) => {
@@ -159,10 +156,7 @@ export const get_paginationTypes = (
 				const namings = {
 					...relayPageInfoFieldsNames, ...relayCursorFieldName
 				}
-				console.log({
-					relayPageInfoFieldsNames,
-					relayCursorFieldName, namings
-				})
+
 				if (namings?.endCursor || namings?.startCursor) {
 					if (namings?.hasNextPage) {
 						dependencyColsData.push({
@@ -240,20 +234,17 @@ export const get_paginationTypes = (
 					if (endCursorValue) {
 						_state[afterName] = `'${endCursorValue}'`;
 					}
-					console.log({ _state }, { returnedDataBatch_last });
 				} else if (namings?.cursor) {
 					let rows = getDataGivenStepsOfFields(undefined, returnedDataBatch_last, [
 						currentQMS_info.dd_displayName,
 						...rowsLocation
 					]);
 					let lastRow = rows[rows.length - 1];
-					console.log({ lastRow });
 					_state[afterName] = `'${getDataGivenStepsOfFields(
 						undefined,
 						lastRow,
 						stepsOfFieldsToCursor
 					)}'`;
-					console.log({ _state });
 				}
 				return _state;
 			},
@@ -339,7 +330,6 @@ export const get_paginationTypes = (
 				return [];
 			},
 			get_initialState: (paginationArgs: FieldWithDerivedData[]): PaginationState => {
-				console.log('unknown');
 			},
 			get_defaultPaginationStateForDynamic: (state) => {
 				return state;
@@ -348,10 +338,8 @@ export const get_paginationTypes = (
 				return [];
 			},
 			get_nextPageState: (state: PaginationState, paginationArgs: FieldWithDerivedData[]): PaginationState => {
-				console.log('unknown');
 			},
 			get_prevPageState: (state: PaginationState, paginationArgs: FieldWithDerivedData[]): PaginationState => {
-				console.log('unknown');
 			},
 			isFirstPage: (_paginationState_Store: PaginationStateStore, paginationArgs: FieldWithDerivedData[]) => {
 				return true;

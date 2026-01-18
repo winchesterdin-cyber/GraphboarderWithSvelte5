@@ -15,8 +15,6 @@
 			bind:this={input}
 			onchange={(e) => {
 				QMSName = input.value;
-				console.log(QMSName);
-				console.log(input.value);
 			}}
 		/>
 		{#key QMSName}

@@ -20,7 +20,6 @@ export const endpointInfoDefaultValues = {
 			},
 			check: (QMS_info, schemaData) => {
 				const QMS_infoRootType = getRootType(null, QMS_info.dd_rootName, schemaData);
-				console.log({ QMS_infoRootType, QMS_info })
 				if (!QMS_infoRootType?.fields) {
 					console.error('QMS_infoRootType.fields is undefined');
 					return false;
@@ -76,7 +75,6 @@ export const endpointInfoDefaultValues = {
 				const nonNullScalarFields = scalarFields.filter((field) => {
 					return field.dd_NON_NULL
 				})
-				console.log({ nonNullScalarFields })
 				if (nonNullScalarFields.length == 1) {
 					return nonNullScalarFields[0]
 				}
@@ -91,7 +89,6 @@ export const endpointInfoDefaultValues = {
 					});
 					return idField
 				});
-				//console.log({ nonNullScalarFields, idField })
 				if (idField) {
 					return idField
 				}
@@ -350,7 +347,6 @@ export const create_endpointInfo_Store = (endpointConfiguration = {}) => {
 			return [];
 		},
 		get_rowCountLocation: function (QMS_info, schemaData) {
-			console.log({ schemaData })
 			const storeVal = get(store);
 			if (!storeVal || !storeVal?.rowCountLocationPossibilities?.length > 0) {
 				return null;
