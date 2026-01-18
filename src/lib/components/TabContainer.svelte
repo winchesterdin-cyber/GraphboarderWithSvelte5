@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { page } from '$app/stores';
 	import TabItem from '$lib/components/TabItem.svelte';
 	import { getQMSLinks } from '$lib/utils/usefulFunctions';
@@ -78,7 +76,7 @@
 		get_itemsToShow();
 	});
 
-	run(() => {
+	$effect(() => {
 		if ($page.url.pathname) {
 			get_itemsToShow();
 		}

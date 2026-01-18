@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { clickOutside } from '$lib/actions/clickOutside';
 	import TabContainer from '$lib/components/TabContainer.svelte';
 	import { getContext } from 'svelte';
@@ -27,8 +25,6 @@
 	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
 	const endpointInfo = QMSMainWraperContext?.endpointInfo;
 
-	run(() => {
-	});
 </script>
 
 <!-- on:click_outside={() => {

@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run, stopPropagation } from 'svelte/legacy';
-
 	import { writable } from 'svelte/store';
 	import { createSvelteTable, flexRender, getCoreRowModel } from '@tanstack/svelte-table';
 	import type { ColumnDef, TableOptions } from '@tanstack/table-core/src/types';
@@ -66,10 +64,7 @@
 		});
 		return columns;
 	};
-	let columns = $state(getColumns(cols));
-	run(() => {
-		columns = getColumns(cols);
-	});
+
 	const setRowSelection = (updater) => {
 		if (updater instanceof Function) {
 			rowSelectionState = updater(rowSelectionState);
@@ -89,7 +84,7 @@
 
 	const options = writable<TableOptions<Person>>({
 		data: data,
-		columns: columns,
+		columns: getColumns(cols),
 		getCoreRowModel: getCoreRowModel(),
 		enableMultiRowSelection: enableMultiRowSelectionState,
 		enableRowSelection: enableRowSelectionState,
@@ -99,16 +94,11 @@
 		state: { columnVisibility, rowSelection: rowSelectionState },
 		getRowId: (row) => row?.[idColName]
 	});
-	const rerender = () => {
-		options.update((options) => ({
-			...options,
-			data: data
-		}));
-	};
+
 	const table = createSvelteTable(options);
 
-	run(() => {
-		columns = getColumns(cols);
+	$effect(() => {
+		const columns = getColumns(cols);
 
 		options.update((options) => ({
 			...options,
@@ -116,8 +106,7 @@
 			columns: columns
 		}));
 	});
-	run(() => {
-	});
+
 </script>
 
 <div class=" h-[80vh] overscroll-contain overflow-y-auto rounded-box pb-32">
@@ -197,7 +186,7 @@
 					}}
 				>
 					{#if enableRowSelectionState}
-						<th class="z-0" onclick={stopPropagation(() => {})}>
+						<th class="z-0" onclick={(e) => { e.stopPropagation(); }}>
 							<label>
 								<input
 									checked={row.getIsSelected()}
