@@ -1,61 +1,105 @@
 <script lang="ts">
 	import { stringToJs } from '$lib/utils/usefulFunctions';
 	import { getContext } from 'svelte';
-	import CodeEditor from '$lib/components/fields/CodeEditor.svelte';
 	import { getSortedAndOrderedEndpoints } from '$lib/utils/usefulFunctions';
 
 	interface Props {
+		onEndpointAdded?: () => void;
 		onHide?: () => void;
 	}
 
-	let { onHide }: Props = $props();
+	let { onEndpointAdded, onHide }: Props = $props();
 
 	let localStorageEndpoints = getContext('localStorageEndpoints');
-	const handleCodeChanged = (e) => {
-		const newConfigurationString = e.detail.chd_rawValue;
-		const newConfigurationJs = stringToJs(newConfigurationString);
-		let indexOfNewEndpointIdInLocalStorage;
-		if ($localStorageEndpoints?.length > 0) {
-			indexOfNewEndpointIdInLocalStorage = $localStorageEndpoints.findIndex(
-				(endpoint) => endpoint.id == newConfigurationJs.id
-			);
+
+	let id = $state('');
+	let url = $state('');
+	let headers = $state('');
+	let error = $state('');
+
+	const placeholderHeaders = '{"Authorization": "Bearer token"}';
+
+	const handleSave = () => {
+		try {
+			let headersObj = {};
+			if (headers) {
+				headersObj = JSON.parse(headers);
+			}
+
+			const newEndpoint = {
+				id,
+				url,
+				headers: headersObj,
+				isMantained: false,
+				description: 'User added endpoint'
+			};
+
+			let indexOfNewEndpointIdInLocalStorage;
+			if ($localStorageEndpoints?.length > 0) {
+				indexOfNewEndpointIdInLocalStorage = $localStorageEndpoints.findIndex(
+					(endpoint) => endpoint.id == newEndpoint.id
+				);
+			} else {
+				indexOfNewEndpointIdInLocalStorage = -1;
+			}
+
+			if (indexOfNewEndpointIdInLocalStorage > -1) {
+				$localStorageEndpoints[indexOfNewEndpointIdInLocalStorage] = newEndpoint;
+			} else {
+				$localStorageEndpoints.push(newEndpoint);
+			}
+			localStorageEndpoints.set(getSortedAndOrderedEndpoints($localStorageEndpoints));
+
+			onEndpointAdded?.();
+			onHide?.();
+		} catch (e) {
+			error = 'Invalid Headers JSON: ' + e.message;
 		}
-		if (indexOfNewEndpointIdInLocalStorage > -1) {
-			$localStorageEndpoints[indexOfNewEndpointIdInLocalStorage] = newConfigurationJs;
-		} else {
-			$localStorageEndpoints.push(newConfigurationJs);
-		}
-		localStorageEndpoints.set(getSortedAndOrderedEndpoints($localStorageEndpoints));
 	};
 </script>
 
-<div class="w-full p-2 max-h-[80vh] overflow-y-auto">
-	<div class="card w-full  glass mx-auto md:max-w-4xl">
-		<div class="card-body">
-			<h2 class="card-title">Add new Endpoint</h2>
-			<p>To Local Storage</p>
-			<div>
-				<CodeEditor
-					language="javascript"
-					onChanged={handleCodeChanged}
-					rawValue={`{
-	id: 'my-endpoint',
-	url: 'https://example.com/graphql',
-	headers: {
-		authorization: 'Bearer YOUR_TOKEN'
-	},
-}`}
-				/>
-			</div>
+<div class="w-full">
+	<h2 class="text-2xl font-bold mb-4">Add new Endpoint</h2>
+	<p class="mb-4 text-base-content/70">Save endpoint to your browser's Local Storage</p>
 
-			<div class="card-actions justify-end">
-				<button
-					class="btn btn-error"
-					onclick={() => {
-						onHide?.();
-					}}>hide</button
-				>
-			</div>
+	<div class="form-control w-full mb-4">
+		<label class="label" for="endpoint-id">
+			<span class="label-text">ID (Unique Name)</span>
+		</label>
+		<input type="text" id="endpoint-id" bind:value={id} placeholder="my-endpoint" class="input input-bordered w-full" />
+	</div>
+
+	<div class="form-control w-full mb-4">
+		<label class="label" for="endpoint-url">
+			<span class="label-text">URL</span>
+		</label>
+		<input type="text" id="endpoint-url" bind:value={url} placeholder="https://example.com/graphql" class="input input-bordered w-full" />
+	</div>
+
+	<div class="form-control w-full mb-4">
+		<label class="label" for="endpoint-headers">
+			<span class="label-text">Headers (JSON)</span>
+		</label>
+		<textarea id="endpoint-headers" bind:value={headers} class="textarea textarea-bordered h-24" placeholder={placeholderHeaders}></textarea>
+	</div>
+
+	{#if error}
+		<div class="alert alert-error mb-4">
+			<span>{error}</span>
 		</div>
+	{/if}
+
+	<div class="flex justify-end gap-2">
+		<button
+			class="btn btn-ghost"
+			onclick={() => {
+				onHide?.();
+			}}>Cancel</button
+		>
+		<button
+			class="btn btn-primary"
+			onclick={handleSave}
+			disabled={!id || !url}
+		>Save</button>
 	</div>
 </div>
