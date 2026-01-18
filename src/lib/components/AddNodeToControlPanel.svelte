@@ -17,7 +17,6 @@
 	};
 	let objIsStarred = $derived(mergedChildren_controlPanel_Store.getObj(currentObject));
 	run(() => {
-		console.log({ objIsStarred });
 	});
 </script>
 

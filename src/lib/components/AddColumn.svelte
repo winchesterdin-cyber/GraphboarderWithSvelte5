@@ -32,7 +32,6 @@
 	setContext(`${prefix}stepsOfFieldsOBJ`, writable({}));
 	const stepsOfFieldsOBJ = getContext(`${prefix}stepsOfFieldsOBJ`);
 	stepsOfFieldsOBJ.subscribe((value) => {
-		console.log('stepsOfFieldsOBJ', value);
 	});
 	setContext(`${prefix}stepsOfFieldsOBJFull`, writable({}));
 	const stepsOfFieldsOBJFull = getContext(`${prefix}stepsOfFieldsOBJFull`);
@@ -40,7 +39,6 @@
 	setContext(`${prefix}activeArgumentsDataGrouped_Store`, writable({}));
 	const activeArgumentsDataGrouped_Store = getContext(`${prefix}activeArgumentsDataGrouped_Store`);
 	activeArgumentsDataGrouped_Store.subscribe((value) => {
-		console.log('activeArgumentsDataGrouped_Store', value);
 	});
 
 	const tableColsData_Store = getContext(`${prefix}QMSWraperContext`).tableColsData_Store;
@@ -53,12 +51,10 @@
 		);
 	});
 	stepsOfFieldsOBJFull.subscribe((stepsOfFieldsOBJFull) => {
-		console.log({ stepsOfFieldsOBJFull });
 	});
 	setContext(`${prefix}StepsOfFieldsSelected`, writable(new Set([])));
 	const StepsOfFieldsSelected = getContext(`${prefix}StepsOfFieldsSelected`);
 	StepsOfFieldsSelected.subscribe((value) => {
-		console.log('StepsOfFieldsSelected', value);
 	});
 </script>
 

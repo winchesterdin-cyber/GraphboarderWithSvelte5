@@ -22,7 +22,6 @@
 	let dragDisabled = $state(true);
 	function handleSort(e) {
 		group.group_args = e.detail.items;
-		//console.log('choisesWithId', group.group_args);
 
 		dragDisabled = true;
 	}

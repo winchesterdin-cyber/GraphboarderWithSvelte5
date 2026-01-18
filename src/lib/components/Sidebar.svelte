@@ -28,7 +28,6 @@
 	const endpointInfo = QMSMainWraperContext?.endpointInfo;
 
 	run(() => {
-		console.log({ forceVisibleSidebar });
 	});
 </script>
 

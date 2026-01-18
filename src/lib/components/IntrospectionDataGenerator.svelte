@@ -21,7 +21,6 @@
 	const endpointInfo = QMSMainWraperContext?.endpointInfo;
 	const schemaData = QMSMainWraperContext?.schemaData;
 
-	console.log({ endpointInfo }, $endpointInfo);
 	const endpointInfoUrl = $endpointInfo?.Url;
 	const getStoredSchemaData = (endpointInfoUrl) => {
 		return endpointsSchemaData.find((item) => item.url === endpointInfoUrl);
@@ -142,25 +141,18 @@
 	$schemaData = {};
 	$schemaData.isReady = false;
 	const handleData = () => {
-		console.log('handledata run');
 		schema = $queryStoreRes?.data?.__schema;
-		console.log('ppppp', endpointInfo, schema);
 		$schemaData.schema = schema;
 		schemaData.set_fields(endpointInfo);
-		console.log('schemaData', $schemaData);
 	};
 	run(() => {
-		console.log({$queryStoreRes})
 	});
 	run(() => {
 		if (!$queryStoreRes.fetching) {
 			if ($queryStoreRes?.data) {
-				console.log($queryStoreRes?.data);
 				handleData();
 			} else if ($queryStoreRes?.error) {
-				console.log($queryStoreRes?.error);
 			} else {
-				console.log('no data');
 			}
 		}
 	});

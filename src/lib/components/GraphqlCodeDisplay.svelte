@@ -39,7 +39,6 @@
 		QMSWraperContext = getContext(`${prefix}QMSWraperContext`);
 		QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
 	} catch (e) {
-		console.log('GraphqlCodeDisplay: Context not available', e);
 	}
 
 	onMount(() => {
@@ -59,7 +58,6 @@
 	const visitAst = () => {
 		const editedAST = visit(ast, {
 			enter(node, key, parent, path, ancestors) {
-				console.log(JSON.parse(JSON.stringify({ node, key, parent, path, ancestors })));
 				// @return
 				//   undefined: no action
 				//   false: skip visiting this node
@@ -102,7 +100,6 @@
 				return;
 			}
 
-			console.log('GraphqlCodeDisplay: Syncing query to UI', { ast, qmsInfo });
 
 			// Update stores from AST
 			updateStoresFromAST(
@@ -148,10 +145,8 @@
 	});
 	run(() => {
 		if (getPreciseType(ast) == 'object') {
-			//console.log('qqqwww', value, ast, astAsString);
 			astAsString = JSON5.stringify(ast);
 			//astAsString2 = objectToSourceCode(ast);
-			//console.log('qqqwww2', value, ast, astAsString);
 		}
 	});
 </script>

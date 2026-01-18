@@ -108,7 +108,6 @@
 	setContext(`${prefix}nodeContext_forDynamicData`, nodeContext_forDynamicData);
 	///
 	// $: if ($selectedQMSAAA) {
-	// 	// console.log(
 	// 	// 	{ field, node, nodes },
 	// 	// 	nodes[node.id],
 	// 	// 	schemaData.get_rootType(null, field.dd_rootName, schemaData)
@@ -118,7 +117,6 @@
 	// 		getMany: { selectedQMS: $selectedQMSAAA, rowSelectionState: $rowSelectionStateAAA },
 	// 		id: Math.random().toString(36).substr(2, 9)
 	// 	};
-	// 	console.log({ objToAdd });
 	// 	QMSFieldToQMSGetMany_Store.addOrReplaceKeepingOldId(objToAdd);
 	// }
 	/////start
@@ -179,7 +177,6 @@
 	let dragDisabled = $state(true);
 	const flipDurationMs = 500;
 	function handleDndConsider(e) {
-		//console.log('considering', e, nodes);
 		const result = handleDndConsiderUtil(e.detail.items);
 		node.items = result.items;
 		dragDisabled = result.dragDisabled;
@@ -263,7 +260,6 @@
 	let idColName = $state();
 
 	//should work
-	console.log({ node, inputColumnsLocationQMS_Info, inputColumnsLocation });
 	//------------
 
 	let QMSWraperContextForSelectedQMS = {};
@@ -275,36 +271,24 @@
 				nodeOrField: node
 			})?.getMany?.selectedQMS;
 			if (getManyQMS) {
-				console.log({ getManyQMS });
 			}
 		}
 	});
 	run(() => {
-		console.log('nodeContext_forDynamicData.selectedRowsColValues', $selectedRowsColValuesAAA);
 	});
 	run(() => {
-		console.log(
-			'nodeContext_forDynamicData.selectedRowsColValuesProcessed',
-			$selectedRowsColValuesProcessedAAA
-		);
 	});
 	run(() => {
-		console.log('nodeContext_forDynamicData.rowSelectionState', $rowSelectionStateAAA);
 	});
 	run(() => {
-		console.log('nodeContext_forDynamicData.idColName', $idColNameAAA);
 	});
 	run(() => {
-		console.log('nodeContext_forDynamicData.selectedQMS', $selectedQMSAAA);
 	});
 	run(() => {
-		console.log('nodeContext_forDynamicData.QMSRows', $QMSRowsAAA);
 	});
 	run(() => {
-		console.log('nodeContext_forDynamicData.itemColumns', $QMSColumnsAAA);
 	});
 	run(() => {
-		console.log('nodeContext_forDynamicData.requiredColNames', $requiredColNamesAAA);
 	});
 	run(() => {
 		stepsOfFieldsFull = stepsOfNodesToStepsOfFields(stepsOfNodes);
@@ -318,7 +302,6 @@
 			shadowWidth = dimensions.width;
 		}
 	});
-	//$: console.log(shadowEl);
 	run(() => {
 		if (shadowHeight && shadowEl) {
 			labelElClone = updateShadowElement(shadowEl, labelEl, shadowHeight, shadowWidth);
@@ -333,7 +316,6 @@
 		}
 	});
 	run(() => {
-		console.log({ QMSWraperContextForSelectedQMS });
 	});
 </script>
 
@@ -446,9 +428,6 @@
 							class="btn btn-xs btn-warning  mb-6 flex-1"
 							onclick={() => {
 								alert('not yet implemented');
-								console.log(
-									'not yet implemented,implement here.Delete node and his items and items of his items recursively until the very end of the tree.'
-								);
 							}}
 						>
 							<i class="bi bi-trash-fill"></i>
@@ -494,7 +473,6 @@
 		onDeleteSubNode={(detail) => {
 			deleteItem({ detail });
 			//
-			//console.log(detail.id, node);
 		}}
 		bind:selectedQMS={getManyQMS}
 		bind:selectedRowsColValues
@@ -757,7 +735,6 @@
 											onDeleteSubNode={(detail) => {
 												deleteItem({ detail });
 												//
-												//console.log(detail.id, node);
 											}}
 											{originalNodes}
 											{onUpdateQuery}

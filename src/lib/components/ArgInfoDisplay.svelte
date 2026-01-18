@@ -5,7 +5,6 @@
 	} from '$lib/stores/QMSHandling/activeArgumentsDataGrouped_Store';
 	import { getRootType } from '$lib/utils/usefulFunctions';
 	import { getContext } from 'svelte';
-	console.log({ type });
 
 	interface Props {
 		expand: any;
@@ -76,8 +75,6 @@
 			<div
 				class="btn btn-xs btn-info normal-case font-light "
 				onclick={() => {
-					console.log(type);
-					//console.log(dd_namesArray);
 				}}
 			>
 				{dd_displayName}
@@ -92,7 +89,6 @@
 					<div
 						class="btn btn-xs  bg-base-200 p-1 rounded"
 						onclick={() => {
-							console.log(getRootType(null, dd_rootName, schemaData));
 						}}
 					>
 						{#if dd_displayName == dd_namesArray[dd_namesArray.length - 1]}
@@ -106,7 +102,6 @@
 					<div
 						class="btn btn-xs  bg-base-200  rounded px-2 py-1"
 						onclick={() => {
-							console.log(getRootType(null, dd_rootName, schemaData));
 						}}
 					>
 						{#if dd_namesArray[0] !== dd_displayName}

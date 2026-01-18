@@ -68,7 +68,6 @@
 	}
 
 	const expand = () => {
-		//console.log('dd_rootName', dd_rootName);
 		expandData = getRootType($schemaData.rootTypes, dd_rootName, schemaData);
 		if (expandData) {
 			// if (!showExpand) {
@@ -79,7 +78,6 @@
 			// }
 
 			showExpand = !showExpand;
-			//console.log('expandData', expandData);
 			let typeLen =
 				expandData?.fields?.length ||
 				expandData?.inputFields?.length ||
@@ -92,8 +90,6 @@
 
 			inDuration = (typeLen + argLen) * 100;
 			inDuration = inDuration < 300 && inDuration > 200 ? inDuration : 300;
-			//console.log('inDuration', inDuration);
-			//console.log('expandData', expandData);
 		}
 	};
 

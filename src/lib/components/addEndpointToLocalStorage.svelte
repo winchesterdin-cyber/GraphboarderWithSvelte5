@@ -13,7 +13,6 @@
 	let localStorageEndpoints = getContext('localStorageEndpoints');
 	const handleCodeChanged = (e) => {
 		const newConfigurationString = e.detail.chd_rawValue;
-		console.log(newConfigurationString);
 		const newConfigurationJs = stringToJs(newConfigurationString);
 		let indexOfNewEndpointIdInLocalStorage;
 		if ($localStorageEndpoints?.length > 0) {
@@ -21,19 +20,12 @@
 				(endpoint) => endpoint.id == newConfigurationJs.id
 			);
 		}
-		console.log({
-			newConfigurationString,
-			newConfigurationJs,
-			$localStorageEndpoints,
-			indexOfNewEndpointIdInLocalStorage
-		});
 		if (indexOfNewEndpointIdInLocalStorage > -1) {
 			$localStorageEndpoints[indexOfNewEndpointIdInLocalStorage] = newConfigurationJs;
 		} else {
 			$localStorageEndpoints.push(newConfigurationJs);
 		}
 		localStorageEndpoints.set(getSortedAndOrderedEndpoints($localStorageEndpoints));
-		console.log({ $localStorageEndpoints, indexOfNewEndpointIdInLocalStorage });
 	};
 </script>
 

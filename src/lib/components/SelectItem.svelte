@@ -31,7 +31,6 @@
 	const schemaData = QMSMainWraperContext?.schemaData;
 	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`);
 	const { QMSFieldToQMSGetMany_Store } = OutermostQMSWraperContext;
-	console.log('nooooddeeee', { node });
 	let getManyQMS = $state();
 	run(() => {
 		if ($QMSFieldToQMSGetMany_Store.length > 0) {
@@ -39,7 +38,6 @@
 				nodeOrField: node
 			})?.getMany?.selectedQMS;
 			if (getManyQMS) {
-				console.log({ getManyQMS });
 			}
 		}
 	});

@@ -100,7 +100,6 @@
 		}
 	});
 
-	//$: console.log(shadowEl);
 	run(() => {
 		if (shadowHeight && shadowEl) {
 			if (shadowEl.style.height == 0) {
@@ -115,7 +114,6 @@
 			}
 		}
 	});
-	console.log({ activeArgumentData });
 	let get_valueToDisplay = (): string | undefined => {
 		let value: string | undefined;
 		if (getPreciseType(activeArgumentData.chd_dispatchValue) == 'number') {
@@ -159,7 +157,6 @@
 	const { mergedChildren_QMSWraperCtxData_Store } = outermostQMSWraperContext;
 
 	const handleChanged = (detail: Partial<ActiveArgumentData>): void => {
-		console.log('detail', detail);
 		// Create a new object instead of mutating the bindable prop
 		// This ensures Svelte 5 reactivity works correctly
 		activeArgumentData = { ...activeArgumentData, ...detail };
@@ -167,7 +164,6 @@
 		const isValid: boolean = argumentCanRunQuery(activeArgumentData);
 		const isInUse: boolean | undefined = activeArgumentData.inUse;
 		const isENUM: boolean = activeArgumentData.dd_displayInterface == 'ENUM';
-		console.log({ isValid });
 		if (!isInUse && isValid) {
 			inUse_set(true);
 		} else if (setNotInUseIfNotValidAndENUM && isInUse && isENUM && !isValid) {
@@ -176,13 +172,11 @@
 			inUse_set(false);
 		}
 		onChanged?.(detail);
-		console.log('activeArgumentsDataGrouped_Store', $activeArgumentsDataGrouped_Store);
 		updateActiveArgument();
 		//finalGqlArgObj_Store.regenerate_groupsAndfinalGqlArgObj();
 	};
 	const handleClickOutside = (): void => {
 		//
-		//console.log('clicked outside');
 		//expandedVersion = false; //!!! this is causing the expanded version to disappear when you click outside of it,but sometimes,is not desirable like when another modal with choises opens up and if you click on anything that upper modal disappears.
 	};
 
@@ -245,7 +239,6 @@
 	onDeleteSubNode={(detail) => {
 		deleteItem({ detail });
 		//
-		//console.log(detail.id, node);
 	}}
 	bind:showSelectModal
 	{onUpdateQuery}
@@ -346,7 +339,6 @@
 					template="default"
 					depth={0}
 					on:colAddRequest={(e) => {
-						//console.log(e);
 					}}
 				/>
 			</div>

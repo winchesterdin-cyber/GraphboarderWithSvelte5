@@ -62,9 +62,7 @@
 		schemaData,
 		'inputFields'
 	);
-	console.log({ inputFieldsContainerLocation, inputFieldsContainer });
 	// $: if ($selectedQMS) {
-	// 	// console.log(
 	// 	// 	{ field, node, nodes },
 	// 	// 	nodes[node.id],
 	// 	// 	schemaData.get_rootType(null, field.dd_rootName, schemaData)
@@ -74,7 +72,6 @@
 	// 		getMany: { selectedQMS: $selectedQMS, rowSelectionState: $rowSelectionState },
 	// 		id: Math.random().toString(36).substr(2, 9)
 	// 	};
-	// 	console.log({ objToAdd });
 	// 	QMSFieldToQMSGetMany_Store.addOrReplaceKeepingOldId(objToAdd);
 	// }
 
@@ -118,7 +115,6 @@
 		// const originType = group.originType;
 		// const originTypeRoot = schemaData.get_rootType(null, originType.dd_rootName, schemaData);
 		// const fields = getReturningFields(originType, node);
-		// console.log('aaaaaa', {
 		// 	originType,
 		// 	originTypeRoot,
 		// 	group,
@@ -129,15 +125,9 @@
 		if (myField) {
 			const myFieldRoot = schemaData.get_rootType(null, myField.dd_rootName, schemaData);
 			const myFieldSubfields = myFieldRoot.fields;
-			console.log('aaaaaa', {
-				myField,
-				myFieldRoot,
-				myFieldSubfields
-			});
 			$QMSRows = $schemaData.queryFields.filter((item) => {
 				return item.dd_kindList && item.dd_rootName == myField.dd_rootName;
 			});
-			console.log({ QMSRows });
 			if ($QMSRows.length == 1) {
 				$selectedQMS = $QMSRows[0];
 
@@ -161,7 +151,6 @@
 				return;
 			}
 		}
-		//	console.log({ node, QMSRows });
 		$QMSRows = fuse
 			.search(
 				`${node?.dd_rootName?.replaceAll('_', ' ')} | ${node?.dd_displayName?.replaceAll(

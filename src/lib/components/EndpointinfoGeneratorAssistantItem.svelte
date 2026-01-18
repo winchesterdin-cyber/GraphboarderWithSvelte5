@@ -19,7 +19,6 @@
 	<td
 		class="cursor-pointer hover:text-primary"
 		onclick={() => {
-			console.log(type);
 		}}
 	>
 		{type.dd_displayName}</td
@@ -27,7 +26,6 @@
 	<td
 		class="cursor-pointer hover:text-primary"
 		onclick={() => {
-			console.log(schemaData.get_rootType(null, type.dd_rootName, schemaData));
 		}}>{type.dd_rootName}</td
 	>
 	<td>{type.dd_kindList_NON_NULL ? '!' : ''}</td>

@@ -127,7 +127,6 @@
 							},
 							id: Math.random().toString(36).substr(2, 9)
 						};
-						console.log({ objToAdd });
 						QMSFieldToQMSGetMany_Store.addOrReplaceKeepingOldId(objToAdd);
 						////
 						//	$selectedQMS = detail.rows.map((row) => row.original)[0];

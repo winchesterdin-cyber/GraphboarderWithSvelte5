@@ -118,7 +118,6 @@
 
 	// 	QMSarguments = { ...finalGqlArgObjValue, ...paginationState_derivedValue };
 	// }
-	// $: console.log({ QMSarguments });
 
 	// $: if (QMSarguments || paginationState_derivedValue) {
 	// 	mergedChildren_finalGqlArgObj_Store.update((value) => {
@@ -153,7 +152,6 @@
 			currentQMSWraperCtxData = mergedChildren_QMSWraperCtxData_Store.getObj(stepsOfFields);
 		}
 	});
-	//$: console.log({ currentQMSWraperCtxData });//!!!This logs multiple times when expected only one log,because $mergedChildren_QMSWraperCtxData_Store is being updated multiple times instead of just onece
 	let currentQMSArguments = $derived(getValueAtPath($mergedChildren_finalGqlArgObj_Store, [
 		...stepsOfFields,
 		'QMSarguments'
@@ -174,8 +172,6 @@
 			<div
 				class="btn btn-xs btn-info normal-case font-light"
 				onclick={() => {
-					console.log(type);
-					//console.log(dd_namesArray);
 				}}
 			>
 				{dd_displayName}
@@ -185,7 +181,6 @@
 			<div
 				class="btn btn-xs bg-base-200 p-1 rounded"
 				onclick={() => {
-					console.log(getRootType(null, dd_rootName, schemaData));
 				}}
 			>
 				{#if dd_displayName == dd_namesArray[dd_namesArray.length - 1]}
@@ -199,7 +194,6 @@
 			<div
 				class="btn btn-xs btn-accent normal-case rounded px-2 py-1"
 				onclick={() => {
-					console.log(getRootType(null, dd_rootName, schemaData));
 				}}
 			>
 				{#if dd_namesArray?.[1] && dd_namesArray?.[1] !== dd_displayName}

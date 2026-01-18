@@ -38,8 +38,6 @@
 	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
 	const schemaData = QMSMainWraperContext?.schemaData;
 
-	console.log({ type });
-	console.log({ predefinedFirstSteps });
 
 	if (stepsOfFields.length == 0 && predefinedFirstSteps) {
 		stepsOfFields = [...predefinedFirstSteps];
@@ -56,7 +54,6 @@
 	}
 	let inDuration = $state(300);
 	const expand = () => {
-		//console.log('dd_rootName', dd_rootName);
 		expandData = getRootType($schemaData.rootTypes, dd_rootName, schemaData);
 		if (expandData) {
 			if (!showExpand) {
@@ -71,8 +68,6 @@
 
 		inDuration = expandData?.inputFields?.length * 100;
 		inDuration = inDuration < 300 && inDuration > 200 ? inDuration : 300;
-		//console.log('inDuration', inDuration);
-		//console.log('expandData', expandData);
 	};
 </script>
 

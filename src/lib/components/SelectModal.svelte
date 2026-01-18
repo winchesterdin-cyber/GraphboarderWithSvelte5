@@ -68,7 +68,6 @@
 	let stepsOfFields = $state([]);
 	let stepsOfFieldsFull = $state([]);
 	let testName_stepsOFFieldsWasUpdated = false;
-	console.log({ node });
 	/////start
 	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`);
 	let pathIsInCP = false;
@@ -111,7 +110,6 @@
 	}
 
 	const stepsOfNodesToStepsOfFields = (stepsOfNodes) => {
-		//console.log({ stepsOfNodes });
 		const stepsOfFields = stepsOfNodes
 			.filter((step) => {
 				const [not, displayName, operator] = step;
@@ -155,13 +153,11 @@
 	let dragDisabled = true;
 	const flipDurationMs = 500;
 	function handleDndConsider(e) {
-		//console.log('considering', e, nodes);
 		node.items = e.detail.items;
 		dragDisabled = true;
 	}
 	function handleDndFinalize(e) {
 		node.items = e.detail.items;
-		//console.log(e);
 		nodes = { ...nodes };
 		handleChanged();
 		onChanged?.();
@@ -309,7 +305,6 @@
 		return inputColumnsLocationQMS_Info;
 	});
 	//should work
-	console.log({ node, inputColumnsLocationQMS_Info, inputColumnsLocation });
 	//------------
 
 	let QMSWraperContextForSelectedQMS = $state({});
@@ -328,7 +323,6 @@
 	const { QMSFieldToQMSGetMany_Store } = OutermostQMSWraperContext;
 	let getManyQMS = $state();
 	let showSelectQMSModal = $state(false);
-	console.log('qqqqqqwwwww', { getManyQMS, showSelectQMSModal });
 	run(() => {
 		stepsOfFieldsFull = stepsOfNodesToStepsOfFields(stepsOfNodes);
 		stepsOfFields = filterElFromArr(stepsOfFieldsFull, ['list', 'bonded']);
@@ -344,7 +338,6 @@
 			shadowWidth = labelEl.clientWidth;
 		}
 	});
-	//$: console.log(shadowEl);
 	run(() => {
 		if (shadowHeight && shadowEl) {
 			if (shadowEl.style.height == 0) {
@@ -403,7 +396,6 @@
 		}
 	});
 	run(() => {
-		console.log({ QMSWraperContextForSelectedQMS });
 	});
 	run(() => {
 		if ($QMSFieldToQMSGetMany_Store.length > 0) {
@@ -411,7 +403,6 @@
 				nodeOrField: node
 			})?.getMany?.selectedQMS;
 			if (getManyQMS) {
-				console.log({ getManyQMS });
 			}
 		}
 	});
@@ -472,7 +463,6 @@
 							});
 						//string_transformer
 
-						console.log({ returningColumnsLocation });
 						$selectedRowsColValues = selectedRowsOriginal.map((row) => {
 							return getDataGivenStepsOfFields(null, row, returningColumnsLocation);
 
@@ -481,7 +471,6 @@
 						//!!every element of 'selectedRowsColValues' must be cheched like so: every element must have all values checked ,if string pass trough string transformer
 					}}
 					on:rowClicked={(e) => {
-						console.log(e.detail);
 					}}
 					bind:QMS_info={$selectedQMS}
 				/>

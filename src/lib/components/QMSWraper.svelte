@@ -105,7 +105,6 @@
 	const dd_paginationType: string | undefined = QMS_info?.dd_paginationType;
 	const paginationTypes = get_paginationTypes(endpointInfo, schemaData);
 	let paginationTypeInfo = getPaginationTypeInfo(dd_paginationType, paginationTypes);
-	console.log({ QMSType, QMSName, QMS_info });
 	const paginationOptions = Create_paginationOptions();
 	const paginationState = Create_paginationState(
 		undefined,
@@ -129,7 +128,6 @@
 	// 	[QMS_info.dd_displayName, ...rowsLocation],
 	// 	schemaData
 	// );
-	console.log({ nodeFieldsQMS_info });
 
 	const possibleLocations = QMSType == 'query'
 		? $endpointInfo.returningColumnsPossibleLocationsInQueriesPerRow
@@ -145,7 +143,6 @@
 	let returningColumnsLocationQMS_Info = returningColumnsResult?.info;
 	let returningColumnsLocation = returningColumnsResult?.location || [];
 
-	console.log({ returningColumnsLocationQMS_Info, returningColumnsLocation, QMSType });
 	let nodeFieldsQMS_info_Root = schemaData.get_rootType(
 		null,
 		nodeFieldsQMS_info?.dd_rootName,
@@ -176,20 +173,6 @@
 		tableColsData_StoreInitialValue,
 		dependencyColsData
 	);
-	console.log({
-		QMSType,
-		QMSName,
-		QMS_info,
-		schemaData,
-		nodeFieldsQMS_info,
-		nodeFieldsQMS_info_Root,
-		returningColumnsLocation,
-		returningColumnsLocationQMS_Info,
-		prefixStepsOfFields,
-		scalarColsData,
-		dependencyColsData,
-		tableColsData_StoreInitialValue
-	});
 	const tableColsData_Store = Create_tableColsData_Store(
 		paginationState,
 		tableColsData_StoreInitialValue
@@ -217,26 +200,16 @@
 	}
 
 	run(() => {
-		console.log('$QMSFieldToQMSGetMany_Store ', $QMSFieldToQMSGetMany_Store);
 	});
 
 	run(() => {
-		console.log(
-			'$mergedChildren_finalGqlArgObj_Store',
-			'\n',
-			$mergedChildren_finalGqlArgObj_Store,
-			JSON5.stringify($mergedChildren_finalGqlArgObj_Store, { quote: '"' })
-		);
 	});
-	// $: console.log(
 	// 	'$mergedChildren_activeArgumentsDataGrouped_Store',
 	// 	$mergedChildren_activeArgumentsDataGrouped_Store
 	// );
 	run(() => {
-		console.log('$mergedChildren_QMSWraperCtxData_Store ', $mergedChildren_QMSWraperCtxData_Store);
 	});
 	run(() => {
-		console.log('$mergedChildren_controlPanel_Store ', $mergedChildren_controlPanel_Store);
 	});
 
 	const QMS_bodyPart_StoreDerived = Create_QMS_bodyPart_StoreDerived(
@@ -254,11 +227,8 @@
 		[QMS_bodyPart_StoreDerived],
 		QMSType
 	);
-	console.log('QMS_bodyPartsUnifier_StoreDerived', QMS_bodyPartsUnifier_StoreDerived);
 	let QMS_bodyPart_StoreDerived_rowsCount = null;
-	console.log(schemaData);
 	const rowCountLocation = endpointInfo.get_rowCountLocation(QMS_info, schemaData);
-	console.log({ rowCountLocation }, $endpointInfo);
 	if (rowCountLocation) {
 		const tableColsData_Store_rowsCount = writable([
 			{ stepsOfFields: rowCountLocation, title: 'count' }
@@ -277,16 +247,12 @@
 	}
 
 	//
-	// console.log('get_idField', endpointInfo.get_idField(QMS_info, schemaData));
 	//
 	//set to QMSWraperContext
 	const tableName = endpointInfo.get_tableName(QMS_info, schemaData);
-	console.log({ tableName });
 	const thisContext = endpointInfo.get_thisContext();
-	console.log({ thisContext });
 	const objective = 'getOne';
 	const qmsNameForObjective = endpointInfo.get_qmsNameForObjective(QMS_info, schemaData, objective);
-	console.log({ qmsNameForObjective }, objective);
 
 	let idColName = getIdColumnName(
 		returningColumnsLocationQMS_Info,
@@ -296,10 +262,8 @@
 	);
 
 	run(() => {
-		console.log('$paginationState', $paginationState);
 	});
 	run(() => {
-		console.log('$paginationState_derived', $paginationState_derived);
 	});
 
 	// Build the context object

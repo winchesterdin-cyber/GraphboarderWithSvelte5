@@ -54,7 +54,6 @@
 		return columnVisibility;
 	};
 	let columnVisibility = getColumnVisibility(cols);
-	console.log({ columnVisibility });
 	const getColumns = (cols) => {
 		let columns = cols.map((col) => {
 			return {
@@ -85,11 +84,9 @@
 			}
 		}));
 
-		console.log($table.getSelectedRowModel());
 		onRowSelectionChange?.({ ...$table.getSelectedRowModel() });
 	};
 
-	console.log({ rowSelectionState });
 	const options = writable<TableOptions<Person>>({
 		data: data,
 		columns: columns,
@@ -118,10 +115,8 @@
 			data: data,
 			columns: columns
 		}));
-		console.log({ data, cols });
 	});
 	run(() => {
-		console.log({ table }, '$table', $table);
 	});
 </script>
 
@@ -213,7 +208,6 @@
 										const toggleSelectedHandler = row.getToggleSelectedHandler();
 										toggleSelectedHandler(e);
 
-										//console.log($table.getSelectedRowModel());
 									}}
 								/>
 							</label>

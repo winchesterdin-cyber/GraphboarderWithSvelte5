@@ -28,7 +28,6 @@ import type {
 
 
 export const findNestedChildWithMultipleKeysOrIfLastHasQMSargumentsKey = (obj: unknown): Record<string, unknown> | boolean | null => {
-	//console.log(obj)
 	// Check if the input is an object
 	if (typeof obj !== 'object' || obj === null) {
 		return null;
@@ -48,12 +47,10 @@ export const findNestedChildWithMultipleKeysOrIfLastHasQMSargumentsKey = (obj: u
 }
 
 export const deleteIfChildrenHaveOneKeyAndLastKeyIsQMSarguments = (obj: unknown): Record<string, unknown> | null => {
-	//console.log('ttt', obj)
 	if (getPreciseType(obj) !== 'object' || obj === null) {
 		return null;
 	}
 	///
-	console.log({ obj })
 	///
 	for (const key in obj) {
 
@@ -64,9 +61,7 @@ export const deleteIfChildrenHaveOneKeyAndLastKeyIsQMSarguments = (obj: unknown)
 			return
 		}
 		const result = findNestedChildWithMultipleKeysOrIfLastHasQMSargumentsKey(obj[key])
-		//console.log('yyresult', obj[key], result, getPreciseType(result) == 'object')
 		if (result === true) {
-			//console.log('to delete', obj[key])
 			delete obj[key]
 		}
 		if (getPreciseType(result) == 'object') {
@@ -76,21 +71,6 @@ export const deleteIfChildrenHaveOneKeyAndLastKeyIsQMSarguments = (obj: unknown)
 	return obj
 }
 
-// function removeObjIfContainsOnlyQMSarguments(obj) {
-// 	for (let key in obj) {
-// 		if (typeof obj[key] === 'object' && obj[key] !== null) {
-// 			// Recursively call the function for nested objects
-// 			removeObjIfContainsOnlyQMSarguments(obj[key]);
-
-// 			// Check if the current object has only one key and that key is 'QMSarguments'
-// 			if (Object.keys(obj[key]).length === 1 && Object.keys(obj[key])[0] === 'QMSarguments') {
-// 				// Delete the object with key 'QMSarguments'
-// 				delete obj[key];
-// 			}
-// 		}
-// 	}
-// 	return obj
-// }
 export const objectIsEmpty = (obj: Record<string, unknown>): boolean => {
 	if (Object.keys(obj).length === 0 && obj.constructor === Object) {
 		return true;
@@ -117,27 +97,18 @@ export const build_QMS_bodyPart = (
 		console.info('no args chosen');
 	}
 
-	console.log('qqqqqqqqqq', { QMS_args }, { QMS_fields }, { mergedChildren_finalGqlArgObj })
 	const QMSarguments = { [QMS_name]: { QMSarguments: QMS_args } }
 	const fullObject = JSON.parse(JSON.stringify(deleteIfChildrenHaveOneKeyAndLastKeyIsQMSarguments(_.mergeWith({}, QMSarguments, mergedChildren_finalGqlArgObj, QMS_fields))
 	))
-	// if (QMS_args && fullObject[QMS_name]) {
-	// 	fullObject[QMS_name].QMSarguments = QMS_args
-	// }
 	//.replaceAll('\"QMSarguments\":','')
-	// console.log('wwwwwwwww', { fullObject })
 
 	const inputString = JSON.stringify(fullObject, function (key, value) {
 		if (key === "QMSarguments") {
-			console.log('QMSarguments', { value }, JSON.stringify(value))
 			return "(" + JSON.stringify(value) + ")";
 		}
 		return value;
 	}).replaceAll('\"QMSarguments\":', '')
 	const listOfSubstrings = generateListOfSubstrings(inputString)
-	console.log({ listOfSubstrings })
-	//const modifiedString = listOfSubstrings.join('').replaceAll(/novaluehere|"|:/gi, '').slice(1, -1)
-	//const modifiedString = listOfSubstrings.join('').replaceAll(/novaluehere|"|:/gi, '').slice(1, -1)
 	const outsideTextModifier = (text: string): string => {
 		return text.replaceAll(/novaluehere|"|:/gi, '')
 	}
@@ -145,12 +116,10 @@ export const build_QMS_bodyPart = (
 
 	const modifiedString = smartModifyStringBasedOnBoundries(listOfSubstrings.join(''), '(', ')', stringToQMSString_transformer, outsideTextModifier);
 
-	console.log({ modifiedString })
 	const QMS_bodyPart = modifiedString.slice(1, -1)
 
 
 	//const QMS_bodyPart_FINAL = QMS_bodyPart.replaceAll(/novaluehere|"|:/gi, '').slice(1, -1)
-	console.log({ QMS_bodyPart })
 	return QMS_bodyPart
 };
 export const smartModifyStringBasedOnBoundries = (
@@ -235,7 +204,6 @@ function modifyString(input: string): { modifiedSubstring: string; remainingStri
 
 	//delete matched parenthesis and it's content from string
 	input = replaceBetween(input, parenhtesisStart, parenhtesisEnd, '')
-	//console.log({ matchParenthesis }, matchParenthesis.index)
 	input = replaceLastOccurrence(input, matchParenthesis.index, matchParenthesis[0] + ":{")
 	modifiedSubstring = input.substring(0, parenhtesisEnd)
 	remainingString = input.substring(parenhtesisEnd, input.length)
@@ -247,7 +215,6 @@ const generateListOfSubstrings = (string: string): string[] => {
 	let reachedTheEnd = false
 	while (!reachedTheEnd) {
 		const { modifiedSubstring, remainingString } = modifyString(string)
-		//console.log({ remainingString })
 		if (remainingString === '') {
 			reachedTheEnd = true
 		}
@@ -262,14 +229,7 @@ const inputString2 = "query QMS_name{ authUserRoles:{ createdAt,id,role,userId,(
 const inputString = ":{textBefore:{1dadas,2dasda,(inside parentheses1{iside1:'asd1'}),3dasds :{ textBefore2:{4dadas,5dasda,(inside parentheses2,inside2:'asd2'),6dasds :{";
 const modifiedResult = modifyString(inputString);
 
-//console.log(modifiedResult);
-//console.log(replaceLastOccurrence("abc:{def:{ghi:{jkl", 10, "(fdsfds):{"));
-//console.log('-------------------------------')
-//console.log(inputString)
 const listOfSubstrings = generateListOfSubstrings(inputString)
-//console.log(inputString)
-//console.log({ listOfSubstrings })
-//console.log("joined", listOfSubstrings.join(''))
 ///
 export const get_KindsArray = (type: Partial<FieldWithDerivedData>): GraphQLKind[] => {
 	let kinds: GraphQLKind[] = [];
@@ -384,11 +344,6 @@ export const getFields_Grouped = (
 				non_scalarFields.push(field);
 			}
 	});
-	// console.log('wwwww', {
-	// 	node, node_rootType, fieldsArray, scalarFields,
-	// 	non_scalarFields,
-	// 	enumFields
-	// })
 
 
 	return {
@@ -435,20 +390,6 @@ export const getDataGivenStepsOfFields = (
 	if (stepsOfFields.length == 0) {
 		return row_resultData
 	}
-	// const handleArray = (array, element) => {
-	//     console.log('aaaa', { array })
-	//     array = array.map((subElement) => {
-	//         if (subElement?.[element] !== undefined) {
-	//             return subElement[element];
-	//         }
-	//         if (Array.isArray(subElement) && subElement.length > 0) {
-	//             return handleArray(subElement, element);
-	//         }
-	//         return []
-	//         // return subElement[element]
-	//     });
-	//     return array;
-	// };
 
 	const handleStep = (step: string, colResultData: unknown): unknown => {
 		//!!! there must be some changes made here because undefined == null (but typeof undefined !== null)
@@ -712,7 +653,6 @@ export const generate_derivedData = (
 	//	derivedData.dd_StrForFuseComparison = `${derivedData.dd_displayName}  ${derivedData.dd_rootName} ${derivedData.description}`
 	//${derivedData.dd_displayName}  ${derivedData.dd_rootName} ${derivedData.description}
 	derivedData.dd_StrForFuseComparison = `${prepareStrForFuseComparison(`${derivedData.dd_displayName}   `)} `
-	//console.log(derivedData.dd_StrForFuseComparison)
 	return derivedData;
 };
 const prepareStrForFuseComparison = (str: string): string => {
@@ -778,12 +718,9 @@ export const generate_group_gqlArgObj = (group: ActiveArgumentGroup): {
 	});
 	if (group_argumentsData?.length > 0) {
 		if (group.group_isRoot) {
-			//console.log('root group handled');
 			group_gqlArgObj = generate_group_gqlArgObjForRoot(group_argumentsData)
-			console.log({ group_gqlArgObj, group_argumentsData })
 		} else {
 			console.error('Uncomment code for handling non root group');
-			// //console.log('NON root group handled');
 			// if (group.dd_kindList) {
 			// 	let list = [];
 			// 	list = group_argumentsData.map((arg) => {
@@ -793,7 +730,6 @@ export const generate_group_gqlArgObj = (group: ActiveArgumentGroup): {
 			// 	});
 			// 	group_gqlArgObj[group.group_name] = list;
 			// 	group_gqlArgObj = { ...group_gqlArgObj };
-			// 	//console.log('list---', list);
 			// } else {
 			// 	let { gqlArgObj } = generate_gqlArgObj(group_argumentsData);
 			// 	group_gqlArgObj = { ...group_gqlArgObj, ...gqlArgObj };
@@ -813,7 +749,6 @@ export const generate_group_gqlArgObj = (group: ActiveArgumentGroup): {
 const validItems = (items: { id: string }[], nodes: Record<string, ContainerData>): { id: string }[] => {
 	return items.filter((item) => {
 		let itemData = nodes[item.id];
-		console.log('itemData.selectedRowsColValues', itemData.selectedRowsColValues)
 		return itemData.inUse || (itemData.operator && validItems(itemData.items, nodes).length > 0 || itemData.selectedRowsColValues);
 	});
 };
@@ -845,13 +780,11 @@ export const generate_group_gqlArgObj_forHasOperators = (items: { id: string }[]
 	}
 
 	const spreadOutItems = spreadItemsIfInSpreadContainers(items)
-	console.log({ items, spreadOutItems })
 	spreadOutItems.forEach((item) => {
 		let itemData = nodes[item.id];
 		const isContainer = itemData.hasOwnProperty('items')
 		const nodeStep = itemData?.stepsOfNodes[itemData?.stepsOfNodes.length - 1]
 		const nodeStepClean = filterElFromArr(nodeStep, [null, undefined, 'bonded', 'list'])
-		console.log({ nodeStep }, { nodeStepClean })
 
 		const operator = itemData.operator
 		let itemObj = {};
@@ -868,7 +801,6 @@ export const generate_group_gqlArgObj_forHasOperators = (items: { id: string }[]
 			} else {
 				dataToAssign = gqlArgObjForItems
 			}
-			console.log('vvvvvvv', gqlArgObjForItems, dataToAssign)
 		} else {
 			dataToAssign = nodes[item.id]?.gqlArgObj
 		}
@@ -914,13 +846,11 @@ export const generate_group_gqlArgObj_forHasOperators = (items: { id: string }[]
 			}
 		}
 
-		console.log(nodeStepClean, { itemObj }, { resultingGqlArgObj }, { itemObjectTest2 }, { itemObjectTestCurr }, { dataToAssign }, 'itemData.selectedRowsColValues', itemData.selectedRowsColValues)
 
 
 
 		itemsResultingData.push(itemObj)
 
-		console.log({ itemsResultingData, dataToAssign, itemData })
 	});
 	return {
 		resultingGqlArgObj,
@@ -947,7 +877,6 @@ export const generate_group_gqlArgObjAndCanRunQuery_forHasOperators = (group: Ac
 		group_name,
 		nodes
 	)
-	console.log({ generate_group_gqlArgObj_forHasOperatorsRESULT })
 
 	let group_argumentsData = group.group_args.filter((arg) => {
 		return arg.inUse;
@@ -975,7 +904,6 @@ export const generate_finalGqlArgObj_fromGroups = (activeArgumentsDataGrouped: A
 	let final_canRunQuery = activeArgumentsDataGrouped.every((group) => { return group.group_canRunQuery })
 
 	activeArgumentsDataGrouped.forEach((group) => {
-		console.log({ group })
 		Object.assign(finalGqlArgObj, group.group_gqlArgObj);
 	});
 
@@ -1097,7 +1025,6 @@ export const argumentCanRunQuery = (arg: ActiveArgumentData): boolean => {
 		dd_kindList,
 		dd_kindList_NON_NULL
 	} = arg;
-	console.log('argumentCanRunQuery', { arg })
 	let argFinalValue = chd_dispatchValue;
 	if (!inUse) {
 		return true;
@@ -1151,7 +1078,6 @@ export const get_scalarColsData = (
 	let currentQuery_fields_SCALAR_names = scalarFields.map((field) => {
 		return field.name;
 	});
-	//console.log('qqqq', { dd_relatedRoot, scalarFields, currentQuery_fields_SCALAR_names })
 	let scalarColsData = currentQuery_fields_SCALAR_names.map((name) => {
 		let stepsOfFields;
 		if (keep_currentQMS_info_dd_displayName) {
@@ -1244,13 +1170,11 @@ export const nodeAddDefaultFields = (
 
 
 
-	console.log({ node });
 	const node_rootType = schemaData.get_rootType(
 		null,
 		node?.dd_rootName || node.parent_node.dd_rootName,
 		schemaData
 	);
-	console.log({ node_rootType });
 	const group_argsNode = group.group_argsNode;
 
 	const dd_displayNameToExclude = [
@@ -1258,20 +1182,14 @@ export const nodeAddDefaultFields = (
 			return group_argsNode?.[item.id]?.dd_displayName;
 		}), '_and', '_or', '_not', 'and', 'or', 'not'
 	];
-	console.log({ dd_displayNameToExclude });
 
 	let fields_Grouped = getFields_Grouped(
 		node,
 		dd_displayNameToExclude, schemaData
 	);
-	let scalarFields = fields_Grouped.scalarFields
-	let non_scalarFields = fields_Grouped.non_scalarFields
-	let enumFields = fields_Grouped.enumFields
-
-	console.log({ group, node, node_rootType, dd_displayNameToExclude, fields_Grouped });
-
-	console.log({ scalarFields });
-	console.log({ enumFields });
+	let scalarFields = fields_Grouped.scalarFields;
+	let non_scalarFields = fields_Grouped.non_scalarFields;
+	let enumFields = fields_Grouped.enumFields;
 
 	[...scalarFields, ...enumFields].forEach((element) => {
 		let stepsOfFields = [
@@ -1308,9 +1226,7 @@ export const nodeAddDefaultFields = (
 				id: `${JSON.stringify(stepsOfFields)}${Math.random()}`,
 				...element
 			};
-			console.log({ newContainerData });
 			let randomNr = Math.random();
-			console.log('group', group);
 			let newContainerDataRootType = schemaData.get_rootType(
 				null,
 				newContainerData.dd_rootName,
@@ -1347,8 +1263,6 @@ export const nodeAddDefaultFields = (
 				not: false,
 				isMain: false,
 			};
-			console.log({ newContainerDataRootType });
-			console.log({ newContainerData });
 			if (node?.items) {
 				node.items.push({ id: randomNr });
 			} else {
@@ -1455,7 +1369,6 @@ export const getDeepField = (
 	schemaData: SchemaData,
 	fieldsType: 'fields' | 'inputFields' = 'fields'
 ): FieldWithDerivedData | null => {
-	console.log({ obj, propertyPath })
 	if (propertyPath.length == 0 || propertyPath[propertyPath.length - 1] == obj.dd_displayName) {//!!!this is a hack,might cause problem dd_displayName is the same in multiple places
 		return obj
 	}
@@ -1577,7 +1490,6 @@ export const generate_finalGqlArgObjAndCanRunQuery = (
 		_paginationState_Store.resetToDefault();
 	}
 	//
-	console.log('regenerate_groupsAndfinalGqlArgObj RUN');
 	const groups_gqlArgObj = activeArgumentsDataGrouped.map((group) => {
 		if (group.group_argsNode) {
 			return generate_group_gqlArgObjAndCanRunQuery_forHasOperators(group);

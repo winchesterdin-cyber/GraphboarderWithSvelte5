@@ -55,7 +55,6 @@
 	);
 	const inputFieldsContainerRoot = getRootType(null, inputFieldsContainer.dd_rootName, schemaData);
 	const inputFields = inputFieldsContainerRoot?.inputFields || [];
-	console.log({ inputFieldsContainer, inputFieldsContainerRoot, inputFields });
 </script>
 
 <div class="flex space-x-2">

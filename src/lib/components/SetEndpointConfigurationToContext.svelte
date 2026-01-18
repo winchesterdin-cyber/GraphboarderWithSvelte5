@@ -51,7 +51,6 @@
 	const schemaData = QMSMainWraperContext?.schemaData;
 
 	run(() => {
-		console.log('$QMS_bodyPartsUnifier_StoreDerived', $QMS_bodyPartsUnifier_StoreDerived);
 	});
 	onDestroy(() => {
 		document.getElementById('my-drawer-3')?.click();
@@ -124,7 +123,6 @@
 					currentQMS_info.dd_displayName,
 					...endpointInfo.get_rowsLocation(currentQMS_info, schemaData)
 				];
-				console.log({ stepsOfFieldsInput }, currentQMS_info.dd_displayName);
 				rowsCurrent = getDataGivenStepsOfFields(undefined, queryData.data, stepsOfFieldsInput);
 				if (rowsCurrent && !Array.isArray(rowsCurrent)) {
 					rowsCurrent = [rowsCurrent];
@@ -161,13 +159,10 @@
 					paginationTypeInfo?.name == 'pageBased'
 				) {
 					loadedF && loadedF();
-					console.log('loadedF ');
 				} else {
 					completeF && completeF();
-					console.log('completeF');
 				}
 
-				console.log({ rows }, { rowsCurrent });
 				rowsCurrent = [];
 			});
 	};
@@ -187,7 +182,6 @@
 		tableColsData_Store.removeColumn(e.detail.column);
 	};
 	tableColsData_Store.subscribe((data) => {
-		console.log(data);
 	});
 
 	let column_stepsOfFields = '';
@@ -219,15 +213,12 @@
 				'configuration'
 			]);
 
-			console.log({ configurationText });
-			console.log({ configTemplate });
 
 			endpointConfiguration = stringToJs(configurationText);
 
 			if (configTemplate) {
 				endpointConfiguration = { ...stringToJs(configTemplate), ...endpointConfiguration };
 			}
-			console.log({ endpointConfiguration });
 		}
 	});
 

@@ -16,9 +16,7 @@
 
 	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
 	const schemaData = QMSMainWraperContext?.schemaData;
-	console.log('page', $page);
 	let endpointid = $page.params.endpointid;
-	console.log({ endpointid });
 	let links = [
 		{
 			title: 'Home',

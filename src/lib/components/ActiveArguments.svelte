@@ -42,16 +42,13 @@
 	let activeArgumentsDataGrouped = [];
 
 	run(() => {
-		console.log('$activeArgumentsDataGrouped_Store', $activeArgumentsDataGrouped_Store);
 	});
 	const update_activeArgumentsDataGrouped = (groupNewData) => {
-		console.log({ groupNewData });
 		activeArgumentsDataGrouped_Store.update_groups(groupNewData);
 	};
 	if ($activeArgumentsDataGrouped_Store.length == 0) {
 		activeArgumentsDataGrouped_Store.set_groups(QMS_info, schemaData, QMSarguments, endpointInfo);
 	}
-	console.log({ QMS_info });
 	let showDescription = null;
 </script>
 

@@ -51,10 +51,8 @@
 
 	let loadMore = false;
 
-	console.log({ data, columns });
 
 	let columnVisibility = getColumnVisibility(columns);
-	console.log({ columnVisibility });
 
 	const setRowSelection = (updater) => {
 		if (updater instanceof Function) {
@@ -70,11 +68,9 @@
 			}
 		}));
 
-		console.log($table.getSelectedRowModel());
 		onRowSelectionChange?.({ ...$table.getSelectedRowModel(), rowSelectionState });
 	};
 
-	console.log({ rowSelectionState });
 
 	const optionsObj = createTableOptions(
 		data,
@@ -99,12 +95,10 @@
 	const table = createSvelteTable(options);
 	run(() => {
 		if (data) {
-			console.log({ data }, 'data changed');
 			rerender();
 		}
 	});
 	run(() => {
-		console.log({ table }, '$table', $table);
 	});
 </script>
 
@@ -207,7 +201,6 @@
 										const toggleSelectedHandler = row.getToggleSelectedHandler();
 										toggleSelectedHandler(e);
 
-										//console.log($table.getSelectedRowModel());
 									}}
 								/>
 							</label>

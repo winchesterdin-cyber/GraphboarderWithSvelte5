@@ -85,7 +85,6 @@
 	// groupArgsPossibilities = groupArgsPossibilities.filter((arg) => {
 	// 	return !baseFilterOperators.includes(arg.dd_displayName);
 	// });
-	console.log({ groupArgsPossibilities, node });
 	let predefinedFirstSteps = group.group_isRoot ? [] : [group.group_name];
 	const endpointInfo = QMSMainWraperContext?.endpointInfo;
 </script>
@@ -152,9 +151,7 @@
 				}}
 				on:containerAddRequest={(e) => {
 					let newContainerData = e.detail;
-					console.log({ newContainerData });
 					let randomNr = Math.random();
-					console.log('group', group);
 					let newContainerDataRootType = getRootType(
 						null,
 						newContainerData.dd_rootName,
@@ -216,7 +213,6 @@
 			template="default"
 			depth={0}
 			on:colAddRequest={(e) => {
-				//console.log(e);
 			}}
 		/>
 	</div>

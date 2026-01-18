@@ -14,7 +14,6 @@ export const stringToQMSString_transformer = (value: unknown): string | unknown 
 		.replace(/&prime;/g, `'`)
 		.replace(/\\/g, '')
 		.slice(1, -1);
-	console.log('stringToQMSString_transformer', { value, modifiedValue })
 
 	return modifiedValue
 }
@@ -89,7 +88,6 @@ export const geojson_transformer = (value: GeoJSONFeatureCollection): GeoJSONGeo
 		geometry.type = string_transformer(geometry.type);
 		return geometry;
 	});
-	console.log('geojson_transformer', { geojson, value }, geojson_transformerREVERSE(geojson))
 	if (featuresLength == 1) {
 		return geojson[0];
 	}
@@ -120,10 +118,3 @@ const escapeAllSigngleAndDoubleQuotes = (str: string): string => {
 		return `\\${match}`;
 	});
 }
-// export const stringContainingQuotes_transformer = (value) => {
-
-// 	//const base64 = btoa(value)
-// 	//const escaped = escapeAllSigngleAndDoubleQuotes(value)
-// 	const modified = value.replaceAll(`'`, `~%`).replaceAll(`"`, `%~`)
-// 	return `'${modified}'`;
-// };
