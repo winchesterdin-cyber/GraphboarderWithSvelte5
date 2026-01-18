@@ -1,11 +1,63 @@
 <script lang="ts">
-	let { show, children } = $props();
+	interface Props {
+		show?: boolean;
+		children?: import('svelte').Snippet;
+		modalIdentifier?: string;
+		showApplyBtn?: boolean;
+		onCancel?: (detail: any) => void;
+	}
+
+	let {
+		show = $bindable(true),
+		children,
+		modalIdentifier,
+		onCancel
+	}: Props = $props();
+
+	let dialog: HTMLDialogElement;
+
+	$effect(() => {
+		if (show && dialog && !dialog.open) {
+			dialog.showModal();
+		} else if (!show && dialog && dialog.open) {
+			dialog.close();
+		}
+	});
+
+	function close() {
+		show = false;
+		if (onCancel) {
+			onCancel({ modalIdentifier });
+		}
+	}
+
+	function handleKeydown(e: KeyboardEvent) {
+		if (e.key === 'Escape') {
+			// dialog handles escape automatically for closing, but we need to sync state
+			// actually, 'cancel' event is fired on escape.
+		}
+	}
 </script>
 
-{#if show}
-	<div class="modal modal-open">
-		<div class="modal-box">
-			{@render children()}
-		</div>
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+<dialog
+	bind:this={dialog}
+	class="modal"
+	onclose={close}
+	onclick={(e) => {
+		if (e.target === dialog) close();
+	}}
+>
+	<div class="modal-box">
+		{#if onCancel}
+			<button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onclick={close}
+				>✕</button
+			>
+		{/if}
+		{@render children?.()}
 	</div>
-{/if}
+	<form method="dialog" class="modal-backdrop">
+		<button onclick={close}>close</button>
+	</form>
+</dialog>

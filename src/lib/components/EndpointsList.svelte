@@ -1,29 +1,22 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import AddColumn from './AddColumn.svelte';
 	import { page } from '$app/stores';
 	import Table from '$lib/components/Table.svelte';
 	import {
-		generateTitleFromStepsOfFields,
 		getDataGivenStepsOfFields,
 		getFields_Grouped,
 		getRootType
 	} from '$lib/utils/usefulFunctions';
 	import { onDestroy, onMount, getContext } from 'svelte';
 	import { goto } from '$app/navigation';
-	import Type from '$lib/components/Type.svelte';
 	import ActiveArguments from '$lib/components/ActiveArguments.svelte';
 	import { get_paginationTypes } from '$lib/stores/pagination/paginationTypes';
-	import { format } from 'graphql-formatter';
 	import hljs from 'highlight.js/lib/core';
 	import graphql from 'highlight.js/lib/languages/graphql';
 	import 'highlight.js/styles/base16/solarized-dark.css';
 	import RowCount from '$lib/components/UI/rowCount.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import { browser } from '$app/environment';
-	import TypeList from './TypeList.svelte';
-	import CodeEditor from '$lib/components/fields/CodeEditor.svelte';
 	import GraphqlCodeDisplay from './GraphqlCodeDisplay.svelte';
 
 	interface Props {
@@ -43,16 +36,12 @@
 		QMS_bodyPart_StoreDerived_rowsCount = null,
 		activeArgumentsDataGrouped_Store,
 		tableColsData_Store,
-		finalGqlArgObj_Store,
-		QMS_bodyPart_StoreDerived,
 		QMS_bodyPartsUnifier_StoreDerived,
 		paginationOptions,
 		paginationState
 	} = QMSWraperContext;
 	const schemaData = QMSMainWraperContext?.schemaData;
 
-	run(() => {
-	});
 	onDestroy(() => {
 		document.getElementById('my-drawer-3')?.click();
 	});
@@ -62,26 +51,24 @@
 	if (!currentQMS_info) {
 		goto('/queries');
 	}
-	//
-	let activeArgumentsData = [];
+
 	const paginationTypeInfo = get_paginationTypes(endpointInfo, schemaData).find((pagType) => {
 		return pagType.name == currentQMS_info.dd_paginationType;
 	});
-	let activeArgumentsDataGrouped_Store_IS_SET = $state(false);
-	run(() => {
-		activeArgumentsDataGrouped_Store_IS_SET =
-			$activeArgumentsDataGrouped_Store.length > 0 ? true : false;
-	});
-	//
 
 	let { scalarFields } = getFields_Grouped(dd_relatedRoot, [], schemaData);
 
-	let queryData = $state();
+	let queryData = $state({ fetching: false, error: null, data: null });
 	let rows = $state([]);
 	let rowsCurrent = [];
 	let loadedF;
 	let completeF;
 	let infiniteId = $state(Math.random());
+
+	if (scalarFields.length > 0) {
+		queryData.fetching = true;
+	}
+
 	function infiniteHandler({ detail: { loaded, complete } }) {
 		loadedF = loaded;
 		completeF = complete;
@@ -99,10 +86,8 @@
 			loaded();
 			complete();
 		}
-		// if (rows.length > 0) {
-		// 	paginationState.nextPage(queryData?.data, queryName, 'query');
-		// }
 	}
+
 	const runQuery = (queryBody) => {
 		let fetching = true;
 		let error = false;
@@ -167,25 +152,17 @@
 				rowsCurrent = [];
 			});
 	};
-	QMS_bodyPartsUnifier_StoreDerived.subscribe((QMS_body) => {
+
+	$effect(() => {
+		const QMS_body = $QMS_bodyPartsUnifier_StoreDerived;
 		if (QMS_body && QMS_body !== '') {
 			runQuery(QMS_body);
 		}
 	});
 
-	run(() => {
-	});
-	if (scalarFields.length == 0) {
-		queryData = { fetching: false, error: false, data: false };
-	} else {
-		queryData = { fetching: true, error: false, data: false };
-	}
-
-	const hideColumn = (e) => {
-		tableColsData_Store.removeColumn(e.detail.column);
+	const hideColumn = (detail) => {
+		tableColsData_Store.removeColumn(detail.column);
 	};
-	tableColsData_Store.subscribe((data) => {
-	});
 
 	let column_stepsOfFields = $state('');
 
@@ -198,18 +175,10 @@
 		hljs.highlightAll();
 	});
 	let showModal = $state(false);
-	let showActiveFilters;
 </script>
 
 {@render children?.()}
 
-<!-- <button
-	on:click={() => {
-		paginationState.nextPage(rows[rows.length - 1], queryData?.data);
-	}}
->
-	next page
-</button> -->
 <!-- main -->
 <div class="flex space-x-2 mx-2 z-50">
 	<AddColumn
@@ -221,10 +190,10 @@
 	<div class="grow==">
 		{#if showModal}
 			<Modal
-				modalIdetifier={'activeArgumentsDataModal'}
+				modalIdentifier={'activeArgumentsDataModal'}
 				showApplyBtn={false}
 				onCancel={(detail) => {
-					if (detail.modalIdetifier == 'activeArgumentsDataModal') {
+					if (detail.modalIdentifier == 'activeArgumentsDataModal') {
 						showModal = false;
 					}
 				}}
@@ -237,18 +206,6 @@
 				</div>
 			</Modal>
 		{/if}
-
-		<!-- <div class="flex space-x-2 mb-2 px-2">
-			<button
-				class="btn btn-xs btn-block  "
-				on:click={() => {
-					showModal = !showModal;
-					//showActiveFilters = !showActiveFilters;
-					showActiveFilters = true;
-				}}
-				><i class="bi bi-funnel-fill" />
-			</button>
-		</div> -->
 	</div>
 	<button
 		class=" btn btn-xs grow normal-case "
@@ -277,13 +234,17 @@
 		<div class="alert alert-error shadow-lg ">
 			<div>
 				<button class="btn btn-ghost btn-sm p-0">
-					<!-- svelte-ignore a11y_click_events_have_key_events -->
 					<svg
 						onclick={() => {
 							queryData.error = null;
 						}}
+						role="button"
+						tabindex="0"
+						onkeydown={(e) => {
+							if (e.key === 'Enter') queryData.error = null;
+						}}
 						xmlns="http://www.w3.org/2000/svg"
-						class="stroke-current flex-shrink-0 h-6 w-6"
+						class="stroke-current flex-shrink-0 h-6 w-6 cursor-pointer"
 						fill="none"
 						viewBox="0 0 24 24"
 						><path
@@ -313,20 +274,11 @@
 		{infiniteHandler}
 		colsData={$tableColsData_Store}
 		{rows}
-		on:addColumnDropdown={() => {
-		}}
-		on:hideColumn={(e) => {
-			hideColumn(e);
-		}}
-		on:rowClicked={(e) => {
+		onHideColumn={hideColumn}
+		onRowClicked={(detail) => {
 			if (browser) {
-				window.open(
-					`${$page.url.origin}/endpoints/${e.detail.id}`,
-					'_blank' // <- This is what makes it open in a new window.
-				);
-				//	window.location = `${$page.url.origin}/endpoints/${e.detail.id}`;
+				window.open(`${$page.url.origin}/endpoints/${detail.id}`, '_blank');
 			}
-			//goto(`${$page.url.origin}/endpoints/${e.detail.id}`);
 		}}
 	/>
 </div>

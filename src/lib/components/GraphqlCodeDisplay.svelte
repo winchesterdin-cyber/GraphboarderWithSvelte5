@@ -1,44 +1,41 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
-	import { stringify } from 'postcss';
 	import CodeEditor from './fields/CodeEditor.svelte';
 	import { format } from 'graphql-formatter';
 	import hljs from 'highlight.js/lib/core';
 	import { onMount, getContext } from 'svelte';
 	import graphql from 'highlight.js/lib/languages/graphql';
 	import 'highlight.js/styles/base16/solarized-dark.css';
-	import { getPreciseType, objectToSourceCode } from '$lib/utils/usefulFunctions';
+	import { getPreciseType } from '$lib/utils/usefulFunctions';
 	import { updateStoresFromAST } from '$lib/utils/astToUIState';
-	import { parse, print, visit } from 'graphql';
+	import { parse, print } from 'graphql';
 	import JSON5 from 'json5';
 
 	interface Props {
-		showNonPrettifiedQMSBody: any;
-		value: any;
+		showNonPrettifiedQMSBody?: boolean;
+		value: string;
 		enableSyncToUI?: boolean;
 		prefix?: string;
 	}
 
 	let {
-		showNonPrettifiedQMSBody = $bindable(),
+		showNonPrettifiedQMSBody = $bindable(false),
 		value,
 		enableSyncToUI = true,
 		prefix = ''
 	}: Props = $props();
 
-	let valueModifiedManually = $state();
+	let valueModifiedManually = $state<string>();
 	let lastSyncedValue = $state(value);
 
 	// Try to get context if available
-	let QMSWraperContext = $state();
-	let QMSMainWraperContext = $state();
-	let currentQMS_info;
+	let QMSWraperContext: any = $state();
+	let QMSMainWraperContext: any = $state();
 
 	try {
 		QMSWraperContext = getContext(`${prefix}QMSWraperContext`);
 		QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
 	} catch (e) {
+		// Context might not be available in all usages
 	}
 
 	onMount(() => {
@@ -47,36 +44,10 @@
 	});
 
 	let astAsString = $state('');
-	let astAsString2 = '';
-	let ast = $state();
-	let astPrinted = $state();
+	let ast: any = $state();
+	let astPrinted = $state('');
 
-
-
-
-	///
-	const visitAst = () => {
-		const editedAST = visit(ast, {
-			enter(node, key, parent, path, ancestors) {
-				// @return
-				//   undefined: no action
-				//   false: skip visiting this node
-				//   visitor.BREAK: stop visiting altogether
-				//   null: delete this node
-				//   any value: replace this node with the returned value
-			}
-			// leave(node, key, parent, path, ancestors) {
-			//   // @return
-			//   //   undefined: no action
-			//   //   false: no action
-			//   //   visitor.BREAK: stop visiting altogether
-			//   //   null: delete this node
-			//   //   any value: replace this node with the returned value
-			// }
-		},);
-	};
-
-	const syncQueryToUI = (ast) => {
+	const syncQueryToUI = (newAst: any) => {
 		try {
 			if (!QMSWraperContext || !QMSMainWraperContext) {
 				console.warn('GraphqlCodeDisplay: Cannot sync to UI - context not available');
@@ -100,10 +71,9 @@
 				return;
 			}
 
-
 			// Update stores from AST
 			updateStoresFromAST(
-				ast,
+				newAst,
 				qmsInfo,
 				schemaData,
 				endpointInfo,
@@ -115,11 +85,18 @@
 			console.error('GraphqlCodeDisplay: Error syncing query to UI:', e);
 		}
 	};
-	///
-	run(() => {
-		ast = parse(value);
+
+	$effect(() => {
+		try {
+			if (value) {
+				ast = parse(value);
+			}
+		} catch (e) {
+			// Failed to parse, ignore
+		}
 	});
-	run(() => {
+
+	$effect(() => {
 		if (valueModifiedManually && valueModifiedManually !== lastSyncedValue) {
 			try {
 				ast = parse(valueModifiedManually);
@@ -134,19 +111,20 @@
 			}
 		}
 	});
-	run(() => {
-		if (ast) {
-			// Extract operation type and name
-			//const operationType = ast.definitions[0]?.operation;
-			//const operationName = ast.definitions[0]?.name?.value;
 
-			astPrinted = print(ast);
+	$effect(() => {
+		if (ast) {
+			try {
+				astPrinted = print(ast);
+			} catch (e) {
+				// Failed to print, ignore
+			}
 		}
 	});
-	run(() => {
-		if (getPreciseType(ast) == 'object') {
+
+	$effect(() => {
+		if (ast && getPreciseType(ast) == 'object') {
 			astAsString = JSON5.stringify(ast);
-			//astAsString2 = objectToSourceCode(ast);
 		}
 	});
 </script>
@@ -163,7 +141,6 @@
 				>{@html hljs.highlight(format(value), { language: 'graphql' }).value.trim()}</code
 			>
 			<div class="mx-4 mt-2 ">
-				<!-- <CodeMirrorCustom {value} language="graphql" /> -->
 				<CodeEditor
 					rawValue={value}
 					language="graphql"
@@ -173,14 +150,10 @@
 				/>
 			</div>
 			<div class="mx-4 mt-2 ">
-				<!-- <CodeMirrorCustom value={`const ast:${astAsString}`} language="typescript" /> -->
-
 				<CodeEditor rawValue={astAsString} language="javascript" />
-				<button class="btn btn-xs btn-primary" onclick={visitAst}> visit ast </button>
 			</div>
 			{#if astPrinted}
 				<div class="mx-4 mt-2 ">
-					<!-- <CodeMirrorCustom {value} language="graphql" /> -->
 					<CodeEditor rawValue={astPrinted} language="graphql" />
 				</div>
 			{/if}
