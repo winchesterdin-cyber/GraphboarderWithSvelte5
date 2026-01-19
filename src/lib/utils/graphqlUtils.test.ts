@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getSortedAndOrderedEndpoints } from './graphqlUtils';
+import { getSortedAndOrderedEndpoints } from './usefulFunctions';
 
 describe('getSortedAndOrderedEndpoints', () => {
 	it('should sort endpoints by numeric ID', () => {
