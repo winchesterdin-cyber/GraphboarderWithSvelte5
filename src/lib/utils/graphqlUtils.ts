@@ -54,7 +54,6 @@ export const build_QMS_bodyPart = (
 	const QMSarguments = { [QMS_name]: { QMSarguments: QMS_args } }
 	const fullObject = JSON.parse(JSON.stringify(deleteIfChildrenHaveOneKeyAndLastKeyIsQMSarguments(_.mergeWith({}, QMSarguments, mergedChildren_finalGqlArgObj, QMS_fields))
 	))
-	//.replaceAll('\"QMSarguments\":','')
 
 	const inputString = JSON.stringify(fullObject, function (key, value) {
 		if (key === "QMSarguments") {
@@ -72,8 +71,6 @@ export const build_QMS_bodyPart = (
 
 	const QMS_bodyPart = modifiedString.slice(1, -1)
 
-
-	//const QMS_bodyPart_FINAL = QMS_bodyPart.replaceAll(/novaluehere|"|:/gi, '').slice(1, -1)
 	return QMS_bodyPart
 };
 
@@ -555,19 +552,6 @@ export const generate_group_gqlArgObj = (group: ActiveArgumentGroup): {
 			group_gqlArgObj = generate_group_gqlArgObjForRoot(group_argumentsData)
 		} else {
 			console.error('Uncomment code for handling non root group');
-			// if (group.dd_kindList) {
-			// 	let list = [];
-			// 	list = group_argumentsData.map((arg) => {
-			// 		let { gqlArgObj } = generate_gqlArgObj([arg]);
-
-			// 		return gqlArgObj[group.group_name];
-			// 	});
-			// 	group_gqlArgObj[group.group_name] = list;
-			// 	group_gqlArgObj = { ...group_gqlArgObj };
-			// } else {
-			// 	let { gqlArgObj } = generate_gqlArgObj(group_argumentsData);
-			// 	group_gqlArgObj = { ...group_gqlArgObj, ...gqlArgObj };
-			// }
 		}
 	}
 
@@ -1156,7 +1140,7 @@ export const getQMSWraperCtxDataGivenControlPanelItem = (CPItem: { stepsOfFields
 	});
 	return QMSWraperCtxData;
 };
-export const getSortedAndOrderedEndpoints = (endpoints: { id: number; isMantained?: boolean }[], filterOutIfNotMaintaned: boolean = false): { id: number; isMantained?: boolean }[] => {
+export const getSortedAndOrderedEndpoints = <T extends { id: string | number; isMantained?: boolean }>(endpoints: T[], filterOutIfNotMaintaned: boolean = false): T[] => {
 	const sortedEndpoints = endpoints.sort((a, b) => {
 		if (a.id > b.id) {
 			return 1;
