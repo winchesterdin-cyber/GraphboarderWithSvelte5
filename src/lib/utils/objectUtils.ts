@@ -89,12 +89,27 @@ export const hasDeepProperty = (obj: Record<string, unknown>, propertyPath: stri
 }
 
 export const passAllObjectValuesThroughStringTransformerAndReturnNewObject = (obj: Record<string, unknown>): Record<string, unknown> => {
-	//!!! to do: make this function recursive to handle nested objects and arrays
+	const newObj = { ...obj };
 
-	let newObj = { ...obj };
-	Object.keys(obj).forEach((key) => {
-		if (typeof obj[key] == 'string') {
-			newObj[key] = string_transformer(obj[key]);
+	Object.keys(newObj).forEach((key) => {
+		const value = newObj[key];
+		const type = getPreciseType(value);
+
+		if (type === 'string') {
+			newObj[key] = string_transformer(value);
+		} else if (type === 'object') {
+			newObj[key] = passAllObjectValuesThroughStringTransformerAndReturnNewObject(value as Record<string, unknown>);
+		} else if (type === 'array') {
+			newObj[key] = (value as unknown[]).map((item) => {
+				const itemType = getPreciseType(item);
+				if (itemType === 'string') {
+					return string_transformer(item);
+				} else if (itemType === 'object') {
+					return passAllObjectValuesThroughStringTransformerAndReturnNewObject(item as Record<string, unknown>);
+				}
+				// Handle array of arrays if needed, but for now just single level array of objects or strings is common
+				return item;
+			});
 		}
 	});
 	return newObj;
@@ -161,7 +176,6 @@ export const setValueAtPath = (
 		if (currentObj[path[i]] === undefined) {
 			if (addPathIfNotExist) {
 				// If the path does not exist, add it
-				// console.info('Path does not exist,adding it');
 				currentObj[path[i]] = {}
 			}
 			if (!addPathIfNotExist) {

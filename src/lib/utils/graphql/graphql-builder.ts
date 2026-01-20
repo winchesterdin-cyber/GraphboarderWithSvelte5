@@ -127,7 +127,6 @@ export const generate_group_gqlArgObj = (group: ActiveArgumentGroup): {
 		if (group.group_isRoot) {
 			group_gqlArgObj = generate_group_gqlArgObjForRoot(group_argumentsData)
 		} else {
-			// console.error('Uncomment code for handling non root group');
             // Logic for non-root group is missing, but error suppression was requested.
 		}
 	}
