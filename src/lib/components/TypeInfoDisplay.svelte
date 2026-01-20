@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run, stopPropagation } from 'svelte/legacy';
-
 	import {
 		deleteValueAtPath,
 		generateTitleFromStepsOfFields,
@@ -126,7 +124,7 @@
 	// }
 	// //E//move to QMSWraper (outermost if possible)
 
-	run(() => {
+	$effect(() => {
 		if (activeArgumentsQMSWraperContext) {
 			if (canAcceptArguments) {
 				mergedChildren_QMSWraperCtxData_Store.addOrReplace({
@@ -147,7 +145,7 @@
 	});
 
 	let currentQMSWraperCtxData = $state();
-	run(() => {
+	$effect(() => {
 		if ($mergedChildren_QMSWraperCtxData_Store) {
 			currentQMSWraperCtxData = mergedChildren_QMSWraperCtxData_Store.getObj(stepsOfFields);
 		}
@@ -287,9 +285,10 @@
 					class="btn btn-xs btn-ghost normal-case rounded px-2 {hasQMSarguments
 						? 'text-success'
 						: ''} "
-					onclick={stopPropagation(() => {
+					onclick={(e) => {
+						e.stopPropagation();
 						showModal = true;
-					})}
+					}}
 				>
 					<icon class=" {currentQMSArguments ? 'bi-funnel-fill' : 'bi-funnel'} "></icon>
 

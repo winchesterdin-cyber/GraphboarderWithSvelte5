@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run, stopPropagation, self, preventDefault } from 'svelte/legacy';
-
 	import Type from '$lib/components/Type.svelte';
 	import Description from './Description.svelte';
 	import { writable } from 'svelte/store';
@@ -93,14 +91,14 @@
 
 	let labelElClone: Node | undefined = $state();
 
-	run(() => {
+	$effect(() => {
 		if (labelEl) {
 			shadowHeight = labelEl.clientHeight;
 			shadowWidth = labelEl.clientWidth;
 		}
 	});
 
-	run(() => {
+	$effect(() => {
 		if (shadowHeight && shadowEl) {
 			if (shadowEl.style.height == 0) {
 				shadowEl.style.height = `${shadowHeight + 18}px`;
@@ -142,7 +140,7 @@
 	const CPItem = CPItemContext?.CPItem;
 	let expandedVersion: boolean = $state();
 	let valueToDisplay: string | undefined = $state(undefined);
-	run(() => {
+	$effect(() => {
 		if (true || activeArgumentData?.inUse) {
 			valueToDisplay = get_valueToDisplay();
 		}
@@ -224,7 +222,7 @@
 
 	const { QMSFieldToQMSGetMany_Store } = OutermostQMSWraperContext;
 	let selectedQMS = $state();
-	run(() => {
+	$effect(() => {
 		if ($QMSFieldToQMSGetMany_Store.length > 0) {
 			selectedQMS = QMSFieldToQMSGetMany_Store.getObj({
 				nodeOrField: node
@@ -298,7 +296,7 @@
 							type="checkbox"
 							class="toggle toggle-xs"
 							checked={activeArgumentData?.inUse}
-							onchangecapture={self(stopPropagation(inUse_toggle))}
+							onchangecapture={(e) => { e.stopPropagation(); inUse_toggle(); }}
 						/>
 					</label>
 				</div>
@@ -370,9 +368,11 @@
 			<input
 				type="checkbox"
 				class="checkbox input-primary hidden"
-				onchange={self(() => {
-					//leave this here,will prevent the click to go trough
-				})}
+				onchange={(e) => {
+					if (e.target === e.currentTarget) {
+						//leave this here,will prevent the click to go trough
+					}
+				}}
 			/>
 			<div
 				class="   text-xs select-none flex grow flex-nowrap
@@ -394,10 +394,14 @@
 					onclick={() => {
 						showModal = true;
 					}}
-					oncontextmenu={self(stopPropagation(preventDefault(() => {
-						showSelectModal = !showSelectModal;
-						expandedVersion = !expandedVersion;
-					})))}
+					oncontextmenu={(e) => {
+						if (e.target === e.currentTarget) {
+							e.stopPropagation();
+							e.preventDefault();
+							showSelectModal = !showSelectModal;
+							expandedVersion = !expandedVersion;
+						}
+					}}
 				>
 					<!-- {#if group.group_name == 'root'}
 						{activeArgumentData.stepsOfFields?.join(' > ') + ':'}
@@ -422,9 +426,13 @@
 					{#if !expandedVersion && !$mutationVersion && !$showInputField}
 						<p
 							class="shrink-0 text-base-content text-xs font-light pt-[1px] mx-2"
-							onclick={self(stopPropagation(preventDefault(() => {
-								expandedVersion = true;
-							})))}
+							onclick={(e) => {
+								if (e.target === e.currentTarget) {
+									e.stopPropagation();
+									e.preventDefault();
+									expandedVersion = true;
+								}
+							}}
 						>
 							{valueToDisplay}
 						</p>
