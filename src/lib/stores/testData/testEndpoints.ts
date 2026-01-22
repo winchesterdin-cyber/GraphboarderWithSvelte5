@@ -7,7 +7,7 @@ export const localEndpoints = [
 	{
 		id: 'directus',
 		url: 'https://directus-production-c2de.up.railway.app/graphql',
-		isMantained: false,
+		isMaintained: false,
 		description: 'offsetBased pagination,rowCount set',
 		headers: {
 			authorization: 'Bearer S4YM_Cd7Uo6laJhQV594l59EGZASSmBw'
@@ -81,7 +81,7 @@ export const localEndpoints = [
 		id: 'directus2',
 
 		url: 'https://hdfgzkxs.directus.app/graphql',
-		isMantained: false,
+		isMaintained: false,
 		description: 'offsetBased pagination,rowCount set',
 		headers: {
 			authorization: 'Bearer mKZiTQr8DCKMlT3teTi1Xf-3Ml9EKGXh'
@@ -152,7 +152,7 @@ export const localEndpoints = [
 	{
 		id: 'nhost',
 		url: 'https://mtupwwndtaxgboomfjim.hasura.eu-central-1.nhost.run/v1/graphql',
-		isMantained: true,
+		isMaintained: true,
 		description: 'offsetBased pagination,rowCount set',
 		headers: { 'x-hasura-admin-secret': ',v!)R06aVMCPsY:xL&es$q0PSMYe1g)!' },
 		rowsLocationPossibilities: [
@@ -211,7 +211,7 @@ export const localEndpoints = [
 		id: 'spacex',
 
 		url: 'https://api.spacex.land/graphql/',
-		isMantained: false,
+		isMaintained: false,
 		description: 'offsetBased pagination,no rowCount avalable',
 
 		rowsLocationPossibilities: [
@@ -237,7 +237,7 @@ export const localEndpoints = [
 		id: 'rickandmortyapi',
 
 		url: 'https://rickandmortyapi.com/graphql',
-		isMantained: false,
+		isMaintained: false,
 		description: 'pageBased pagination,rowCount set',
 		rowsLocationPossibilities: [
 			{
@@ -267,7 +267,7 @@ export const localEndpoints = [
 		id: 'nhostRelay',
 
 		url: 'https://mtupwwndtaxgboomfjim.hasura.eu-central-1.nhost.run/v1beta1/relay',
-		isMantained: true,
+		isMaintained: true,
 		description: 'edgeBased pagination,no rowCount avalable',
 		headers: { 'x-hasura-admin-secret': ',v!)R06aVMCPsY:xL&es$q0PSMYe1g)!' },
 		pageInfoFieldsLocation: ['pageInfo'],
@@ -312,7 +312,7 @@ export const localEndpoints = [
 	{
 		id: 'supabase',
 		url: 'https://bdpktzyqszaqnlbushhk.supabase.co/graphql/v1',
-		isMantained: false,
+		isMaintained: false,
 		description: 'offset based pagination,no rowCount avalable',
 		headers: { 'apiKey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkcGt0enlxc3phcW5sYnVzaGhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDk1NDg1ODcsImV4cCI6MjAyNTEyNDU4N30.ADkneNGSwCcLgtKSdQuMOd0P5dN6ZZ1FFNnjgQaid44' },
 		pageInfoFieldsLocation: ['pageInfo'],
@@ -357,7 +357,7 @@ export const localEndpoints = [
 		id: 'ehri-project',
 
 		url: 'https://portal.ehri-project.eu/api/graphql',
-		isMantained: false,
+		isMaintained: false,
 		description: 'edgeBased pagination,no rowCount avalable',
 		pageInfoFieldsLocation: ['pageInfo'],
 		rowsLocationPossibilities: [
@@ -382,7 +382,7 @@ export const localEndpoints = [
 		id: 'gitlab',
 
 		url: 'https://gitlab.com/api/graphql',
-		isMantained: false,
+		isMaintained: false,
 		description: 'edgeBased pagination,no rowCount avalable',
 		pageInfoFieldsLocation: ['pageInfo'],
 
@@ -409,7 +409,7 @@ export const localEndpoints = [
 
 		url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
 		authToken: '',
-		isMantained: false,
+		isMaintained: false,
 		description: 'edgeBased pagination,rowCount set',
 		pageInfoFieldsLocation: ['pageInfo'],
 		rowsLocationPossibilities: [
@@ -445,7 +445,7 @@ export const localEndpoints = [
 		id: 'fauna',
 
 		url: 'https://graphql.fauna.com/graphql',
-		isMantained: false,
+		isMaintained: false,
 		description: 'edgeBased pagination',
 		pageInfoFieldsLocation: [],
 		rowsLocationPossibilities: [
@@ -470,14 +470,14 @@ export const localEndpoints = [
 		id: 'camera-deputados',
 
 		url: 'https://graphql-camara-deputados.herokuapp.com/',
-		isMantained: false,
+		isMaintained: false,
 		description: 'edgeBased pagination'
 	},
 	{
 		id: 'countries',
 
 		url: 'https://countries.trevorblades.com/',
-		isMantained: false,
+		isMaintained: false,
 		description: 'notAvailable pagination',
 		rowsLocationPossibilities: [
 			{
@@ -494,7 +494,7 @@ export const localEndpoints = [
 		id: 'dex-server',
 
 		url: 'https://dex-server.herokuapp.com/',
-		isMantained: false,
+		isMaintained: false,
 		description: '?? notAvailable pagination',
 		rowsLocationPossibilities: [
 			{
@@ -511,7 +511,7 @@ export const localEndpoints = [
 		id: 'anilist',
 
 		url: 'https://graphql.anilist.co',
-		isMantained: false,
+		isMaintained: false,
 		description: '?? notAvailable pagination',
 		rowsLocationPossibilities: [
 			{
@@ -528,7 +528,7 @@ export const localEndpoints = [
 		id: 'digitransit',
 
 		url: 'https://api.digitransit.fi/routing/v1/routers/finland/index/graphql',
-		isMantained: false,
+		isMaintained: false,
 		description: '?? notAvailable pagination',
 		rowsLocationPossibilities: [
 			{
@@ -560,7 +560,7 @@ export const localEndpoints = [
 		id: 'api.graphql.jobs',
 
 		url: 'https://api.graphql.jobs/',
-		isMantained: false,
+		isMaintained: false,
 		description: 'notAvailable pagination',
 		rowsLocationPossibilities: [
 			{
@@ -577,7 +577,7 @@ export const localEndpoints = [
 		id: 'demotion-quotes-api',
 
 		url: 'https://demotivation-quotes-api.herokuapp.com/graphql',
-		isMantained: false,
+		isMaintained: false,
 		description: 'notAvailable pagination',
 		rowsLocationPossibilities: [
 			{
@@ -594,7 +594,7 @@ export const localEndpoints = [
 		id: 'weather-api',
 
 		url: 'https://graphql-weather-api.herokuapp.com/',
-		isMantained: false,
+		isMaintained: false,
 		description: 'notAvailable pagination',
 		rowsLocationPossibilities: [
 			{
@@ -611,7 +611,7 @@ export const localEndpoints = [
 		id: 'fruits-api',
 
 		url: 'https://fruits-api.netlify.app/graphql',
-		isMantained: false,
+		isMaintained: false,
 		description: 'notAvailable pagination',
 		rowsLocationPossibilities: [
 			{

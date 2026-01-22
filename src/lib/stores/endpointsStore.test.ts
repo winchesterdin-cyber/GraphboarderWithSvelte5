@@ -46,7 +46,7 @@ describe('endpointsStore', () => {
       id: 'test-endpoint',
       url: 'https://test.com/graphql',
       description: 'Test Endpoint',
-      isMantained: false
+      isMaintained: false
     };
 
     addEndpoint(newEndpoint);
@@ -63,7 +63,7 @@ describe('endpointsStore', () => {
       id: 'test-endpoint-remove',
       url: 'https://test.com/graphql',
       description: 'Test Endpoint',
-      isMantained: false
+      isMaintained: false
     };
 
     addEndpoint(newEndpoint);
@@ -81,7 +81,7 @@ describe('endpointsStore', () => {
           id: builtInId,
           url: 'https://fake.com',
           description: 'Fake',
-          isMantained: false
+          isMaintained: false
       };
 
       // Add fake nhost to storage

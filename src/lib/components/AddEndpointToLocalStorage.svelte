@@ -82,7 +82,7 @@
 				id,
 				url,
 				headers: headersObj,
-				isMantained: false,
+				isMaintained: false,
 				description: 'User added endpoint'
 			};
 

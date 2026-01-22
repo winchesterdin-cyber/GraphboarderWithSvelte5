@@ -1,15 +1,21 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
+	import { removeEndpoint } from '$lib/stores/endpointsStore';
+	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
+	import { addToast } from '$lib/stores/toastStore';
+	import type { AvailableEndpoint } from '$lib/types';
 
 	interface Props {
-		endpoints: any[];
+		endpoints: AvailableEndpoint[];
 		onAddEndpoint?: () => void;
 	}
 
 	let { endpoints, onAddEndpoint }: Props = $props();
 
 	let searchTerm = $state('');
+	let showDeleteModal = $state(false);
+	let endpointToDelete = $state<AvailableEndpoint | null>(null);
 
 	let filteredEndpoints = $derived(
 		endpoints.filter((endpoint) => {
@@ -17,13 +23,28 @@
 			return (
 				endpoint.id.toLowerCase().includes(term) ||
 				endpoint.url.toLowerCase().includes(term) ||
-				(endpoint.description && endpoint.description.toLowerCase().includes(term))
+				(endpoint.description && endpoint.description?.toLowerCase().includes(term))
 			);
 		})
 	);
 
-	const handleEndpointClick = (endpoint) => {
+	const handleEndpointClick = (endpoint: AvailableEndpoint) => {
 		goto(`${base}/endpoints/${endpoint.id}`);
+	};
+
+	const confirmDelete = (endpoint: AvailableEndpoint, event: Event) => {
+		event.stopPropagation();
+		endpointToDelete = endpoint;
+		showDeleteModal = true;
+	};
+
+	const handleDelete = () => {
+		if (endpointToDelete) {
+			removeEndpoint(endpointToDelete.id);
+			addToast(`Endpoint '${endpointToDelete.id}' deleted`, 'success');
+			showDeleteModal = false;
+			endpointToDelete = null;
+		}
 	};
 </script>
 
@@ -59,24 +80,33 @@
 	<div class="text-center p-10">
 		<h3 class="text-lg font-semibold opacity-70">No matching endpoints found</h3>
 		<p class="text-base-content/60 mt-2">Try adjusting your search terms.</p>
+		<button class="btn btn-ghost btn-sm mt-2" onclick={() => (searchTerm = '')}>Clear Search</button>
 	</div>
 {:else}
 	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 		{#each filteredEndpoints as endpoint}
-			<button
-				class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 cursor-pointer border border-base-200 text-start w-full"
+			<div
+				class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 cursor-pointer border border-base-200 text-start w-full relative group"
 				onclick={() => handleEndpointClick(endpoint)}
+				role="button"
+				tabindex="0"
+				onkeydown={(e) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						e.preventDefault();
+						handleEndpointClick(endpoint);
+					}
+				}}
 			>
 				<div class="card-body">
-					<div class="flex items-start justify-between gap-2 w-full">
+					<div class="flex items-start justify-between gap-2 w-full pr-6">
 						<h2 class="card-title truncate flex-1" title={endpoint.id}>
 							<i class="bi bi-hdd-network text-primary"></i>
 							{endpoint.id}
 						</h2>
-						{#if endpoint.isMantained}
+						{#if endpoint.isMaintained}
 							<div class="badge badge-success badge-sm shrink-0">Maintained</div>
 						{:else}
-							<div class="badge badge-warning badge-sm shrink-0">Unmaintained</div>
+							<div class="badge badge-ghost badge-sm shrink-0">User Defined</div>
 						{/if}
 					</div>
 					<p
@@ -91,7 +121,26 @@
 						</p>
 					{/if}
 				</div>
-			</button>
+
+				{#if !endpoint.isMaintained}
+					<div class="absolute top-2 right-2 z-20">
+						<button
+							class="btn btn-square btn-xs btn-ghost text-error opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+							onclick={(e) => confirmDelete(endpoint, e)}
+							onkeydown={(e) => e.stopPropagation()}
+							title="Delete Endpoint"
+						>
+							<i class="bi bi-trash"></i>
+						</button>
+					</div>
+				{/if}
+			</div>
 		{/each}
 	</div>
 {/if}
+
+<ConfirmationModal
+	bind:show={showDeleteModal}
+	onConfirm={handleDelete}
+	onCancel={() => (showDeleteModal = false)}
+/>

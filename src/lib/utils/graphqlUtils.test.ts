@@ -18,14 +18,14 @@ describe('getSortedAndOrderedEndpoints', () => {
 
 	it('should filter out unmaintained endpoints if requested', () => {
 		const endpoints = [
-			{ id: 1, isMantained: true },
-			{ id: 2, isMantained: false },
-			{ id: 3, isMantained: true }
+			{ id: 1, isMaintained: true },
+			{ id: 2, isMaintained: false },
+			{ id: 3, isMaintained: true }
 		];
 		const result = getSortedAndOrderedEndpoints(endpoints, true);
 		expect(result).toEqual([
-			{ id: 1, isMantained: true },
-			{ id: 3, isMantained: true }
+			{ id: 1, isMaintained: true },
+			{ id: 3, isMaintained: true }
 		]);
 	});
 
