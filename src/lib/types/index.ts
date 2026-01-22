@@ -205,7 +205,7 @@ export interface EndpointConfiguration {
 	url?: string;
 	description?: string;
 	id?: string;
-	isMantained?: boolean;
+	isMaintained?: boolean;
 	rowsLocationPossibilities?: RowsLocationPossibility[];
 	rowCountLocationPossibilities?: RowsLocationPossibility[];
 	relayPageInfoFieldsPossibleNames?: Record<string, string[]>;
@@ -311,5 +311,5 @@ export interface AvailableEndpoint extends EndpointConfiguration {
 	id: string;
 	url: string;
 	description: string;
-	isMantained?: boolean;
+	isMaintained?: boolean;
 }

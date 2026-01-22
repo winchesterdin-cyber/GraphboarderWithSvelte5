@@ -23,9 +23,9 @@ export const sortingFunctionMutipleColumnsGivenArray = (array: [unknown, unknown
 	return check(0);
 };
 
-export const getSortedAndOrderedEndpoints = <T extends { id: string | number; isMantained?: boolean }>(
+export const getSortedAndOrderedEndpoints = <T extends { id: string | number; isMaintained?: boolean }>(
 	endpoints: T[],
-	filterOutIfNotMaintaned: boolean = false
+	filterOutIfNotMaintained: boolean = false
 ): T[] => {
 	const sortedEndpoints = endpoints.sort((a, b) => {
 		if (a.id > b.id) {
@@ -36,11 +36,11 @@ export const getSortedAndOrderedEndpoints = <T extends { id: string | number; is
 		}
 		return 0;
 	});
-	if (!filterOutIfNotMaintaned) {
+	if (!filterOutIfNotMaintained) {
 		return sortedEndpoints;
 	}
 	return sortedEndpoints.filter((endpoint) => {
-		return endpoint.isMantained;
+		return endpoint.isMaintained;
 	});
 };
 
