@@ -300,8 +300,9 @@
 						/>
 					</label>
 				</div>
-				<btn
+				<button
 					class="btn btn-xs btn-warning flex-1"
+					aria-label="Delete argument"
 					onclick={() => {
 						activeArgumentsDataGrouped_Store.delete_activeArgument(
 							activeArgumentData,
@@ -311,7 +312,7 @@
 					}}
 				>
 					<i class="bi bi-trash-fill"></i>
-				</btn>
+				</button>
 				{#if !CPItemContext}
 					<AddNodeToControlPanel {node} />
 				{/if}
@@ -424,8 +425,8 @@
 								"
 				>
 					{#if !expandedVersion && !$mutationVersion && !$showInputField}
-						<p
-							class="shrink-0 text-base-content text-xs font-light pt-[1px] mx-2"
+						<button
+							class="shrink-0 text-base-content text-xs font-light pt-[1px] mx-2 btn btn-ghost btn-xs normal-case"
 							onclick={(e) => {
 								if (e.target === e.currentTarget) {
 									e.stopPropagation();
@@ -435,7 +436,7 @@
 							}}
 						>
 							{valueToDisplay}
-						</p>
+						</button>
 					{/if}
 				</div>
 			</div>

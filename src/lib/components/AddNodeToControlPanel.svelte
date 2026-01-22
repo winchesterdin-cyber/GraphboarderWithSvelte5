@@ -22,6 +22,7 @@
 
 <button
 	class="flex btn btn-xs "
+  aria-label="Add node to control panel"
 	onclick={() => {
 		if (objIsStarred) {
 			mergedChildren_controlPanel_Store.delete(currentObject);

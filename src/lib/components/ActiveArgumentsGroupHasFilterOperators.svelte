@@ -161,13 +161,15 @@
 		$mutationVersion = true;
 	}
 
-	if (!testName_stepsOFFieldsWasUpdated) {
-		stepsOfNodes = getUpdatedStepsOfNodes(
-			JSON.parse(JSON.stringify(parentNode?.stepsOfNodes || [])),
-			node
-		);
-		testName_stepsOFFieldsWasUpdated = true;
-	}
+	$effect(() => {
+		if (!testName_stepsOFFieldsWasUpdated) {
+			stepsOfNodes = getUpdatedStepsOfNodes(
+				JSON.parse(JSON.stringify(parentNode?.stepsOfNodes || [])),
+				node
+			);
+			testName_stepsOFFieldsWasUpdated = true;
+		}
+	});
 
 
 	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
@@ -343,7 +345,7 @@
 				</div>
 
 				{#if node?.isMain}
-					<btn
+					<button
 						class="btn btn-xs btn-info normal-case  mb-6 flex-1"
 						onclick={() => {
 							nodeAddDefaultFields(
@@ -358,7 +360,7 @@
 						}}
 					>
 						addDefaultFields
-					</btn>
+					</button>
 				{/if}
 
 				{#if !node?.isMain}
@@ -388,7 +390,7 @@
 							</div>
 						{/if}
 
-						<btn
+						<button
 							class="btn btn-xs btn-info  normal-case mb-6 flex-1"
 							onclick={() => {
 								nodeAddDefaultFields(
@@ -403,9 +405,9 @@
 							}}
 						>
 							addDefaultFields
-						</btn>
+						</button>
 
-						<btn
+						<button
 							class="btn btn-xs text-sm mb-1 normal-case flex-1"
 							onclick={() => {
 								if (node?.operator && !node?.isMain) {
@@ -423,16 +425,17 @@
 							}}
 						>
 							change
-						</btn>
+						</button>
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
-						<btn
+						<button
 							class="btn btn-xs btn-warning  mb-6 flex-1"
+							aria-label="Delete group"
 							onclick={() => {
 								alert('not yet implemented');
 							}}
 						>
 							<i class="bi bi-trash-fill"></i>
-						</btn>
+						</button>
 						{#if !CPItemContext}
 							<AddNodeToControlPanel {node} />
 						{/if}
@@ -529,8 +532,7 @@
 				{/if}
 				<!-- node?.items?.length <= 1 -->
 				{#if node?.operator && !$mutationVersion}
-					<div
-						tabindex="0"
+					<button
 						class="btn btn-xs btn-ghost px-[1px] text-xs font-light transition-all duration-500  rounded-full  normal-case   {node?.operator ==
 							'bonded' || node?.operator == 'list'
 							? 'text-base-content'
@@ -554,7 +556,7 @@
 								<i class="text-primary bi bi-asterisk"></i>
 							</sup>
 						{/if}
-					</div>
+					</button>
 					{#if nodeIsInCP && node.operator}
 						<GroupDescriptionAndControls />
 					{/if}
@@ -598,8 +600,7 @@
 		{#if node?.operator}
 			{#if $mutationVersion && !node?.isMain}
 				<div class="flex">
-					<div
-						tabindex="0"
+					<button
 						class="btn btn-xs btn-ghost px-[1px] text-xs font-light transition-all duration-500  rounded-full  normal-case {getManyQMS ||
 						$selectedQMSAAA
 							? 'text-secondary'
@@ -625,7 +626,7 @@
 								<i class="text-primary bi bi-asterisk"></i>
 							</sup>
 						{/if}
-					</div>
+					</button>
 
 					{#if nodeIsInCP && node.operator}
 						<GroupDescriptionAndControls />
@@ -656,8 +657,7 @@
 				<!-- node?.items?.length > 1 || node?.isMain -->
 
 				{#if node?.isMain}
-					<div
-						tabindex="0"
+					<button
 						class="btn btn-xs btn-ghost px-[1px] text-xs font-light transition-all duration-500  rounded-full  normal-case   {node?.operator ==
 							'bonded' || node?.operator == 'list'
 							? 'text-base-content'
@@ -674,7 +674,7 @@
 								<i class="text-primary bi bi-asterisk"></i>
 							</sup>
 						{/if}
-					</div>
+					</button>
 				{/if}
 				<p class="grow"></p>
 			</div>

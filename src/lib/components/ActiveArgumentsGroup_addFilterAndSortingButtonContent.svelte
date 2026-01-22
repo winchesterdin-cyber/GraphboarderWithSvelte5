@@ -69,18 +69,20 @@
 	const schemaData = QMSMainWraperContext?.schemaData;
 	const nodeRootType = getRootType(null, node.dd_rootName, schemaData);
 	let groupArgsPossibilities = $state();
-	if (group.group_isRoot) {
-		groupArgsPossibilities = rootArgs;
-	} else if (node?.inputFields) {
-		groupArgsPossibilities = node?.inputFields;
-	} else if (parent_inputFields) {
-		groupArgsPossibilities = parent_inputFields;
-	} else {
-		groupArgsPossibilities = getRootType(null, group.dd_rootName, schemaData).inputFields;
-	}
-	if (!groupArgsPossibilities) {
-		groupArgsPossibilities = node?.args;
-	}
+	$effect(() => {
+		if (group.group_isRoot) {
+			groupArgsPossibilities = rootArgs;
+		} else if (node?.inputFields) {
+			groupArgsPossibilities = node?.inputFields;
+		} else if (parent_inputFields) {
+			groupArgsPossibilities = parent_inputFields;
+		} else {
+			groupArgsPossibilities = getRootType(null, group.dd_rootName, schemaData).inputFields;
+		}
+		if (!groupArgsPossibilities) {
+			groupArgsPossibilities = node?.args;
+		}
+	});
 	let baseFilterOperators = ['_and', '_or', '_not']; //!!!this might create problem if there is some nonBase operator with the same name as one of these
 	// groupArgsPossibilities = groupArgsPossibilities.filter((arg) => {
 	// 	return !baseFilterOperators.includes(arg.dd_displayName);

@@ -65,18 +65,18 @@ export const ISO8601_transformerREVERSE = (value: unknown): string => {
 	return `${year}-${month}-${day}T${hour}:${minute}`
 };
 
-interface GeoJSONGeometry {
+export interface GeoJSONGeometry {
 	type: string;
 	coordinates: number[] | number[][] | number[][][];
 }
 
-interface GeoJSONFeature {
+export interface GeoJSONFeature {
 	geometry: GeoJSONGeometry;
 	type: string;
 	properties: Record<string, unknown>;
 }
 
-interface GeoJSONFeatureCollection {
+export interface GeoJSONFeatureCollection {
 	features: GeoJSONFeature[];
 	type: string;
 }

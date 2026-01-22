@@ -1,12 +1,12 @@
-import { derived, get } from 'svelte/store';
+import { derived, get, type Writable } from 'svelte/store';
 import { persisted } from 'svelte-persisted-store';
 import { localEndpoints } from '$lib/stores/testData/testEndpoints';
 import { getSortedAndOrderedEndpoints } from '$lib/utils/usefulFunctions';
 import type { AvailableEndpoint } from '$lib/types';
 import { browser } from '$app/environment';
 
-export const userEndpoints = persisted<AvailableEndpoint[]>('userEndpoints', []);
-export const localStorageEndpoints = persisted<AvailableEndpoint[]>('localStorageEndpoints', []);
+export const userEndpoints: Writable<AvailableEndpoint[]> = persisted<AvailableEndpoint[]>('userEndpoints', []);
+export const localStorageEndpoints: Writable<AvailableEndpoint[]> = persisted<AvailableEndpoint[]>('localStorageEndpoints', []);
 
 const migrateLegacyEndpoints = () => {
 	if (!browser) return;

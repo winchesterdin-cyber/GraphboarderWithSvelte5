@@ -140,11 +140,13 @@
 		return stepsOfNodesCopy;
 	};
 
-	if (!testName_stepsOFFieldsWasUpdated) {
-		stepsOfNodes = getUpdatedStepsOfNodes(
-			JSON.parse(JSON.stringify(parentNode?.stepsOfNodes || []))
-		);
-	}
+	$effect(() => {
+		if (!testName_stepsOFFieldsWasUpdated) {
+			stepsOfNodes = getUpdatedStepsOfNodes(
+				JSON.parse(JSON.stringify(parentNode?.stepsOfNodes || []))
+			);
+		}
+	});
 
 
 	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
