@@ -15,7 +15,7 @@
 		</button>
 	</div>
 
-	<EndpointPicker endpoints={$endpoints} />
+	<EndpointPicker endpoints={$endpoints} onAddEndpoint={() => (showAddModal = true)} />
 
 	<Modal
 		bind:show={showAddModal}

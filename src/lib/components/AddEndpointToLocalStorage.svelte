@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { addEndpoint } from '$lib/stores/endpointsStore';
 	import { localEndpoints } from '$lib/stores/testData/testEndpoints';
+	import { addToast } from '$lib/stores/toastStore';
 
 	interface Props {
 		onEndpointAdded?: () => void;
@@ -12,28 +13,68 @@
 	let id = $state('');
 	let url = $state('');
 	let headers = $state('');
-	let error = $state('');
+
+	let idError = $state('');
+	let urlError = $state('');
+	let headersError = $state('');
+	let generalError = $state('');
 
 	const placeholderHeaders = '{"Authorization": "Bearer token"}';
 
-	const handleSave = () => {
-		error = '';
+	const validateId = () => {
+		idError = '';
+		if (!id.trim()) {
+			idError = 'ID is required';
+			return false;
+		}
+		if (localEndpoints.some((e) => e.id === id)) {
+			idError = `Cannot overwrite built-in endpoint '${id}'.`;
+			return false;
+		}
+		return true;
+	};
+
+	const validateUrl = () => {
+		urlError = '';
+		if (!url.trim()) {
+			urlError = 'URL is required';
+			return false;
+		}
 		try {
-			if (!id.trim()) throw new Error('ID is required');
-			if (!url.trim()) throw new Error('URL is required');
+			new URL(url);
+			return true;
+		} catch {
+			urlError = 'Invalid URL format (must start with http:// or https://)';
+			return false;
+		}
+	};
 
-			try {
-				new URL(url);
-			} catch {
-				throw new Error('Invalid URL format');
-			}
+	const validateHeaders = () => {
+		headersError = '';
+		if (!headers.trim()) return true;
+		try {
+			JSON.parse(headers);
+			return true;
+		} catch (e) {
+			headersError = 'Invalid JSON format for headers';
+			return false;
+		}
+	};
 
-			if (localEndpoints.some((e) => e.id === id)) {
-				throw new Error(`Cannot overwrite built-in endpoint '${id}'.`);
-			}
+	const handleSave = () => {
+		generalError = '';
 
+		const isIdValid = validateId();
+		const isUrlValid = validateUrl();
+		const isHeadersValid = validateHeaders();
+
+		if (!isIdValid || !isUrlValid || !isHeadersValid) {
+			return;
+		}
+
+		try {
 			let headersObj = {};
-			if (headers) {
+			if (headers.trim()) {
 				headersObj = JSON.parse(headers);
 			}
 
@@ -46,11 +87,13 @@
 			};
 
 			addEndpoint(newEndpoint);
+			addToast('Endpoint added successfully!', 'success');
 
 			onEndpointAdded?.();
 			onHide?.();
 		} catch (e: any) {
-			error = e.message;
+			generalError = e.message;
+			addToast('Failed to add endpoint', 'error');
 		}
 	};
 </script>
@@ -67,9 +110,17 @@
 			type="text"
 			id="endpoint-id"
 			bind:value={id}
+			oninput={() => { idError = ''; }}
+			onblur={validateId}
 			placeholder="my-endpoint"
 			class="input input-bordered w-full"
+			class:input-error={!!idError}
 		/>
+		{#if idError}
+			<label class="label">
+				<span class="label-text-alt text-error">{idError}</span>
+			</label>
+		{/if}
 	</div>
 
 	<div class="form-control w-full mb-4">
@@ -80,9 +131,17 @@
 			type="text"
 			id="endpoint-url"
 			bind:value={url}
+			oninput={() => { urlError = ''; }}
+			onblur={validateUrl}
 			placeholder="https://example.com/graphql"
 			class="input input-bordered w-full"
+			class:input-error={!!urlError}
 		/>
+		{#if urlError}
+			<label class="label">
+				<span class="label-text-alt text-error">{urlError}</span>
+			</label>
+		{/if}
 	</div>
 
 	<div class="form-control w-full mb-4">
@@ -92,14 +151,22 @@
 		<textarea
 			id="endpoint-headers"
 			bind:value={headers}
+			oninput={() => { headersError = ''; }}
+			onblur={validateHeaders}
 			class="textarea textarea-bordered h-24"
+			class:textarea-error={!!headersError}
 			placeholder={placeholderHeaders}
 		></textarea>
+		{#if headersError}
+			<label class="label">
+				<span class="label-text-alt text-error">{headersError}</span>
+			</label>
+		{/if}
 	</div>
 
-	{#if error}
+	{#if generalError}
 		<div class="alert alert-error mb-4">
-			<span>{error}</span>
+			<span>{generalError}</span>
 		</div>
 	{/if}
 
