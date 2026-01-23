@@ -1,13 +1,11 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
-	import EndpointinfoGeneratorAssistant from './../../../../lib/components/EndpointinfoGeneratorAssistant.svelte';
 	import Type from '$lib/components/Type.svelte';
 	import Page from '$lib/components/Page.svelte';
 	import { sortingFunctionMutipleColumnsGivenArray } from '$lib/utils/usefulFunctions';
 	import { getContext } from 'svelte';
 	import ExplorerTable from '$lib/components/ExplorerTable.svelte';
-	import TypeList from '$lib/components/TypeList.svelte';
+	import EditTableBaseNameModal from '$lib/components/EditTableBaseNameModal.svelte';
+	import { addToast } from '$lib/stores/toastStore';
 
 	interface Props {
 		prefix?: string;
@@ -24,11 +22,8 @@
 	let whatToShow = $state([]);
 	let whatToShowLastUsed = $state();
 	let sortingInputValue = $state('');
-	let sortingArray = $state([]);
+	let sortingArray = $derived(sortingInputValue.split(' '));
 	let caseSensitive = $state(false);
-	run(() => {
-		sortingArray = sortingInputValue.split(' ');
-	});
 
 	const filterByWord = () => {
 		if (sortingArray.length == 1 && sortingArray[0] == '') {
@@ -179,7 +174,7 @@
 	};
 	let columns = $state([]);
 
-	run(() => {
+	$effect(() => {
 		if (whatToShow.length > 0) {
 			columns = [
 				{
@@ -254,92 +249,144 @@
 	const toggleTable = () => {
 		showTable = !showTable;
 	};
-	let csvData = $state();
-	let selectedRowsOriginal = $state();
+	let csvData = $state<string>('');
+	let selectedRowsOriginal = $state<any[]>([]);
+
+	let showEditModal = $state(false);
+	let editModalInitialValue = $state('');
+
+	const handleEdit = () => {
+		if (!selectedRowsOriginal || selectedRowsOriginal.length === 0) {
+			addToast('No rows selected', 'warning');
+			return;
+		}
+
+		if (selectedRowsOriginal.length === 1) {
+			editModalInitialValue = selectedRowsOriginal[0].tableBaseName || '';
+		} else {
+			editModalInitialValue = 'tableName';
+		}
+		showEditModal = true;
+	};
+
+	const confirmEdit = (newValue: string) => {
+		selectedRowsOriginal.forEach((row) => {
+			row.tableBaseName = newValue;
+		});
+		whatToShow = [...whatToShow]; // trigger reactivity
+	};
 </script>
 
 <Page MenuItem={true}>
-	<section class="  h-screen pb-20 w-screen  overflow-auto ml-4">
-		<div class="sticky top-0 bg-base-300">
-			<div class="flex space-x-2 ">
-				<button
-					class="p-1 rounded-sm leading-none bg-accent text-xs max-w-min"
-					onclick={() => {
-						caseSensitive = !caseSensitive;
-					}}>{caseSensitive ? 'case sensitive' : 'case insesitive'}</button
-				>
-				<input
-					type="text"
-					class="input input-xs mt-1"
-					bind:value={sortingInputValue}
-					onchange={filterByWord}
-				/>
+	<section class="h-screen pb-20 w-screen overflow-auto ml-4">
+		<div class="sticky top-0 bg-base-300 z-10 p-3 shadow-md space-y-3 rounded-b-box mb-4">
+			<!-- Row 1: Filter and View Toggles -->
+			<div class="flex flex-col md:flex-row gap-3 justify-between items-start md:items-center">
+				<div class="join w-full md:w-auto">
+					<input
+						class="input input-sm input-bordered join-item flex-grow md:w-64"
+						placeholder="Filter (e.g. +user -id)"
+						bind:value={sortingInputValue}
+						onkeydown={(e) => e.key === 'Enter' && filterByWord()}
+					/>
+					<button class="btn btn-sm btn-primary join-item" onclick={filterByWord} title="Filter">
+						<i class="bi bi-funnel"></i>
+					</button>
+					<button
+						class="btn btn-sm join-item"
+						class:btn-active={caseSensitive}
+						onclick={() => {
+							caseSensitive = !caseSensitive;
+						}}
+						title={caseSensitive ? 'Case Sensitive: ON' : 'Case Sensitive: OFF'}
+					>
+						<span class="font-bold">Aa</span>
+					</button>
+				</div>
 
-				<button
-					class="mt-1 btn bg-primary btn-xs normal-case"
-					onclick={() => {
-						whatToShowLastUsed?.();
-						filterByWord();
-					}}>Filter</button
-				>
-				<code><b>+</b>include <b>-</b>exclude</code>
-				<br />
+				<div class="join shadow-sm">
+					<button
+						class="btn btn-sm join-item"
+						class:btn-neutral={showExplorer}
+						onclick={toggleExplorer}
+					>
+						<i class="bi bi-list-nested"></i> Explorer
+					</button>
+					<button
+						class="btn btn-sm join-item"
+						class:btn-neutral={showTable}
+						onclick={toggleTable}
+					>
+						<i class="bi bi-table"></i> Table
+					</button>
+				</div>
 			</div>
-			<div>
-				<button class="btn btn-xs " onclick={showRootTypes}> root</button>
-				<button class="btn btn-xs" onclick={showQueries}> queries</button>
-				<button class="btn btn-xs" onclick={showMutations}> mutations</button>
-				<button class="btn btn-xs" onclick={showQueriesAndMutations}> Q&M</button>
-				<button class="btn btn-xs" onclick={showAll}> all</button>
-			</div>
-			<div>
-				<button class="btn btn-xs btn-accent" onclick={toggleExplorer}>toggle explorer</button>
-				<button class="btn btn-xs btn-accent" onclick={toggleTable}>toggle table</button>
-				<button
-					class="btn btn-xs btn-primary"
-					onclick={() => {
-						navigator.clipboard.writeText(csvData);
-					}}>copy csv</button
-				>
-				<button
-					class="btn btn-xs btn-primary"
-					onclick={() => {
-						if (selectedRowsOriginal.length == 0) {
-							return alert('no rows selected');
-						}
-						if (selectedRowsOriginal.length == 1) {
-							const row = selectedRowsOriginal[0];
-							row.tableBaseName = prompt('tableBaseName', row.tableBaseName);
-						} else {
-							const tableBaseName = prompt('tableBaseName', 'tableName');
-							selectedRowsOriginal.forEach((row) => {
-								row.tableBaseName = tableBaseName;
-							});
-						}
 
-						whatToShow = whatToShow;
-					}}>edit</button
-				>
-				<button
-					class="btn btn-xs btn-primary"
-					onclick={() => {
-						whatToShow = whatToShow;
-						showTable = false;
-						setTimeout(() => {
-							showTable = true;
-						}, 200);
-						//columns = columns;
-					}}>rerender table</button
-				>
+			<!-- Row 2: Scope and Actions -->
+			<div
+				class="flex flex-col md:flex-row gap-3 justify-between items-center overflow-x-auto"
+			>
+				<div class="join shadow-sm">
+					<button
+						class="btn btn-sm join-item"
+						onclick={showRootTypes}
+						class:btn-active={whatToShowLastUsed === showRootTypes}>Root</button
+					>
+					<button
+						class="btn btn-sm join-item"
+						onclick={showQueries}
+						class:btn-active={whatToShowLastUsed === showQueries}>Queries</button
+					>
+					<button
+						class="btn btn-sm join-item"
+						onclick={showMutations}
+						class:btn-active={whatToShowLastUsed === showMutations}>Mutations</button
+					>
+					<button
+						class="btn btn-sm join-item"
+						onclick={showQueriesAndMutations}
+						class:btn-active={whatToShowLastUsed === showQueriesAndMutations}>Q&M</button
+					>
+					<button
+						class="btn btn-sm join-item"
+						onclick={showAll}
+						class:btn-active={whatToShowLastUsed === showAll}>All</button
+					>
+				</div>
+
+				<div class="join shadow-sm">
+					<button
+						class="btn btn-sm join-item"
+						onclick={() => navigator.clipboard.writeText(csvData)}
+						title="Copy CSV"
+						disabled={!csvData}
+					>
+						<i class="bi bi-clipboard"></i> Copy CSV
+					</button>
+					<button class="btn btn-sm join-item" onclick={handleEdit} title="Edit Table Name">
+						<i class="bi bi-pencil"></i> Edit
+					</button>
+					<button
+						class="btn btn-sm join-item"
+						onclick={() => {
+							whatToShow = whatToShow;
+							showTable = false;
+							setTimeout(() => {
+								showTable = true;
+							}, 200);
+						}}
+						title="Rerender Table"
+					>
+						<i class="bi bi-arrow-repeat"></i>
+					</button>
+				</div>
 			</div>
 		</div>
-
-		<br />
 
 		{#if showTable && whatToShow.length > 0}
 			<!-- content here -->
 			<ExplorerTable
-				bind:data={whatToShow}
+				data={whatToShow}
 				{columns}
 				onRowSelectionChange={(detail) => {
 					selectedRowsOriginal = detail.rows.map((row) => row.original);
@@ -376,6 +423,13 @@
 				{/key}
 			</div>{/if}
 	</section>
+
+	<EditTableBaseNameModal
+		bind:show={showEditModal}
+		initialValue={editModalInitialValue}
+		onConfirm={confirmEdit}
+		onCancel={() => (showEditModal = false)}
+	/>
 </Page>
 
 <style>
