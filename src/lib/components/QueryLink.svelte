@@ -47,6 +47,6 @@
 	}
 </script>
 
-<a title={queryTitleDisplay} href="{origin}/queries/{queryName}" class="block w-full h-full p-2"
+<a title={queryTitleDisplay} href="{origin}/queries/{queryName}" class="block h-full w-full p-2"
 	>{queryNameDisplay}</a
 >

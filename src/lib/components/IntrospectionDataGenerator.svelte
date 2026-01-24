@@ -8,7 +8,7 @@
 	import { endpointsSchemaData } from '$lib/stores/testData/endpointsSchemaData';
 	import { createClient, fetchExchange } from '@urql/core';
 	import { browser } from '$app/environment';
-	import {  queryStore,gql,getContextClient  } from '@urql/svelte';
+	import { queryStore, gql, getContextClient } from '@urql/svelte';
 	import { getContext } from 'svelte';
 	interface Props {
 		prefix?: string;
@@ -30,102 +30,111 @@
 		$schemaData = storedSchemaData;
 	}
 	//setClient(urqlCoreClient);
-  //ds
+	//ds
 	const queryStoreRes = queryStore({
 		client: getContextClient(),
-		query:gql`
-    query IntrospectionQuery {
-      __schema {
-        queryType { name }
-        mutationType { name }
-        subscriptionType { name }
-        types {
-          ...FullType
-        }
-        directives {
-          name
-          description
-          locations
-          args {
-            ...InputValue
-          }
-        }
-      }
-    }
+		query: gql`
+			query IntrospectionQuery {
+				__schema {
+					queryType {
+						name
+					}
+					mutationType {
+						name
+					}
+					subscriptionType {
+						name
+					}
+					types {
+						...FullType
+					}
+					directives {
+						name
+						description
+						locations
+						args {
+							...InputValue
+						}
+					}
+				}
+			}
 
-    fragment FullType on __Type {
-      kind
-      name
-      description
-      fields(includeDeprecated: true) {
-        name
-        description
-        args {
-          ...InputValue
-        }
-        type {
-          ...TypeRef
-        }
-        isDeprecated
-        deprecationReason
-      }
-      inputFields {
-        ...InputValue
-      }
-      interfaces {
-        ...TypeRef
-      }
-      enumValues(includeDeprecated: true) {
-        name
-        description
-        isDeprecated
-        deprecationReason
-      }
-      possibleTypes {
-        ...TypeRef
-      }
-    }
+			fragment FullType on __Type {
+				kind
+				name
+				description
+				fields(includeDeprecated: true) {
+					name
+					description
+					args {
+						...InputValue
+					}
+					type {
+						...TypeRef
+					}
+					isDeprecated
+					deprecationReason
+				}
+				inputFields {
+					...InputValue
+				}
+				interfaces {
+					...TypeRef
+				}
+				enumValues(includeDeprecated: true) {
+					name
+					description
+					isDeprecated
+					deprecationReason
+				}
+				possibleTypes {
+					...TypeRef
+				}
+			}
 
-    fragment InputValue on __InputValue {
-      name
-      description
-      type { ...TypeRef }
-      defaultValue
-    }
+			fragment InputValue on __InputValue {
+				name
+				description
+				type {
+					...TypeRef
+				}
+				defaultValue
+			}
 
-    fragment TypeRef on __Type {
-      kind
-      name
-      ofType {
-        kind
-        name
-        ofType {
-          kind
-          name
-          ofType {
-            kind
-            name
-            ofType {
-              kind
-              name
-              ofType {
-                kind
-                name
-                ofType {
-                  kind
-                  name
-                  ofType {
-                    kind
-                    name
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  `});
+			fragment TypeRef on __Type {
+				kind
+				name
+				ofType {
+					kind
+					name
+					ofType {
+						kind
+						name
+						ofType {
+							kind
+							name
+							ofType {
+								kind
+								name
+								ofType {
+									kind
+									name
+									ofType {
+										kind
+										name
+										ofType {
+											kind
+											name
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		`
+	});
 	// if (!storedSchemaData) {
 	// 	query(queryStoreRes);
 	// }
@@ -145,8 +154,7 @@
 		$schemaData.schema = schema;
 		schemaData.set_fields(endpointInfo);
 	};
-	run(() => {
-	});
+	run(() => {});
 	run(() => {
 		if (!$queryStoreRes.fetching) {
 			if ($queryStoreRes?.data) {
@@ -174,7 +182,7 @@
 				<div>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						class="stroke-current flex-shrink-0 h-6 w-6"
+						class="h-6 w-6 flex-shrink-0 stroke-current"
 						fill="none"
 						viewBox="0 0 24 24"
 						><path
@@ -187,13 +195,13 @@
 					<span>{$queryStoreRes?.error}</span>
 				</div>
 			</div>
-			<div class="alert alert-info shadow-lg mt-4">
+			<div class="mt-4 alert alert-info shadow-lg">
 				<div>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
-						class="stroke-current flex-shrink-0 w-6 h-6"
+						class="h-6 w-6 flex-shrink-0 stroke-current"
 						><path
 							stroke-linecap="round"
 							stroke-linejoin="round"

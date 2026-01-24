@@ -3,17 +3,9 @@ import { getSortedAndOrderedEndpoints } from './usefulFunctions';
 
 describe('getSortedAndOrderedEndpoints', () => {
 	it('should sort endpoints by numeric ID', () => {
-		const endpoints = [
-			{ id: 2 },
-			{ id: 1 },
-			{ id: 3 }
-		];
+		const endpoints = [{ id: 2 }, { id: 1 }, { id: 3 }];
 		const result = getSortedAndOrderedEndpoints(endpoints);
-		expect(result).toEqual([
-			{ id: 1 },
-			{ id: 2 },
-			{ id: 3 }
-		]);
+		expect(result).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }]);
 	});
 
 	it('should filter out unmaintained endpoints if requested', () => {
@@ -30,25 +22,13 @@ describe('getSortedAndOrderedEndpoints', () => {
 	});
 
 	it('should handle string IDs', () => {
-		const endpoints = [
-			{ id: 'b' },
-			{ id: 'a' },
-			{ id: 'c' }
-		];
+		const endpoints = [{ id: 'b' }, { id: 'a' }, { id: 'c' }];
 		const result = getSortedAndOrderedEndpoints(endpoints);
-		expect(result).toEqual([
-			{ id: 'a' },
-			{ id: 'b' },
-			{ id: 'c' }
-		]);
+		expect(result).toEqual([{ id: 'a' }, { id: 'b' }, { id: 'c' }]);
 	});
 
 	it('should handle mixed string and number IDs', () => {
-		const endpoints = [
-			{ id: 'b' },
-			{ id: 1 },
-			{ id: 'a' }
-		];
+		const endpoints = [{ id: 'b' }, { id: 1 }, { id: 'a' }];
 		const result = getSortedAndOrderedEndpoints(endpoints);
 		// Comparisons: 1 < 'b' (false, wait), 1 > 'b' (false) -> 0?
 		// JS sort: if compareFunction returns 0, order is unchanged.
@@ -65,7 +45,7 @@ describe('getSortedAndOrderedEndpoints', () => {
 		// So order of 1 is undefined relative to strings.
 
 		expect(result).toHaveLength(3);
-        // We just ensure it doesn't crash.
+		// We just ensure it doesn't crash.
 	});
 
 	it('should preserve other properties', () => {

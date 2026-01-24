@@ -56,8 +56,8 @@
 	};
 </script>
 
-<div class="p-8 max-w-7xl mx-auto">
-	<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+<div class="mx-auto max-w-7xl p-8">
+	<div class="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
 		<h1 class="text-3xl font-bold">Select an Endpoint</h1>
 		<div class="flex flex-wrap gap-2">
 			<input
@@ -67,10 +67,10 @@
 				bind:this={fileInput}
 				onchange={handleImport}
 			/>
-			<button class="btn btn-outline gap-2" onclick={() => fileInput?.click()}>
+			<button class="btn gap-2 btn-outline" onclick={() => fileInput?.click()}>
 				<i class="bi bi-upload"></i> Import
 			</button>
-			<button class="btn btn-outline gap-2" onclick={handleExport}>
+			<button class="btn gap-2 btn-outline" onclick={handleExport}>
 				<i class="bi bi-download"></i> Export
 			</button>
 			<button

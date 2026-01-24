@@ -58,17 +58,17 @@
 	};
 </script>
 
-<div class="mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
-	<div class="flex gap-4 w-full md:w-auto flex-1">
+<div class="mb-6 flex flex-col items-center justify-between gap-4 md:flex-row">
+	<div class="flex w-full flex-1 gap-4 md:w-auto">
 		<div class="relative w-full max-w-md">
-			<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+			<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
 				<i class="bi bi-search text-base-content/50"></i>
 			</div>
 			<input
 				type="text"
 				bind:value={searchTerm}
 				placeholder="Search endpoints..."
-				class="input input-bordered w-full pl-10"
+				class="input-bordered input w-full pl-10"
 			/>
 		</div>
 		{#if endpoints.length > 0 && filteredEndpoints.length === 0}
@@ -76,8 +76,8 @@
 		{/if}
 	</div>
 
-	<div class="flex items-center gap-2 w-full md:w-auto justify-end">
-		<select bind:value={sortOption} class="select select-bordered">
+	<div class="flex w-full items-center justify-end gap-2 md:w-auto">
+		<select bind:value={sortOption} class="select-bordered select">
 			<option value="name-asc">Name (A-Z)</option>
 			<option value="name-desc">Name (Z-A)</option>
 		</select>
@@ -85,10 +85,10 @@
 </div>
 
 {#if endpoints.length === 0}
-	<div class="text-center p-10 bg-base-100 rounded-lg border border-base-200 shadow-sm">
-		<i class="bi bi-inbox text-4xl text-base-content/30 mb-4 block"></i>
+	<div class="rounded-lg border border-base-200 bg-base-100 p-10 text-center shadow-sm">
+		<i class="bi bi-inbox mb-4 block text-4xl text-base-content/30"></i>
 		<h3 class="text-lg font-semibold opacity-70">No Endpoints Found</h3>
-		<p class="text-base-content/60 mt-2 mb-4">Add a new endpoint to get started.</p>
+		<p class="mt-2 mb-4 text-base-content/60">Add a new endpoint to get started.</p>
 		{#if onAddEndpoint}
 			<button class="btn btn-primary" onclick={onAddEndpoint}>
 				<i class="bi bi-plus-lg mr-2"></i> Add Endpoint
@@ -96,16 +96,17 @@
 		{/if}
 	</div>
 {:else if filteredEndpoints.length === 0}
-	<div class="text-center p-10">
+	<div class="p-10 text-center">
 		<h3 class="text-lg font-semibold opacity-70">No matching endpoints found</h3>
-		<p class="text-base-content/60 mt-2">Try adjusting your search terms.</p>
-		<button class="btn btn-ghost btn-sm mt-2" onclick={() => (searchTerm = '')}>Clear Search</button>
+		<p class="mt-2 text-base-content/60">Try adjusting your search terms.</p>
+		<button class="btn mt-2 btn-ghost btn-sm" onclick={() => (searchTerm = '')}>Clear Search</button
+		>
 	</div>
 {:else}
-	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+	<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
 		{#each filteredEndpoints as endpoint}
 			<div
-				class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 cursor-pointer border border-base-200 text-start w-full relative group"
+				class="group card relative w-full cursor-pointer border border-base-200 bg-base-100 text-start shadow-xl transition-all hover:-translate-y-1 hover:shadow-2xl"
 				onclick={() => handleEndpointClick(endpoint)}
 				role="button"
 				tabindex="0"
@@ -117,25 +118,25 @@
 				}}
 			>
 				<div class="card-body">
-					<div class="flex items-start justify-between gap-2 w-full pr-6">
-						<h2 class="card-title truncate flex-1" title={endpoint.id}>
+					<div class="flex w-full items-start justify-between gap-2 pr-6">
+						<h2 class="card-title flex-1 truncate" title={endpoint.id}>
 							<i class="bi bi-hdd-network text-primary"></i>
 							{endpoint.id}
 						</h2>
 						{#if endpoint.isMaintained}
-							<div class="badge badge-success badge-sm shrink-0">Maintained</div>
+							<div class="badge shrink-0 badge-sm badge-success">Maintained</div>
 						{:else}
-							<div class="badge badge-ghost badge-sm shrink-0">User Defined</div>
+							<div class="badge shrink-0 badge-ghost badge-sm">User Defined</div>
 						{/if}
 					</div>
 					<p
-						class="text-xs opacity-50 truncate font-mono bg-base-200 p-1 rounded w-full"
+						class="w-full truncate rounded bg-base-200 p-1 font-mono text-xs opacity-50"
 						title={endpoint.url}
 					>
 						{endpoint.url}
 					</p>
 					{#if endpoint.description}
-						<p class="text-sm mt-2 line-clamp-2 text-base-content/80 w-full">
+						<p class="mt-2 line-clamp-2 w-full text-sm text-base-content/80">
 							{endpoint.description}
 						</p>
 					{/if}
@@ -145,7 +146,7 @@
 					<div class="absolute top-2 right-2 z-20 flex gap-1">
 						{#if onEditEndpoint}
 							<button
-								class="btn btn-square btn-xs btn-ghost text-info opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+								class="btn btn-square text-info opacity-100 btn-ghost transition-opacity btn-xs md:opacity-0 md:group-hover:opacity-100"
 								onclick={(e) => {
 									e.stopPropagation();
 									onEditEndpoint(endpoint);
@@ -157,7 +158,7 @@
 							</button>
 						{/if}
 						<button
-							class="btn btn-square btn-xs btn-ghost text-error opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+							class="btn btn-square text-error opacity-100 btn-ghost transition-opacity btn-xs md:opacity-0 md:group-hover:opacity-100"
 							onclick={(e) => confirmDelete(endpoint, e)}
 							onkeydown={(e) => e.stopPropagation()}
 							title="Delete Endpoint"

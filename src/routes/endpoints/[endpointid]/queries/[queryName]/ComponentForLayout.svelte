@@ -1,7 +1,7 @@
 <script lang="ts">
 	import CodeEditor from '$lib/components/fields/CodeEditor.svelte';
-	import AddColumn from './../../../../../lib/components/AddColumn.svelte';
-	import TypeList from './../../../../../lib/components/TypeList.svelte';
+	import AddColumn from '$lib/components/AddColumn.svelte';
+	import TypeList from '$lib/components/TypeList.svelte';
 	import Table from '$lib/components/Table.svelte';
 	import { page } from '$app/stores';
 	import {
@@ -57,7 +57,7 @@
 	const schemaData = qmsMainWraperContext?.schemaData;
 	const urqlCoreClient = qmsMainWraperContext?.urqlCoreClient;
 
-	const qmsWraperContext = getContext(`${prefix}QMSWraperContext`) as QMSWraperContext;
+	const qmsWraperContext = getContext(`${prefix}QMSWraperContext`) as any;
 	const {
 		QMS_bodyPart_StoreDerived_rowsCount,
 		activeArgumentsDataGrouped_Store,
@@ -113,7 +113,11 @@
 	let loadedF: (() => void) | undefined;
 	let completeF: (() => void) | undefined;
 	let infiniteId = $state(Math.random());
-	function infiniteHandler({ detail: { loaded, complete } }: { detail: { loaded: () => void, complete: () => void } }) {
+	function infiniteHandler({
+		detail: { loaded, complete }
+	}: {
+		detail: { loaded: () => void; complete: () => void };
+	}) {
 		console.debug('infiniteHandler triggered', { loaded, complete });
 		loadedF = loaded;
 		completeF = complete;
@@ -215,8 +219,7 @@
 	const hideColumn = (e: any) => {
 		tableColsData_Store.removeColumn(e.detail.column);
 	};
-	tableColsData_Store.subscribe((data: any) => {
-	});
+	tableColsData_Store.subscribe((data: any) => {});
 
 	let column_stepsOfFields = $state('');
 	const addColumnFromInput = (e: any) => {
@@ -265,7 +268,7 @@
 		{currentQMS_info}
 	/>
 </div>
-<div class="flex space-x-2 mx-2">
+<div class="mx-2 flex space-x-2">
 	<AddColumn
 		bind:column_stepsOfFields
 		{addColumnFromInput}
@@ -279,15 +282,15 @@
 	<div class="grow==">
 		{#if showModal}
 			<Modal
-				modalIdetifier={'activeArgumentsDataModal'}
+				modalIdentifier={'activeArgumentsDataModal'}
 				showApplyBtn={false}
 				onCancel={(detail: any) => {
-					if (detail.modalIdetifier == 'activeArgumentsDataModal') {
+					if (detail.modalIdentifier == 'activeArgumentsDataModal') {
 						showModal = false;
 					}
 				}}
-				><div class="  w-full  ">
-					<div class="mx-auto mt-2  w-full   space-y-2   pb-2  ">
+				><div class="  w-full">
+					<div class="mx-auto mt-2 w-full space-y-2 pb-2">
 						<div class="w-2"></div>
 						<ActiveArguments />
 						<div class="w-2"></div>
@@ -309,13 +312,13 @@
 		</div> -->
 	</div>
 	<button
-		class=" btn btn-xs grow normal-case "
+		class=" btn grow normal-case btn-xs"
 		onclick={() => {
 			showQMSBody = !showQMSBody;
 		}}>QMS body</button
 	>
 	{#if QMS_bodyPart_StoreDerived_rowsCount}
-		<div class="badge badge-primary flex space-x-2">
+		<div class="badge flex space-x-2 badge-primary">
 			{rows.length}/
 			<RowCount
 				QMS_bodyPart_StoreDerived={QMS_bodyPart_StoreDerived_rowsCount}
@@ -324,26 +327,26 @@
 		</div>
 	{/if}
 	<button class="btn btn-xs btn-primary" aria-label="Add">
-		<i class="bi bi-plus-circle-fill "></i>
+		<i class="bi bi-plus-circle-fill"></i>
 	</button>
 </div>
 
 {@render children?.()}
 {#if queryData.error}
-	<div class="px-4 mx-auto  mb-2">
-		<div class="alert alert-error shadow-lg ">
+	<div class="mx-auto mb-2 px-4">
+		<div class="alert alert-error shadow-lg">
 			<div>
 				<button
 					type="button"
 					aria-label="Clear error"
-					class="btn btn-ghost btn-sm p-0"
+					class="btn p-0 btn-ghost btn-sm"
 					onclick={() => {
 						queryData.error = null;
 					}}
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						class="stroke-current flex-shrink-0 h-6 w-6"
+						class="h-6 w-6 flex-shrink-0 stroke-current"
 						fill="none"
 						viewBox="0 0 24 24"
 						><path
@@ -364,7 +367,11 @@
 	<p>Loading...</p>
 {/if}
 {#if showQMSBody}
-	<GraphqlCodeDisplay {showNonPrettifiedQMSBody} {prefix} value={$QMS_bodyPartsUnifier_StoreDerived} />
+	<GraphqlCodeDisplay
+		{showNonPrettifiedQMSBody}
+		{prefix}
+		value={$QMS_bodyPartsUnifier_StoreDerived}
+	/>
 {/if}
 
 <div class="md:px-2">

@@ -79,18 +79,18 @@
 	}}
 	onconsider={handleConsider}
 	onfinalize={handleFinalize}
-	class=" pt-2 pr-2 rounded-box"
+	class=" rounded-box pt-2 pr-2"
 >
 	{#each group.group_args as activeArgumentData (activeArgumentData.id)}
 		<div animate:flip={{ duration: flipDurationMs }} class="relative flex">
 			{#if $dndIsOn}
-				<div class="grid   content-center  rounded-full ">
+				<div class="grid content-center rounded-full">
 					<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 					<div
 						role="button"
 						tabindex={dragDisabled ? 0 : -1}
 						aria-label="drag-handle"
-						class="bi bi-grip-vertical ml-2  -mr-1"
+						class="bi bi-grip-vertical -mr-1 ml-2"
 						style={dragDisabled ? 'cursor: grab' : 'cursor: grabbing'}
 						onmousedown={startDrag}
 						ontouchstart={startDrag}
@@ -102,7 +102,7 @@
 			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 			<div
 				role="group"
-				class="w-full "
+				class="w-full"
 				onmousedown={() => {
 					dragDisabled = true;
 				}}

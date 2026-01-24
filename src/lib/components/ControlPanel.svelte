@@ -30,7 +30,7 @@
 </script>
 
 <button
-	class="btn btn-xs w-full"
+	class="btn w-full btn-xs"
 	onclick={() => {
 		showControlPanel = !showControlPanel;
 	}}
@@ -42,7 +42,7 @@
 		<div
 			class="card-body p-0 pt-2 {$mergedChildren_controlPanel_Store.length > 0
 				? 'h-60'
-				: ''}  overflow-y-auto resize"
+				: ''}  resize overflow-y-auto"
 		>
 			{#each $mergedChildren_controlPanel_Store as CPItem}
 				<ControlPanelItem {CPItem} />

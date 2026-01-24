@@ -25,8 +25,16 @@
 	import { writable } from 'svelte/store';
 	import AddNodeToControlPanel from './AddNodeToControlPanel.svelte';
 	import GroupDescriptionAndControls from './GroupDescriptionAndControls.svelte';
-	import { createQMSSearchInstance, discoverMatchingQMS, getReturningFields } from '$lib/utils/searchUtils';
-	import { getRowSelectionState, processSelectedRowsColValues, getRequiredColumnNames } from '$lib/utils/rowSelectionUtils';
+	import {
+		createQMSSearchInstance,
+		discoverMatchingQMS,
+		getReturningFields
+	} from '$lib/utils/searchUtils';
+	import {
+		getRowSelectionState,
+		processSelectedRowsColValues,
+		getRequiredColumnNames
+	} from '$lib/utils/rowSelectionUtils';
 
 	import Fuse from 'fuse.js';
 
@@ -145,7 +153,6 @@
 		}
 	});
 
-
 	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
 	const endpointInfo = QMSMainWraperContext?.endpointInfo;
 	const schemaData = QMSMainWraperContext?.schemaData;
@@ -180,7 +187,6 @@
 	let shadowWidth = $state(20);
 
 	let labelElClone = $state();
-
 
 	function startDrag(e) {
 		// preventing default to prevent lag on touch devices (because of the browser checking for screen scrolling)
@@ -396,8 +402,7 @@
 			$idColName = QMSWraperContextForSelectedQMS.idColName;
 		}
 	});
-	$effect(() => {
-	});
+	$effect(() => {});
 	$effect(() => {
 		if ($QMSFieldToQMSGetMany_Store.length > 0) {
 			getManyQMS = QMSFieldToQMSGetMany_Store.getObj({
@@ -441,9 +446,9 @@
 			showSelectModal = false;
 		}}
 	>
-		<div class="flex flex-col ">
-			<div class="w-full text-lg text-center  mb-2 ">
-				<p class="badge badge-info font-bold">
+		<div class="flex flex-col">
+			<div class="mb-2 w-full text-center text-lg">
+				<p class="badge font-bold badge-info">
 					{groupDisplayTitle}
 				</p>
 
@@ -471,13 +476,12 @@
 						});
 						//!!every element of 'selectedRowsColValues' must be cheched like so: every element must have all values checked ,if string pass trough string transformer
 					}}
-					on:rowClicked={(e) => {
-					}}
+					on:rowClicked={(e) => {}}
 					bind:QMS_info={$selectedQMS}
 				/>
 
 				<button
-					class="btn btn-accent btn-xs w-full"
+					class="btn w-full btn-xs btn-accent"
 					onclick={() => {
 						showSelectQMSModal = true;
 					}}

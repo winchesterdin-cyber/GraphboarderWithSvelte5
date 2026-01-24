@@ -180,7 +180,7 @@
 {@render children?.()}
 
 <!-- main -->
-<div class="flex space-x-2 mx-2 z-50">
+<div class="z-50 mx-2 flex space-x-2">
 	<AddColumn
 		bind:column_stepsOfFields
 		{dd_relatedRoot}
@@ -197,8 +197,8 @@
 						showModal = false;
 					}
 				}}
-				><div class="  w-full  ">
-					<div class="mx-auto mt-2  w-full   space-y-2   pb-2  ">
+				><div class="  w-full">
+					<div class="mx-auto mt-2 w-full space-y-2 pb-2">
 						<div class="w-2"></div>
 						<ActiveArguments />
 						<div class="w-2"></div>
@@ -208,13 +208,13 @@
 		{/if}
 	</div>
 	<button
-		class=" btn btn-xs grow normal-case "
+		class=" btn grow normal-case btn-xs"
 		onclick={() => {
 			showQMSBody = !showQMSBody;
 		}}>QMS body</button
 	>
 	{#if QMS_bodyPart_StoreDerived_rowsCount}
-		<div class="badge badge-primary flex space-x-2">
+		<div class="badge flex space-x-2 badge-primary">
 			{rows.length}/
 			<RowCount
 				QMS_bodyPart_StoreDerived={QMS_bodyPart_StoreDerived_rowsCount}
@@ -223,17 +223,17 @@
 		</div>
 	{/if}
 
-	<button class="btn btn-xs btn-primary ">
-		<i class="bi bi-plus-circle-fill "></i>
+	<button class="btn btn-xs btn-primary">
+		<i class="bi bi-plus-circle-fill"></i>
 	</button>
 </div>
 
 {@render children?.()}
 {#if queryData.error}
-	<div class="px-4 mx-auto  mb-2">
-		<div class="alert alert-error shadow-lg ">
+	<div class="mx-auto mb-2 px-4">
+		<div class="alert alert-error shadow-lg">
 			<div>
-				<button class="btn btn-ghost btn-sm p-0">
+				<button class="btn p-0 btn-ghost btn-sm">
 					<svg
 						onclick={() => {
 							queryData.error = null;
@@ -244,7 +244,7 @@
 							if (e.key === 'Enter') queryData.error = null;
 						}}
 						xmlns="http://www.w3.org/2000/svg"
-						class="stroke-current flex-shrink-0 h-6 w-6 cursor-pointer"
+						class="h-6 w-6 flex-shrink-0 cursor-pointer stroke-current"
 						fill="none"
 						viewBox="0 0 24 24"
 						><path

@@ -1,32 +1,30 @@
-import { getPreciseType } from '$lib/utils/objectUtils';
+import { getPreciseType } from './typeUtils';
 
 export const stigifyAll = (data: unknown): string => {
 	return JSON.stringify(data, function (key, value) {
-		if (typeof value === "function") {
-			return "/Function(" + value.toString() + ")/";
+		if (typeof value === 'function') {
+			return '/Function(' + value.toString() + ')/';
 		}
 		return value;
 	});
-}
-
-
+};
 
 export const parseAll = (json: string): unknown => {
 	return JSON.parse(json, function (key, value) {
-		if (typeof value === "string" &&
-			value.startsWith("/Function(") &&
-			value.endsWith(")/")) {
+		if (typeof value === 'string' && value.startsWith('/Function(') && value.endsWith(')/')) {
 			value = value.substring(10, value.length - 2);
-			return (0, eval)("(" + value + ")");
+			return (0, eval)('(' + value + ')');
 		}
 		return value;
 	});
-}
-
+};
 
 export const stringToJs = (string: unknown): unknown => {
-	if (getPreciseType(string) !== "string") {
-		console.warn(`expectig string but got ${getPreciseType(string)},will use it as is.If object,you do not need this function,maybe this function was run previously.`, { string });
+	if (getPreciseType(string) !== 'string') {
+		console.warn(
+			`expectig string but got ${getPreciseType(string)},will use it as is.If object,you do not need this function,maybe this function was run previously.`,
+			{ string }
+		);
 		return string;
 	}
 	if ((string as string).includes('/Function') && (string as string).includes(')/')) {
@@ -62,9 +60,9 @@ export const objectToSourceCode = (obj: Record<string, unknown>): string => {
 				Object.entries(obj as Record<string, unknown>)
 					.map(([key, value]) => {
 						if (key.includes('-')) {
-							key = `'${key}'`
+							key = `'${key}'`;
 						}
-						return `${key}: ${convertObjectToSourceCode(value)}`
+						return `${key}: ${convertObjectToSourceCode(value)}`;
 					})
 					.join(', ') +
 				'}'
@@ -76,4 +74,4 @@ export const objectToSourceCode = (obj: Record<string, unknown>): string => {
 	}
 
 	return convertObjectToSourceCode(obj);
-}
+};

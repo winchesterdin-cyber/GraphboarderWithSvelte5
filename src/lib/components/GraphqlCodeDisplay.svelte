@@ -54,12 +54,8 @@
 				return;
 			}
 
-			const {
-				activeArgumentsDataGrouped_Store,
-				tableColsData_Store,
-				paginationState,
-				QMSName
-			} = QMSWraperContext;
+			const { activeArgumentsDataGrouped_Store, tableColsData_Store, paginationState, QMSName } =
+				QMSWraperContext;
 
 			const { endpointInfo, schemaData } = QMSMainWraperContext;
 
@@ -129,18 +125,18 @@
 	});
 </script>
 
-<div class="mockup-code bg-base text-content my-1 mx-2 px-2 ">
+<div class="bg-base text-content mockup-code mx-2 my-1 px-2">
 	<div class="max-h-[50vh] overflow-y-auto">
 		{#if showNonPrettifiedQMSBody}
 			<code class="px-10">{value}</code>
 			<div class="mt-4">
-				<code class="px-10 ">{astAsString}</code>
+				<code class="px-10">{astAsString}</code>
 			</div>
 		{:else}
-			<code class="language-graphql "
+			<code class="language-graphql"
 				>{@html hljs.highlight(format(value), { language: 'graphql' }).value.trim()}</code
 			>
-			<div class="mx-4 mt-2 ">
+			<div class="mx-4 mt-2">
 				<CodeEditor
 					rawValue={value}
 					language="graphql"
@@ -149,18 +145,18 @@
 					}}
 				/>
 			</div>
-			<div class="mx-4 mt-2 ">
+			<div class="mx-4 mt-2">
 				<CodeEditor rawValue={astAsString} language="javascript" />
 			</div>
 			{#if astPrinted}
-				<div class="mx-4 mt-2 ">
+				<div class="mx-4 mt-2">
 					<CodeEditor rawValue={astPrinted} language="graphql" />
 				</div>
 			{/if}
 		{/if}
 	</div>
 	<button
-		class="btn btn-xs btn-accent mx-atuo absolute top-3 right-4 normal-case"
+		class="mx-atuo btn absolute top-3 right-4 normal-case btn-xs btn-accent"
 		onclick={() => {
 			showNonPrettifiedQMSBody = !showNonPrettifiedQMSBody;
 		}}

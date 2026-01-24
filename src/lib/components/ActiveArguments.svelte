@@ -56,7 +56,7 @@
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
 					viewBox="0 0 24 24"
-					class="stroke-current flex-shrink-0 w-6 h-6"
+					class="h-6 w-6 flex-shrink-0 stroke-current"
 					><path
 						stroke-linecap="round"
 						stroke-linejoin="round"

@@ -14,26 +14,26 @@ import { getPreciseType, sortByName } from '$lib/utils/usefulFunctions';
 
 Helpers for object manipulation.
 
-*   `getPreciseType(value)`: Returns specific type (e.g., 'array', 'null', 'date').
-*   `passAllObjectValuesThroughStringTransformerAndReturnNewObject(obj)`: Recursively transforms string values in an object/array using `string_transformer`.
-*   `getValueAtPath` / `setValueAtPath`: Access/modify deep properties using path arrays.
+- `getPreciseType(value)`: Returns specific type (e.g., 'array', 'null', 'date').
+- `passAllObjectValuesThroughStringTransformerAndReturnNewObject(obj)`: Recursively transforms string values in an object/array using `string_transformer`.
+- `getValueAtPath` / `setValueAtPath`: Access/modify deep properties using path arrays.
 
 ## `stringUtils.ts`
 
 String formatting and manipulation.
 
-*   `formatData`: Truncates/formats data for display.
-*   `smartModifyStringBasedOnBoundries`: Advanced string manipulation.
+- `formatData`: Truncates/formats data for display.
+- `smartModifyStringBasedOnBoundries`: Advanced string manipulation.
 
 ## `dataStructureTransformers.ts`
 
 Functions to transform data between raw types and UI-ready formats (often used for the QMS).
 
-*   `string_transformer`: Prepares a string for GraphQL usage (e.g., escaping).
-*   `stringToQMSString_transformer`: Reverses the transformation.
+- `string_transformer`: Prepares a string for GraphQL usage (e.g., escaping).
+- `stringToQMSString_transformer`: Reverses the transformation.
 
 ## `graphql/`
 
 Utilities for parsing, building, and handling GraphQL schemas and queries.
 
-*   `graphql-builder.ts`: Logic to construct query strings from the visual builder state.
+- `graphql-builder.ts`: Logic to construct query strings from the visual builder state.

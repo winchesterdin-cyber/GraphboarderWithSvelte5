@@ -92,11 +92,11 @@
 </script>
 
 <div
-	class="flex flex-col overflow-x-auto overscroll-contain text-sm text-base-content font-normal normal-case min-w-full w-full "
+	class="flex w-full min-w-full flex-col overflow-x-auto overscroll-contain text-sm font-normal text-base-content normal-case"
 >
 	{#if hasGroup_argsNode}
 		<button
-			class="btn btn-primary btn-xs  normal-case font-thin text-base sticky top-0"
+			class="btn sticky top-0 text-base font-thin normal-case btn-xs btn-primary"
 			onclick={() => {
 				let randomNr = Math.random();
 				const newContainerData = {
@@ -134,7 +134,7 @@
 			{group}
 		/> -->
 	{/if}
-	<div class="my-2 border-2 rounded-box ">
+	<div class="my-2 rounded-box border-2">
 		{#each groupArgsPossibilities as arg, index}
 			<Arg
 				{index}
@@ -208,14 +208,7 @@
 		{/each}
 	</div>
 	<Description QMSInfo={node} />
-	<div class="mt-2  w-full overflow-x-auto ">
-		<Type
-			index={0}
-			type={node}
-			template="default"
-			depth={0}
-			on:colAddRequest={(e) => {
-			}}
-		/>
+	<div class="mt-2 w-full overflow-x-auto">
+		<Type index={0} type={node} template="default" depth={0} on:colAddRequest={(e) => {}} />
 	</div>
 </div>

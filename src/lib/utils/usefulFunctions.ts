@@ -1,3 +1,4 @@
+export * from './typeUtils';
 export * from './objectUtils';
 export * from './stringUtils';
 export * from './serializationUtils';

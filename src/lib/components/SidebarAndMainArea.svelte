@@ -9,9 +9,9 @@
 
 <div class="flex w-full">
 	<div
-		class="w-[30vh]  h-[100vh]  {forceVisibleSidebar
+		class="h-[100vh] w-[30vh] {forceVisibleSidebar
 			? 'visible '
-			: ' invisible'} fixed left-0 top-0 z-50 lg:z-0 lg:visible lg:static bg-base-200 overflow-y-auto"
+			: ' invisible'} fixed top-0 left-0 z-50 overflow-y-auto bg-base-200 lg:visible lg:static lg:z-0"
 		use:clickOutside
 		onclick={() => {
 			forceVisibleSidebar = false;
@@ -24,7 +24,7 @@
 	</div>
 
 	<Page MenuItem={true}>
-		<div class="w-full navbar bg-base-300">
+		<div class="navbar w-full bg-base-300">
 			<div class="flex-none lg:hidden">
 				<label
 					for="my-drawer-3"
@@ -37,7 +37,7 @@
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
-						class="inline-block w-6 h-6 stroke-current"
+						class="inline-block h-6 w-6 stroke-current"
 						><path
 							stroke-linecap="round"
 							stroke-linejoin="round"
@@ -47,11 +47,11 @@
 					>
 				</label>
 			</div>
-			<div class="flex-1 px-2 mx-2">{title}</div>
-			<div class="flex-none block">
+			<div class="mx-2 flex-1 px-2">{title}</div>
+			<div class="block flex-none">
 				<ul class="flex">
 					<li>
-						<button class="btn btn-sm "><i class="bi bi-plus-square text-xl "></i> </button>
+						<button class="btn btn-sm"><i class="bi bi-plus-square text-xl"></i> </button>
 					</li>
 				</ul>
 			</div>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import AddColumn from './../../../../lib/components/AddColumn.svelte';
+	import AddColumn from '$lib/components/AddColumn.svelte';
 	import { page } from '$app/stores';
 	import Table from '$lib/components/Table.svelte';
 	import {
@@ -51,10 +51,9 @@
 		QMS_info,
 		QMSType,
 		QMSName
-	} = QMSWraperContext;
+	} = QMSWraperContext as any;
 
-	$effect(() => {
-	});
+	$effect(() => {});
 	onDestroy(() => {
 		document.getElementById('my-drawer-3')?.click();
 	});
@@ -65,7 +64,7 @@
 	}
 	//
 	let activeArgumentsData = [];
-	const paginationTypeInfo = get_paginationTypes(endpointInfo, schemaData).find((pagType) => {
+	const paginationTypeInfo = get_paginationTypes(endpointInfo as any, schemaData as any).find((pagType: any) => {
 		return pagType.name == QMS_info?.dd_paginationType;
 	});
 	let activeArgumentsDataGrouped_Store_IS_SET = $state(false);
@@ -91,7 +90,7 @@
 			QMS_info.dd_paginationArgs
 		);
 		if (
-			rowLimitingArgNames?.some((argName) => {
+			rowLimitingArgNames?.some((argName: any) => {
 				return rows.length / $paginationState?.[argName] >= 1; //means that all previous pages contained nr of items == page items size
 			}) ||
 			paginationTypeInfo?.name == 'pageBased'
@@ -155,7 +154,7 @@
 					(paginationTypeInfo?.get_rowLimitingArgNames(QMS_info.dd_paginationArgs).length > 0 &&
 						paginationTypeInfo
 							?.get_rowLimitingArgNames(QMS_info.dd_paginationArgs)
-							.some((argName) => {
+							.some((argName: any) => {
 								return rowsCurrent?.length == $paginationState?.[argName];
 							})) ||
 					paginationTypeInfo?.name == 'pageBased'
@@ -174,20 +173,18 @@
 		}
 	});
 
-	$effect(() => {
-	});
+	$effect(() => {});
 	if (scalarFields.length == 0) {
-		queryData = { fetching: false, error: false, data: false };
+		queryData = { fetching: false, error: null, data: null };
 	} else {
-		queryData = { fetching: true, error: false, data: false };
+		queryData = { fetching: true, error: null, data: null };
 	}
 
 	const hideColumn = (e: any) => {
 		tableColsData_Store.removeColumn(e.detail.column); // Note: e.detail is typically from custom events, check usage
 		// If calling directly with { detail: { column } } structure.
 	};
-	tableColsData_Store.subscribe((data: any) => {
-	});
+	tableColsData_Store.subscribe((data: any) => {});
 
 	let column_stepsOfFields = $state('');
 	const addColumnFromInput = (e: any) => {
@@ -219,15 +216,15 @@
 </script>
 
 <div class=" h-full">
-	<div class="  w-full   px-0 mb-10 ">
-		<div class=" mt-2     space-y-2   pb-2  bg-base-100 rounded-box ">
+	<div class="  mb-10 w-full px-0">
+		<div class=" mt-2 space-y-2 rounded-box bg-base-100 pb-2">
 			<div class="w-2"></div>
 			<ActiveArguments />
 			<div class="w-2"></div>
 
 			<div class=" w-full p-2">
 				<button
-					class="btn btn-sm btn-primary  w-full"
+					class="btn w-full btn-sm btn-primary"
 					onclick={() => {
 						let mutationBody = $QMS_bodyPartsUnifier_StoreDerived;
 						if (mutationBody && mutationBody !== '') {
@@ -238,7 +235,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="flex space-x-2 mx-2">
+	<div class="mx-2 flex space-x-2">
 		<AddColumn
 			bind:column_stepsOfFields
 			{addColumnFromInput}
@@ -251,13 +248,13 @@
 		/>
 
 		<button
-			class=" btn btn-xs grow normal-case "
+			class=" btn grow normal-case btn-xs"
 			onclick={() => {
 				showQMSBody = !showQMSBody;
 			}}>QMS body</button
 		>
 		{#if QMS_bodyPart_StoreDerived_rowsCount}
-			<div class="badge badge-primary flex space-x-2">
+			<div class="badge flex space-x-2 badge-primary">
 				{rows.length}/
 				<RowCount QMS_bodyPart_StoreDerived={QMS_bodyPart_StoreDerived_rowsCount} {QMS_info} />
 			</div>
@@ -266,20 +263,20 @@
 
 	{@render children?.()}
 	{#if queryData.error}
-		<div class="px-4 mx-auto  mb-2">
-			<div class="alert alert-error shadow-lg ">
+		<div class="mx-auto mb-2 px-4">
+			<div class="alert alert-error shadow-lg">
 				<div>
 					<button
-					type="button"
-					aria-label="Clear error"
-						class="btn btn-ghost btn-sm p-0"
+						type="button"
+						aria-label="Clear error"
+						class="btn p-0 btn-ghost btn-sm"
 						onclick={() => {
 							queryData.error = null;
 						}}
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
-							class="stroke-current flex-shrink-0 h-6 w-6"
+							class="h-6 w-6 flex-shrink-0 stroke-current"
 							fill="none"
 							viewBox="0 0 24 24"
 							><path

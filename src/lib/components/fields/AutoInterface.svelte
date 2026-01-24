@@ -7,10 +7,11 @@
 	let { typeInfo, alwaysOn_interfacePicker } = $props();
 	const choosenDisplayInterface = getContext('choosenDisplayInterface');
 	const expectsInterfaceList = typeInfo.dd_kindList && $choosenDisplayInterface != 'ENUM';
-	let rawValue =
-		$derived(expectsInterfaceList && getPreciseType(typeInfo?.chd_rawValue) != 'array'
+	let rawValue = $derived(
+		expectsInterfaceList && getPreciseType(typeInfo?.chd_rawValue) != 'array'
 			? [typeInfo?.chd_rawValue]
-			: typeInfo?.chd_rawValue);
+			: typeInfo?.chd_rawValue
+	);
 	let dispatchValue = $derived(typeInfo?.chd_dispatchValue);
 </script>
 

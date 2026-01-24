@@ -19,7 +19,7 @@
 		{group.group_name}
 	</div>
 {/if}
-<div class="text-xs ml-2 pt-1">
+<div class="ml-2 pt-1 text-xs">
 	{#if group.dd_kindList}
 		( list )
 	{/if}
@@ -32,7 +32,7 @@
 	<i
 		role="button"
 		tabindex="0"
-		class="bi bi-info-circle text-secondary px-2 cursor-pointer"
+		class="bi bi-info-circle cursor-pointer px-2 text-secondary"
 		title={group.description}
 		onkeydown={(e) => {
 			if (e.key === 'Enter' || e.key === ' ') {

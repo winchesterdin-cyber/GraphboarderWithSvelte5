@@ -14,7 +14,7 @@
 	const mutationVersion = getContext(`${prefix}mutationVersion`);
 </script>
 
-<div class="btn btn-ghost btn-xs w-min flex ml-4 {hasGroup_argsNode ? '' : 'pt-1'}">
+<div class="btn ml-4 flex w-min btn-ghost btn-xs {hasGroup_argsNode ? '' : 'pt-1'}">
 	<Toggle
 		useSwap
 		swapOnText="dnd"
@@ -26,7 +26,7 @@
 		}}
 	/>
 </div>
-<div class="btn btn-ghost btn-xs w-min flex ml-4 {hasGroup_argsNode ? '' : 'pt-1'}">
+<div class="btn ml-4 flex w-min btn-ghost btn-xs {hasGroup_argsNode ? '' : 'pt-1'}">
 	<Toggle
 		useSwap
 		swapOnText="field"
@@ -38,7 +38,7 @@
 		}}
 	/>
 </div>
-<div class="btn btn-ghost btn-xs w-min flex ml-4 {hasGroup_argsNode ? '' : 'pt-1'}">
+<div class="btn ml-4 flex w-min btn-ghost btn-xs {hasGroup_argsNode ? '' : 'pt-1'}">
 	<Toggle
 		useSwap
 		swapOnText="mutVer"

@@ -4,10 +4,10 @@
 	import { create_schemaData } from '$lib/stores/endpointHandling/schemaData';
 
 	import { setContext } from 'svelte';
-	import { createClient,  } from '@urql/core';
+	import { createClient } from '@urql/core';
 	import { browser } from '$app/environment';
 	import { Create_urqlCoreClient } from '$lib/utils/urqlCoreClient';
-	import { setContextClient,Client,fetchExchange } from '@urql/svelte';
+	import { setContextClient, Client, fetchExchange } from '@urql/svelte';
 	interface Props {
 		prefix?: string;
 		endpointInfoProvided?: any;
@@ -19,9 +19,11 @@
 	const endpointInfo = create_endpointInfo_Store(endpointInfoProvided);
 	const schemaData = create_schemaData();
 
+	console.debug('Initializing URQL Client for:', $endpointInfo.url);
 	let client = new Client({
 		url: $endpointInfo.url,
 		fetchOptions: () => {
+			console.debug('Fetching with headers for:', $endpointInfo.url);
 			return {
 				headers: getHeaders()
 			};
@@ -34,7 +36,9 @@
 			return $endpointInfo?.headers;
 		}
 		if (browser) {
-			return JSON.parse(localStorage.getItem('headers'));
+			const headers = JSON.parse(localStorage.getItem('headers'));
+			console.debug('Loaded headers from localStorage:', headers);
+			return headers;
 		} else {
 			return {};
 		}

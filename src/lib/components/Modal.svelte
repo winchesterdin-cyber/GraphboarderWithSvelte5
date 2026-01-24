@@ -7,12 +7,7 @@
 		onCancel?: (detail: any) => void;
 	}
 
-	let {
-		show = $bindable(true),
-		children,
-		modalIdentifier,
-		onCancel
-	}: Props = $props();
+	let { show = $bindable(true), children, modalIdentifier, onCancel }: Props = $props();
 
 	let dialog: HTMLDialogElement;
 
@@ -51,7 +46,7 @@
 >
 	<div class="modal-box">
 		{#if onCancel}
-			<button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onclick={close}
+			<button class="btn absolute top-2 right-2 btn-circle btn-ghost btn-sm" onclick={close}
 				>✕</button
 			>
 		{/if}

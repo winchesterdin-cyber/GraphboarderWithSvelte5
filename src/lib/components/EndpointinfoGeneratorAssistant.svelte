@@ -8,8 +8,8 @@
 	let { types = [] }: Props = $props();
 </script>
 
-<div class="overflow-auto overscroll-contain h-[80vh] w-[90vw]">
-	<table class="table table-compact">
+<div class="h-[80vh] w-[90vw] overflow-auto overscroll-contain">
+	<table class="table-compact table">
 		<thead class=" sticky top-0">
 			<tr>
 				<th />

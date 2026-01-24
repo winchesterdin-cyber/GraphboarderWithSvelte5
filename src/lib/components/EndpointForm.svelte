@@ -127,14 +127,16 @@
 </script>
 
 <div class="w-full">
-	<h2 class="text-2xl font-bold mb-4">
+	<h2 class="mb-4 text-2xl font-bold">
 		{endpointToEdit ? 'Edit Endpoint' : 'Add new Endpoint'}
 	</h2>
 	<p class="mb-4 text-base-content/70">
-		{endpointToEdit ? 'Update your endpoint configuration' : "Save endpoint to your browser's Local Storage"}
+		{endpointToEdit
+			? 'Update your endpoint configuration'
+			: "Save endpoint to your browser's Local Storage"}
 	</p>
 
-	<div class="form-control w-full mb-4">
+	<div class="form-control mb-4 w-full">
 		<label class="label" for="endpoint-id">
 			<span class="label-text">ID (Unique Name)</span>
 		</label>
@@ -142,10 +144,12 @@
 			type="text"
 			id="endpoint-id"
 			bind:value={id}
-			oninput={() => { idError = ''; }}
+			oninput={() => {
+				idError = '';
+			}}
 			onblur={validateId}
 			placeholder="my-endpoint"
-			class="input input-bordered w-full"
+			class="input-bordered input w-full"
 			class:input-error={!!idError}
 		/>
 		{#if idError}
@@ -155,7 +159,7 @@
 		{/if}
 	</div>
 
-	<div class="form-control w-full mb-4">
+	<div class="form-control mb-4 w-full">
 		<label class="label" for="endpoint-url">
 			<span class="label-text">URL</span>
 		</label>
@@ -163,10 +167,12 @@
 			type="text"
 			id="endpoint-url"
 			bind:value={url}
-			oninput={() => { urlError = ''; }}
+			oninput={() => {
+				urlError = '';
+			}}
 			onblur={validateUrl}
 			placeholder="https://example.com/graphql"
-			class="input input-bordered w-full"
+			class="input-bordered input w-full"
 			class:input-error={!!urlError}
 		/>
 		{#if urlError}
@@ -176,16 +182,18 @@
 		{/if}
 	</div>
 
-	<div class="form-control w-full mb-4">
+	<div class="form-control mb-4 w-full">
 		<label class="label" for="endpoint-headers">
 			<span class="label-text">Headers (JSON)</span>
 		</label>
 		<textarea
 			id="endpoint-headers"
 			bind:value={headers}
-			oninput={() => { headersError = ''; }}
+			oninput={() => {
+				headersError = '';
+			}}
 			onblur={validateHeaders}
-			class="textarea textarea-bordered h-24"
+			class="textarea-bordered textarea h-24"
 			class:textarea-error={!!headersError}
 			placeholder={placeholderHeaders}
 		></textarea>
@@ -197,7 +205,7 @@
 	</div>
 
 	{#if generalError}
-		<div class="alert alert-error mb-4">
+		<div class="mb-4 alert alert-error">
 			<span>{generalError}</span>
 		</div>
 	{/if}

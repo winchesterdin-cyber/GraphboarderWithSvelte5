@@ -1,4 +1,8 @@
-import { getDataGivenStepsOfFields, setValueAtPath, stepsOfFieldsToQueryFragmentObject } from '$lib/utils/usefulFunctions';
+import {
+	getDataGivenStepsOfFields,
+	setValueAtPath,
+	stepsOfFieldsToQueryFragmentObject
+} from '$lib/utils/usefulFunctions';
 import { get } from 'svelte/store';
 import type {
 	PaginationTypeInfo,
@@ -29,13 +33,22 @@ export const get_paginationTypes = (
 			get_dependencyColsData: (QMS_name: string) => {
 				return [];
 			},
-			get_nextPageState: (state: PaginationState, paginationArgs: FieldWithDerivedData[]): PaginationState => {
+			get_nextPageState: (
+				state: PaginationState,
+				paginationArgs: FieldWithDerivedData[]
+			): PaginationState => {
 				return state;
 			},
-			get_prevPageState: (state: PaginationState, paginationArgs: FieldWithDerivedData[]): PaginationState => {
+			get_prevPageState: (
+				state: PaginationState,
+				paginationArgs: FieldWithDerivedData[]
+			): PaginationState => {
 				return state;
 			},
-			isFirstPage: (_paginationState_Store: PaginationStateStore, paginationArgs: FieldWithDerivedData[]) => {
+			isFirstPage: (
+				_paginationState_Store: PaginationStateStore,
+				paginationArgs: FieldWithDerivedData[]
+			) => {
 				return true;
 			},
 			check: (standsForArray: string[]) => {
@@ -65,7 +78,10 @@ export const get_paginationTypes = (
 			get_dependencyColsData: (QMS_name: string) => {
 				return [];
 			},
-			get_defaultPaginationStateForDynamic: (state: PaginationState, paginationArgs: FieldWithDerivedData[]): PaginationState => {
+			get_defaultPaginationStateForDynamic: (
+				state: PaginationState,
+				paginationArgs: FieldWithDerivedData[]
+			): PaginationState => {
 				const offsetName = paginationArgs.find((arg) => {
 					return arg.dd_standsFor == 'offset';
 				})?.dd_displayName;
@@ -73,7 +89,10 @@ export const get_paginationTypes = (
 				if (offsetName) _state[offsetName] = 0;
 				return _state;
 			},
-			get_nextPageState: (state: PaginationState, paginationArgs: FieldWithDerivedData[]): PaginationState => {
+			get_nextPageState: (
+				state: PaginationState,
+				paginationArgs: FieldWithDerivedData[]
+			): PaginationState => {
 				const offsetName = paginationArgs.find((arg) => {
 					return arg.dd_standsFor == 'offset';
 				})?.dd_displayName;
@@ -81,12 +100,20 @@ export const get_paginationTypes = (
 					return arg.dd_standsFor == 'limit';
 				})?.dd_displayName;
 				const _state = JSON.parse(JSON.stringify(state));
-				if (offsetName && limitName && typeof _state[offsetName] === 'number' && typeof _state[limitName] === 'number') {
+				if (
+					offsetName &&
+					limitName &&
+					typeof _state[offsetName] === 'number' &&
+					typeof _state[limitName] === 'number'
+				) {
 					_state[offsetName] += _state[limitName];
 				}
 				return _state;
 			},
-			get_prevPageState: (state: PaginationState, paginationArgs: FieldWithDerivedData[]): PaginationState => {
+			get_prevPageState: (
+				state: PaginationState,
+				paginationArgs: FieldWithDerivedData[]
+			): PaginationState => {
 				const offsetName = paginationArgs.find((arg) => {
 					return arg.dd_standsFor == 'offset';
 				})?.dd_displayName;
@@ -94,12 +121,20 @@ export const get_paginationTypes = (
 					return arg.dd_standsFor == 'limit';
 				})?.dd_displayName;
 				const _state = JSON.parse(JSON.stringify(state));
-				if (offsetName && limitName && typeof _state[offsetName] === 'number' && typeof _state[limitName] === 'number') {
+				if (
+					offsetName &&
+					limitName &&
+					typeof _state[offsetName] === 'number' &&
+					typeof _state[limitName] === 'number'
+				) {
 					_state[offsetName] -= _state[limitName];
 				}
 				return _state;
 			},
-			isFirstPage: (_paginationState_Store: PaginationStateStore, paginationArgs: FieldWithDerivedData[]) => {
+			isFirstPage: (
+				_paginationState_Store: PaginationStateStore,
+				paginationArgs: FieldWithDerivedData[]
+			) => {
 				const offsetName = paginationArgs.find((arg) => {
 					return arg.dd_standsFor == 'offset';
 				})?.dd_displayName;
@@ -130,7 +165,10 @@ export const get_paginationTypes = (
 				if (firstName) state[firstName] = 20;
 				return state;
 			},
-			get_defaultPaginationStateForDynamic: (state: PaginationState, paginationArgs: FieldWithDerivedData[]): PaginationState => {
+			get_defaultPaginationStateForDynamic: (
+				state: PaginationState,
+				paginationArgs: FieldWithDerivedData[]
+			): PaginationState => {
 				const afterName = paginationArgs.find((arg) => {
 					return arg.dd_standsFor == 'after';
 				})?.dd_displayName;
@@ -150,12 +188,21 @@ export const get_paginationTypes = (
 				let currentQMS_info = schemaData.get_QMS_Field(QMS_name, QMS_type, schemaData);
 				const rowsLocation = endpointInfo.get_rowsLocation(currentQMS_info, schemaData);
 
-				const relayPageInfoFieldsNames = endpointInfo.get_relayPageInfoFieldsNames(currentQMS_info, pageInfoFieldsLocation, schemaData)
-				const relayCursorFieldName = endpointInfo.get_relayCursorFieldName(currentQMS_info, rowsLocation, schemaData)
+				const relayPageInfoFieldsNames = endpointInfo.get_relayPageInfoFieldsNames(
+					currentQMS_info,
+					pageInfoFieldsLocation,
+					schemaData
+				);
+				const relayCursorFieldName = endpointInfo.get_relayCursorFieldName(
+					currentQMS_info,
+					rowsLocation,
+					schemaData
+				);
 
 				const namings = {
-					...relayPageInfoFieldsNames, ...relayCursorFieldName
-				}
+					...relayPageInfoFieldsNames,
+					...relayCursorFieldName
+				};
 
 				if (namings?.endCursor || namings?.startCursor) {
 					if (namings?.hasNextPage) {
@@ -163,7 +210,12 @@ export const get_paginationTypes = (
 							title: namings.hasNextPage,
 							hidden: true,
 							stepsOfFields: [QMS_name, ...pageInfoFieldsLocation, namings.hasNextPage],
-							stepsOfFieldsOBJ: setValueAtPath({}, [QMS_name, ...pageInfoFieldsLocation, namings.hasNextPage], 'novaluehere', true)
+							stepsOfFieldsOBJ: setValueAtPath(
+								{},
+								[QMS_name, ...pageInfoFieldsLocation, namings.hasNextPage],
+								'novaluehere',
+								true
+							)
 						});
 					}
 					if (namings?.hasPreviousPage) {
@@ -171,7 +223,12 @@ export const get_paginationTypes = (
 							title: namings.hasPreviousPage,
 							hidden: true,
 							stepsOfFields: [QMS_name, ...pageInfoFieldsLocation, namings.hasPreviousPage],
-							stepsOfFieldsOBJ: setValueAtPath({}, [QMS_name, ...pageInfoFieldsLocation, namings.hasPreviousPage], 'novaluehere', true)
+							stepsOfFieldsOBJ: setValueAtPath(
+								{},
+								[QMS_name, ...pageInfoFieldsLocation, namings.hasPreviousPage],
+								'novaluehere',
+								true
+							)
 						});
 					}
 					if (namings?.startCursor) {
@@ -179,7 +236,12 @@ export const get_paginationTypes = (
 							title: namings.startCursor,
 							hidden: true,
 							stepsOfFields: [QMS_name, ...pageInfoFieldsLocation, namings.startCursor],
-							stepsOfFieldsOBJ: setValueAtPath({}, [QMS_name, ...pageInfoFieldsLocation, namings.startCursor], 'novaluehere', true)
+							stepsOfFieldsOBJ: setValueAtPath(
+								{},
+								[QMS_name, ...pageInfoFieldsLocation, namings.startCursor],
+								'novaluehere',
+								true
+							)
 						});
 					}
 					if (namings?.endCursor) {
@@ -187,7 +249,12 @@ export const get_paginationTypes = (
 							title: namings.endCursor,
 							hidden: true,
 							stepsOfFields: [QMS_name, ...pageInfoFieldsLocation, namings.endCursor],
-							stepsOfFieldsOBJ: setValueAtPath({}, [QMS_name, ...pageInfoFieldsLocation, namings.endCursor], 'novaluehere', true)
+							stepsOfFieldsOBJ: setValueAtPath(
+								{},
+								[QMS_name, ...pageInfoFieldsLocation, namings.endCursor],
+								'novaluehere',
+								true
+							)
 						});
 					}
 					//return dependencyColsData;
@@ -197,7 +264,12 @@ export const get_paginationTypes = (
 					dependencyColsData.push({
 						title: namings.cursor,
 						stepsOfFields: [QMS_name, ...rowsLocation, namings.cursor],
-						stepsOfFieldsOBJ: setValueAtPath({}, [QMS_name, ...rowsLocation, namings.cursor], 'novaluehere', true)
+						stepsOfFieldsOBJ: setValueAtPath(
+							{},
+							[QMS_name, ...rowsLocation, namings.cursor],
+							'novaluehere',
+							true
+						)
 						//stepsOfFieldsOBJ: stepsOfFieldsToQueryFragmentObject([QMS_name, ...rowsLocation, namings.cursor], false)
 					});
 				}
@@ -211,13 +283,21 @@ export const get_paginationTypes = (
 					return rowsLocation.check(currentQMS_info);
 				}).rowsLocation;
 
-				const relayPageInfoFieldsNames = endpointInfo.get_relayPageInfoFieldsNames(currentQMS_info, pageInfoFieldsLocation, schemaData)
-				const relayCursorFieldName = endpointInfo.get_relayCursorFieldName(currentQMS_info, rowsLocation, schemaData)
+				const relayPageInfoFieldsNames = endpointInfo.get_relayPageInfoFieldsNames(
+					currentQMS_info,
+					pageInfoFieldsLocation,
+					schemaData
+				);
+				const relayCursorFieldName = endpointInfo.get_relayCursorFieldName(
+					currentQMS_info,
+					rowsLocation,
+					schemaData
+				);
 
 				const namings = {
-					...relayPageInfoFieldsNames, ...relayCursorFieldName
-				}
-
+					...relayPageInfoFieldsNames,
+					...relayCursorFieldName
+				};
 
 				const afterName = paginationArgs.find((arg) => {
 					return arg.dd_standsFor == 'after';
@@ -252,7 +332,10 @@ export const get_paginationTypes = (
 				const _state = JSON.parse(JSON.stringify(state));
 				return _state;
 			},
-			isFirstPage: (_paginationState_Store: PaginationStateStore, paginationArgs: FieldWithDerivedData[]) => {
+			isFirstPage: (
+				_paginationState_Store: PaginationStateStore,
+				paginationArgs: FieldWithDerivedData[]
+			) => {
 				const afterName = paginationArgs.find((arg) => {
 					return arg.dd_standsFor == 'after';
 				})?.dd_displayName;
@@ -290,7 +373,10 @@ export const get_paginationTypes = (
 			get_dependencyColsData: (QMS_name: string) => {
 				return [];
 			},
-			get_defaultPaginationStateForDynamic: (state: PaginationState, paginationArgs: FieldWithDerivedData[]): PaginationState => {
+			get_defaultPaginationStateForDynamic: (
+				state: PaginationState,
+				paginationArgs: FieldWithDerivedData[]
+			): PaginationState => {
 				const pageName = paginationArgs.find((arg) => {
 					return arg.dd_standsFor == 'page';
 				})?.dd_displayName;
@@ -298,7 +384,10 @@ export const get_paginationTypes = (
 				_state = { ..._state, [pageName]: 1 };
 				return _state;
 			},
-			get_nextPageState: (state: PaginationState, paginationArgs: FieldWithDerivedData[]): PaginationState => {
+			get_nextPageState: (
+				state: PaginationState,
+				paginationArgs: FieldWithDerivedData[]
+			): PaginationState => {
 				const pageName = paginationArgs.find((arg) => {
 					return arg.dd_standsFor == 'page';
 				})?.dd_displayName;
@@ -306,7 +395,10 @@ export const get_paginationTypes = (
 				_state[pageName]++;
 				return _state;
 			},
-			get_prevPageState: (state: PaginationState, paginationArgs: FieldWithDerivedData[]): PaginationState => {
+			get_prevPageState: (
+				state: PaginationState,
+				paginationArgs: FieldWithDerivedData[]
+			): PaginationState => {
 				const pageName = paginationArgs.find((arg) => {
 					return arg.dd_standsFor == 'page';
 				})?.dd_displayName;
@@ -314,7 +406,10 @@ export const get_paginationTypes = (
 				_state[pageName]--;
 				return _state;
 			},
-			isFirstPage: (_paginationState_Store: PaginationStateStore, paginationArgs: FieldWithDerivedData[]) => {
+			isFirstPage: (
+				_paginationState_Store: PaginationStateStore,
+				paginationArgs: FieldWithDerivedData[]
+			) => {
 				let pageName = paginationArgs.find((arg) => {
 					return arg.dd_standsFor == 'page';
 				})?.dd_displayName;
@@ -329,24 +424,30 @@ export const get_paginationTypes = (
 			get_rowLimitingArgNames: (paginationArgs: FieldWithDerivedData[]) => {
 				return [];
 			},
-			get_initialState: (paginationArgs: FieldWithDerivedData[]): PaginationState => {
-			},
+			get_initialState: (paginationArgs: FieldWithDerivedData[]): PaginationState => {},
 			get_defaultPaginationStateForDynamic: (state) => {
 				return state;
 			},
 			get_dependencyColsData: (QMS_name: string) => {
 				return [];
 			},
-			get_nextPageState: (state: PaginationState, paginationArgs: FieldWithDerivedData[]): PaginationState => {
-			},
-			get_prevPageState: (state: PaginationState, paginationArgs: FieldWithDerivedData[]): PaginationState => {
-			},
-			isFirstPage: (_paginationState_Store: PaginationStateStore, paginationArgs: FieldWithDerivedData[]) => {
+			get_nextPageState: (
+				state: PaginationState,
+				paginationArgs: FieldWithDerivedData[]
+			): PaginationState => {},
+			get_prevPageState: (
+				state: PaginationState,
+				paginationArgs: FieldWithDerivedData[]
+			): PaginationState => {},
+			isFirstPage: (
+				_paginationState_Store: PaginationStateStore,
+				paginationArgs: FieldWithDerivedData[]
+			) => {
 				return true;
 			},
 			check: (standsForArray: string[]) => {
 				return standsForArray.length == 0;
 			}
 		}
-	]
-}
+	];
+};
