@@ -6,7 +6,7 @@ This guide explains how to use the Graphboarder application to explore GraphQL e
 
 On the home page, you will see the **Endpoint Picker**. This displays a list of available GraphQL endpoints.
 
-- **Select**: Click on an endpoint card to connect to it.
+- **Select**: Click on an endpoint card to connect to it. Cards indicate if an endpoint is **"Maintained"** (built-in and verified) or **"User Defined"**.
 - **Search**: Use the search bar to filter endpoints by name.
 - **Add Endpoint**:
   - Click "Add Endpoint" to configure a new custom GraphQL endpoint.
@@ -14,6 +14,7 @@ On the home page, you will see the **Endpoint Picker**. This displays a list of 
   - **URL**: The GraphQL endpoint URL (must start with `http://` or `https://`).
   - **Description**: Optional description for the endpoint.
   - **Headers**: Optional JSON object for headers (e.g., `{"Authorization": "Bearer token"}`).
+  - **Test Connection**: Use the "Test Connection" button to verify if the URL and headers are correct before saving.
 - **Edit/Delete**: User-defined endpoints can be edited or deleted using the buttons on the card.
 - **Export/Import**: You can export your user-defined endpoints to a JSON file and import them later.
 

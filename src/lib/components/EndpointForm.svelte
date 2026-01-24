@@ -20,6 +20,7 @@
 	let urlError = $state('');
 	let headersError = $state('');
 	let generalError = $state('');
+	let isTestingConnection = $state(false);
 
 	// Effect to populate form when endpointToEdit changes
 	$effect(() => {
@@ -124,6 +125,37 @@
 			addToast('Failed to save endpoint', 'error');
 		}
 	};
+
+	const testConnection = async () => {
+		if (!validateUrl() || !validateHeaders()) return;
+
+		isTestingConnection = true;
+		try {
+			let headersObj = {};
+			if (headers.trim()) {
+				headersObj = JSON.parse(headers);
+			}
+
+			const response = await fetch(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					...headersObj
+				},
+				body: JSON.stringify({ query: '{ __typename }' })
+			});
+
+			if (response.ok) {
+				addToast('Connection successful!', 'success');
+			} else {
+				throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+			}
+		} catch (e: any) {
+			addToast(`Connection failed: ${e.message}`, 'error');
+		} finally {
+			isTestingConnection = false;
+		}
+	};
 </script>
 
 <div class="w-full">
@@ -211,6 +243,18 @@
 	{/if}
 
 	<div class="flex justify-end gap-2">
+		<button
+			class="btn btn-outline"
+			onclick={testConnection}
+			disabled={!url || isTestingConnection}
+			type="button"
+		>
+			{#if isTestingConnection}
+				<span class="loading loading-spinner loading-xs"></span>
+			{:else}
+				Test Connection
+			{/if}
+		</button>
 		<button
 			class="btn btn-ghost"
 			onclick={() => {

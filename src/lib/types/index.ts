@@ -254,7 +254,7 @@ export interface ActiveArgumentGroup {
 
 // Endpoint Configuration Types
 export interface RowsLocationPossibility {
-	get_Val: (qmsInfo: FieldWithDerivedData, schemaData?: SchemaDataStore) => string[] | null;
+	get_Val: (qmsInfo: FieldWithDerivedData, schemaData: SchemaDataStore) => string[] | null;
 	check: (qmsInfo: FieldWithDerivedData, schemaData: SchemaDataStore) => boolean;
 }
 
@@ -432,6 +432,11 @@ export interface AvailableEndpoint extends EndpointConfiguration {
 	url: string;
 	description?: string;
 	isMaintained?: boolean;
+	headers?: Record<string, string>;
+	namings?: Record<string, string>;
+	authToken?: string;
+	pageInfoFieldsLocation?: string[];
+	displayNamePossibilitiesForCreateItem?: any[];
 }
 
 // Context Types

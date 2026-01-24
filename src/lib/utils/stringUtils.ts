@@ -1,6 +1,13 @@
 import { stringToQMSString_transformer } from '$lib/utils/dataStructureTransformers';
 import { getPreciseType } from './typeUtils';
 
+/**
+ * Formats data into a string with a maximum length.
+ * @param data - The data to format.
+ * @param length - The maximum length of the resulting string.
+ * @param alwaysStringyfy - Whether to always stringify the data (default: true).
+ * @returns The formatted string, potentially truncated with "...".
+ */
 export const formatData = (
 	data: unknown = '',
 	length: number,
@@ -26,6 +33,16 @@ export const formatData = (
 	return resultingString;
 };
 
+/**
+ * Modifies a string by applying modifiers to text inside and outside of specified boundaries.
+ * @param inputString - The input string to modify.
+ * @param openBoundryChar - The character marking the start of a boundary (default: '(').
+ * @param closeBoundryChar - The character marking the end of a boundary (default: ')').
+ * @param insideTextModifier - A function to modify text inside the boundaries.
+ * @param outsideTextModifier - A function to modify text outside the boundaries.
+ * @param deleteBoundriesIfTextInsideIsEmpty - Whether to delete the boundaries if the text inside becomes empty (default: true).
+ * @returns The modified string.
+ */
 export const smartModifyStringBasedOnBoundries = (
 	inputString: string,
 	openBoundryChar: string = '(',
@@ -115,6 +132,11 @@ function modifyString(input: string): { modifiedSubstring: string; remainingStri
 	return { modifiedSubstring, remainingString };
 }
 
+/**
+ * Generates a list of substrings from a string, handling nested structures/parentheses.
+ * @param string - The input string.
+ * @returns An array of substrings.
+ */
 export const generateListOfSubstrings = (string: string): string[] => {
 	const substrings: string[] = [];
 	let reachedTheEnd = false;
@@ -129,6 +151,11 @@ export const generateListOfSubstrings = (string: string): string[] => {
 	return substrings;
 };
 
+/**
+ * Converts a GraphQL argument object to a string representation.
+ * @param gqlArgObj - The GraphQL argument object.
+ * @returns The string representation of the argument object.
+ */
 export const gqlArgObjToString = (gqlArgObj: Record<string, unknown>): string => {
 	const gqlArgObj_string = JSON.stringify(gqlArgObj);
 	if (gqlArgObj_string == '{ }') {

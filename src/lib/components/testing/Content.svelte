@@ -6,10 +6,10 @@
 	let { nodes = $bindable(), node = $bindable() } = $props();
 
 	const flipDurationMs = 300;
-	function handleDndConsider(e) {
+	function handleDndConsider(e: CustomEvent<any>) {
 		node.items = e.detail.items;
 	}
-	function handleDndFinalize(e) {
+	function handleDndFinalize(e: CustomEvent<any>) {
 		node.items = e.detail.items;
 		nodes = { ...nodes };
 	}

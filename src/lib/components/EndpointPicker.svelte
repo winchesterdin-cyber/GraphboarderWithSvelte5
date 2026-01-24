@@ -1,3 +1,15 @@
+<!--
+	@component
+	EndpointPicker
+
+	A component that allows users to select from a list of available GraphQL endpoints.
+	It provides features to:
+	- Search endpoints by name or URL.
+	- Sort endpoints by name.
+	- Add new custom endpoints.
+	- Edit or delete user-defined endpoints.
+	- Visually distinguish between "Maintained" (built-in) and "User Defined" endpoints.
+-->
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';

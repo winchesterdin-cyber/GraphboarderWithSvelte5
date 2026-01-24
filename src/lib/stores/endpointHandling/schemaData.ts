@@ -23,6 +23,7 @@ export const create_schemaData = () => {
 		update,
 		set_schema: (schema) => {},
 		set_rootTypes: (withDerivedData: false, set_storeVal = true, endpointInfo) => {
+			console.debug('set_rootTypes called', { withDerivedData, set_storeVal });
 			let storeValue = get(store);
 			let { rootTypes, queryFields, mutationFields, schema } = storeValue;
 			let new_rootTypes = sortByName([...schema.types]);
@@ -67,6 +68,7 @@ export const create_schemaData = () => {
 			QMS = ['query', 'mutation', 'subscription'],
 			endpointInfo
 		) => {
+			console.debug('set_QMSFields called', { withDerivedData, set_storeVal, QMS });
 			//QMS -> Query,Mutation,Subscription
 			let storeValue = get(store);
 			let { rootTypes, queryFields, mutationFields, schema } = storeValue;

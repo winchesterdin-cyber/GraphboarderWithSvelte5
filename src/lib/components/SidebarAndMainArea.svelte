@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { clickOutside } from '$lib/actions/clickOutside';
-	import Page from '$lib/Page.svelte';
+	import Page from '$lib/components/Page.svelte';
 
 	let { title, sidebar, main } = $props();
 
@@ -13,6 +13,11 @@
 			? 'visible '
 			: ' invisible'} fixed top-0 left-0 z-50 overflow-y-auto bg-base-200 lg:visible lg:static lg:z-0"
 		use:clickOutside
+		role="button"
+		tabindex="0"
+		onkeydown={(e) => {
+			if (e.key === 'Escape') forceVisibleSidebar = false;
+		}}
 		onclick={() => {
 			forceVisibleSidebar = false;
 		}}
@@ -26,9 +31,9 @@
 	<Page MenuItem={true}>
 		<div class="navbar w-full bg-base-300">
 			<div class="flex-none lg:hidden">
-				<label
-					for="my-drawer-3"
+				<button
 					class="btn btn-square btn-ghost"
+					aria-label="Toggle Sidebar"
 					onclick={() => {
 						forceVisibleSidebar = !forceVisibleSidebar;
 					}}
@@ -45,13 +50,13 @@
 							d="M4 6h16M4 12h16M4 18h16"
 						/></svg
 					>
-				</label>
+				</button>
 			</div>
 			<div class="mx-2 flex-1 px-2">{title}</div>
 			<div class="block flex-none">
 				<ul class="flex">
 					<li>
-						<button class="btn btn-sm"><i class="bi bi-plus-square text-xl"></i> </button>
+						<button class="btn btn-sm" aria-label="Add"><i class="bi bi-plus-square text-xl"></i> </button>
 					</li>
 				</ul>
 			</div>

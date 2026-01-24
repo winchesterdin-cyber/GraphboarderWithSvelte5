@@ -10,4 +10,10 @@ declare global {
 	}
 }
 
+declare module 'svelte/elements' {
+	export interface HTMLAttributes<T> {
+		onclick_outside?: (event: CustomEvent<any>) => void;
+	}
+}
+
 export {};
