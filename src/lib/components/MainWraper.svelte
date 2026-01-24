@@ -4,7 +4,6 @@
 	import { create_schemaData } from '$lib/stores/endpointHandling/schemaData';
 
 	import { setContext } from 'svelte';
-	import { createClient } from '@urql/core';
 	import { browser } from '$app/environment';
 	import { Create_urqlCoreClient } from '$lib/utils/urqlCoreClient';
 	import { setContextClient, Client, fetchExchange } from '@urql/svelte';

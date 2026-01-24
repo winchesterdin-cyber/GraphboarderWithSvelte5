@@ -430,7 +430,7 @@ export interface FieldsGrouped {
 export interface AvailableEndpoint extends EndpointConfiguration {
 	id: string;
 	url: string;
-	description: string;
+	description?: string;
 	isMaintained?: boolean;
 }
 

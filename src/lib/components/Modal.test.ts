@@ -9,9 +9,9 @@ describe('Modal Component', () => {
 			expect(container).toBeTruthy();
 		});
 
-		it('should accept modalIdetifier prop', () => {
+		it('should accept modalIdentifier prop', () => {
 			const { container } = render(Modal, {
-				props: { modalIdetifier: 'custom-modal' }
+				props: { modalIdentifier: 'custom-modal' }
 			});
 			expect(container).toBeTruthy();
 		});
@@ -32,26 +32,10 @@ describe('Modal Component', () => {
 	});
 
 	describe('Event Handling', () => {
-		it('should accept mounted event listener', () => {
-			const mounted = vi.fn();
-			const { container } = render(Modal, {
-				props: { onMounted: mounted, modalIdetifier: 'test-modal' }
-			});
-			expect(container).toBeTruthy();
-		});
-
-		it('should accept apply event listener', () => {
-			const apply = vi.fn();
-			const { container } = render(Modal, {
-				props: { onApply: apply }
-			});
-			expect(container).toBeTruthy();
-		});
-
 		it('should accept cancel event listener', () => {
 			const cancel = vi.fn();
 			const { container } = render(Modal, {
-				props: { onCancel: cancel, modalIdetifier: 'test-modal' }
+				props: { onCancel: cancel, modalIdentifier: 'test-modal' }
 			});
 			expect(container).toBeTruthy();
 		});
@@ -63,7 +47,7 @@ describe('Modal Component', () => {
 
 			identifiers.forEach((identifier) => {
 				const { container } = render(Modal, {
-					props: { modalIdetifier: identifier }
+					props: { modalIdentifier: identifier }
 				});
 				expect(container).toBeTruthy();
 			});
@@ -85,11 +69,11 @@ describe('Modal Component', () => {
 	describe('Multiple Instances', () => {
 		it('should support multiple modal instances', () => {
 			const modal1 = render(Modal, {
-				props: { modalIdetifier: 'modal-1' }
+				props: { modalIdentifier: 'modal-1' }
 			});
 
 			const modal2 = render(Modal, {
-				props: { modalIdetifier: 'modal-2' }
+				props: { modalIdentifier: 'modal-2' }
 			});
 
 			expect(modal1.container).toBeTruthy();

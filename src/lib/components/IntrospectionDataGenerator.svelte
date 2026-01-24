@@ -6,7 +6,7 @@
 	import { run } from 'svelte/legacy';
 
 	import { endpointsSchemaData } from '$lib/stores/testData/endpointsSchemaData';
-	import { createClient, fetchExchange } from '@urql/core';
+	import { fetchExchange } from '@urql/core';
 	import { browser } from '$app/environment';
 	import { queryStore, gql, getContextClient } from '@urql/svelte';
 	import { getContext } from 'svelte';

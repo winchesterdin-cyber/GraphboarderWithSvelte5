@@ -104,14 +104,14 @@ describe('usefulFunctions', () => {
 
 	describe('get_KindsArray', () => {
 		it('should extract kind from direct kind property', () => {
-			const type: Partial<FieldWithDerivedData> = {
+			const type: any = {
 				kind: 'SCALAR' as GraphQLKind
 			};
 			expect(get_KindsArray(type)).toEqual(['SCALAR']);
 		});
 
 		it('should extract kinds from nested type properties', () => {
-			const type: Partial<FieldWithDerivedData> = {
+			const type: any = {
 				kind: 'NON_NULL' as GraphQLKind,
 				type: {
 					kind: 'LIST' as GraphQLKind
@@ -121,7 +121,7 @@ describe('usefulFunctions', () => {
 		});
 
 		it('should extract kinds from deeply nested ofType properties', () => {
-			const type: Partial<FieldWithDerivedData> = {
+			const type: any = {
 				kind: 'NON_NULL' as GraphQLKind,
 				ofType: {
 					kind: 'LIST' as GraphQLKind,
@@ -134,7 +134,7 @@ describe('usefulFunctions', () => {
 		});
 
 		it('should handle complex nested type structures', () => {
-			const type: Partial<FieldWithDerivedData> = {
+			const type: any = {
 				kind: 'NON_NULL' as GraphQLKind,
 				type: {
 					kind: 'LIST' as GraphQLKind,
@@ -397,7 +397,7 @@ describe('usefulFunctions', () => {
 
 	describe('Integration tests', () => {
 		it('should correctly identify GraphQL NON_NULL wrapped LIST of SCALAR', () => {
-			const type: Partial<FieldWithDerivedData> = {
+			const type: any = {
 				kind: 'NON_NULL' as GraphQLKind,
 				ofType: {
 					kind: 'LIST' as GraphQLKind,
@@ -420,7 +420,7 @@ describe('usefulFunctions', () => {
 		});
 
 		it('should extract both kinds and names from complex type', () => {
-			const type: Partial<FieldWithDerivedData> = {
+			const type: any = {
 				name: 'Query',
 				kind: 'NON_NULL' as GraphQLKind,
 				type: {

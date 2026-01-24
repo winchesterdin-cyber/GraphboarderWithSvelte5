@@ -23,7 +23,9 @@
 	let forceVisibleSidebar = $state(false);
 
 	$effect(() => {
-		endpointid = $page.params.endpointid;
+		endpointid = $page.params.endpointid ?? '';
+		console.debug('EndpointLayout: Resolving endpoint ID:', endpointid);
+
 		if (endpointid) {
 			// 1. Try exact match in localEndpoints (hardcoded)
 			let found = localEndpoints.find((endpoint) => endpoint.id == endpointid);
@@ -44,6 +46,12 @@
 				}
 			}
 
+			if (found) {
+				console.debug('EndpointLayout: Found endpoint configuration:', found);
+			} else {
+				console.warn('EndpointLayout: Endpoint configuration not found for ID:', endpointid);
+			}
+
 			endpointConfiguration = found;
 
 			// Redirect to explorer if we are on the root endpoint page
@@ -53,6 +61,7 @@
 				const targetPath = `/endpoints/${endpointid}`;
 				// Handle trailing slash differences
 				if (currentPath === targetPath || currentPath === targetPath + '/') {
+					console.debug('EndpointLayout: Redirecting to explorer');
 					goto(`${targetPath}/explorer`, { replaceState: true });
 				}
 			}

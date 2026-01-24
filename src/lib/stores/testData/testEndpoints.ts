@@ -1,9 +1,10 @@
 import { getRootType, stringToJs } from '$lib/utils/usefulFunctions';
+import type { AvailableEndpoint } from '$lib/types';
 
 //TODO:
 //idFieldNamePossibilities (id naming convention)
 //countLocationPossibilities
-export const localEndpoints = [
+export const localEndpoints: AvailableEndpoint[] = [
 	{
 		id: 'directus',
 		url: 'https://directus-production-c2de.up.railway.app/graphql',
