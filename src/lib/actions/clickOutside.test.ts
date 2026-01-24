@@ -24,13 +24,13 @@ describe('clickOutside action', () => {
 		// Cleanup
 		document.body.removeChild(element);
 		document.body.removeChild(outsideElement);
-		element.removeEventListener('click_outside', eventListener);
+		element.removeEventListener('click_outside' as any, eventListener);
 	});
 
 	describe('Event Detection', () => {
 		it('should dispatch click_outside event when clicking outside element', () => {
 			const action = clickOutside(element);
-			element.addEventListener('click_outside', eventListener);
+			element.addEventListener('click_outside' as any, eventListener);
 
 			// Click outside the element
 			const event = new MouseEvent('click', {
@@ -45,7 +45,7 @@ describe('clickOutside action', () => {
 
 		it('should not dispatch event when clicking inside element', () => {
 			const action = clickOutside(element);
-			element.addEventListener('click_outside', eventListener);
+			element.addEventListener('click_outside' as any, eventListener);
 
 			// Click inside the element
 			const event = new MouseEvent('click', {
@@ -64,7 +64,7 @@ describe('clickOutside action', () => {
 			element.appendChild(child);
 
 			const action = clickOutside(element);
-			element.addEventListener('click_outside', eventListener);
+			element.addEventListener('click_outside' as any, eventListener);
 
 			// Click on child element
 			const event = new MouseEvent('click', {
@@ -81,7 +81,7 @@ describe('clickOutside action', () => {
 
 		it('should not dispatch event when click has defaultPrevented', () => {
 			const action = clickOutside(element);
-			element.addEventListener('click_outside', eventListener);
+			element.addEventListener('click_outside' as any, eventListener);
 
 			// Create a prevented event
 			const event = new MouseEvent('click', {
@@ -108,7 +108,7 @@ describe('clickOutside action', () => {
 
 		it('should stop listening after destroy is called', () => {
 			const action = clickOutside(element);
-			element.addEventListener('click_outside', eventListener);
+			element.addEventListener('click_outside' as any, eventListener);
 
 			// Destroy the action
 			action.destroy();
@@ -133,8 +133,8 @@ describe('clickOutside action', () => {
 			const action1 = clickOutside(element);
 			const action2 = clickOutside(element2);
 
-			element.addEventListener('click_outside', listener1);
-			element2.addEventListener('click_outside', listener2);
+			element.addEventListener('click_outside' as any, listener1);
+			element2.addEventListener('click_outside' as any, listener2);
 
 			// Click outside both elements
 			const event = new MouseEvent('click', {
@@ -155,7 +155,7 @@ describe('clickOutside action', () => {
 	describe('Edge Cases', () => {
 		it('should handle rapid successive clicks', () => {
 			const action = clickOutside(element);
-			element.addEventListener('click_outside', eventListener);
+			element.addEventListener('click_outside' as any, eventListener);
 
 			// Multiple rapid clicks outside
 			for (let i = 0; i < 5; i++) {
@@ -172,7 +172,7 @@ describe('clickOutside action', () => {
 
 		it('should handle clicks on document body', () => {
 			const action = clickOutside(element);
-			element.addEventListener('click_outside', eventListener);
+			element.addEventListener('click_outside' as any, eventListener);
 
 			const event = new MouseEvent('click', {
 				bubbles: true,
@@ -194,7 +194,7 @@ describe('clickOutside action', () => {
 			document.body.appendChild(parent);
 
 			const action = clickOutside(child);
-			child.addEventListener('click_outside', eventListener);
+			child.addEventListener('click_outside' as any, eventListener);
 
 			// Click on grandchild (should not trigger)
 			let event = new MouseEvent('click', {
@@ -218,7 +218,7 @@ describe('clickOutside action', () => {
 
 		it('should handle null or undefined event targets gracefully', () => {
 			const action = clickOutside(element);
-			element.addEventListener('click_outside', eventListener);
+			element.addEventListener('click_outside' as any, eventListener);
 
 			// Create event with no specific target
 			const event = new MouseEvent('click', {
@@ -243,7 +243,7 @@ describe('clickOutside action', () => {
 			return new Promise<void>((resolve) => {
 				const action = clickOutside(element);
 
-				element.addEventListener('click_outside', ((event: CustomEvent) => {
+				element.addEventListener('click_outside' as any, ((event: CustomEvent) => {
 					expect(event).toBeInstanceOf(CustomEvent);
 					expect(event.type).toBe('click_outside');
 					action.destroy();

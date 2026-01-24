@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
 	import Content from './Content.svelte';
 
-	let nodes = $state({
+	let nodes: Record<string, any> = $state({
 		node1: {
 			name: 'node 1',
 			items: [{ id: 'node2' }, { id: 'node3' }, { id: 'node4' }],

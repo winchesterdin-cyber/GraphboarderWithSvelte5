@@ -12,6 +12,7 @@ On the home page, you will see the **Endpoint Picker**. This displays a list of 
   - Click "Add Endpoint" to configure a new custom GraphQL endpoint.
   - **ID**: A unique name for your endpoint (saved locally).
   - **URL**: The GraphQL endpoint URL (must start with `http://` or `https://`).
+  - **Description**: Optional description for the endpoint.
   - **Headers**: Optional JSON object for headers (e.g., `{"Authorization": "Bearer token"}`).
 - **Edit/Delete**: User-defined endpoints can be edited or deleted using the buttons on the card.
 - **Export/Import**: You can export your user-defined endpoints to a JSON file and import them later.
