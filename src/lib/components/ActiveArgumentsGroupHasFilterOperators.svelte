@@ -229,7 +229,7 @@
 	let argsInfo = $state(QMS_info?.args);
 	let showModal = $state(false);
 
-	let groupDisplayTitle = $state('');
+	let groupDisplayTitle = $derived(generateGroupDisplayTitle(node, getPreciseType));
 
 	if (node?.addDefaultFields || (node?.isMain && addDefaultFields)) {
 		nodeAddDefaultFields(
@@ -275,48 +275,29 @@
 			}
 		}
 	});
-	run(() => {
-	});
-	run(() => {
-	});
-	run(() => {
-	});
-	run(() => {
-	});
-	run(() => {
-	});
-	run(() => {
-	});
-	run(() => {
-	});
-	run(() => {
-	});
-	run(() => {
+
+	$effect(() => {
 		stepsOfFieldsFull = stepsOfNodesToStepsOfFields(stepsOfNodes);
 		stepsOfFields = filterElFromArr(stepsOfFieldsFull, ['list', 'bonded']);
 		updateNodeSteps(node, stepsOfFieldsFull, stepsOfFields, stepsOfNodes, filterElFromArr);
 	});
-	run(() => {
+	$effect(() => {
 		if (labelEl) {
 			const dimensions = getShadowDimensions(labelEl);
 			shadowHeight = dimensions.height;
 			shadowWidth = dimensions.width;
 		}
 	});
-	run(() => {
+	$effect(() => {
 		if (shadowHeight && shadowEl) {
 			labelElClone = updateShadowElement(shadowEl, labelEl, shadowHeight, shadowWidth);
 		}
 	});
-	run(() => {
-		groupDisplayTitle = generateGroupDisplayTitle(node, getPreciseType);
-	});
-	run(() => {
+
+	$effect(() => {
 		if (QMSWraperContextForSelectedQMS) {
 			idColName = QMSWraperContextForSelectedQMS.idColName;
 		}
-	});
-	run(() => {
 	});
 </script>
 
