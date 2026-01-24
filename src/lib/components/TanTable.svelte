@@ -106,11 +106,10 @@
 			columns: columns
 		}));
 	});
-
 </script>
 
-<div class=" h-[80vh] overscroll-contain overflow-y-auto rounded-box pb-32">
-	<table class="table table-zebra table-compact w-full rounded-none static">
+<div class=" h-[80vh] overflow-y-auto overscroll-contain rounded-box pb-32">
+	<table class="table-compact table static w-full rounded-none table-zebra">
 		<thead class="sticky top-0 z-20 bg-base-300">
 			{#each $table.getHeaderGroups() as headerGroup}
 				<tr class="sticky top-0 z-20">
@@ -126,16 +125,18 @@
 						<th class="normal-case">
 							<div class="dropdown dropdown-end">
 								<div role="button" tabindex="0" class="cursor-pointer">
-									<div class="flex space-x-2 hover:text-primary rounded-box">
+									<div class="flex space-x-2 rounded-box hover:text-primary">
 										<div
 											class={idColName == header.column.columnDef.header
 												? ' underline decoration-dotted'
 												: ''}
 										>
 											{#if !header.isPlaceholder}
-												{@const SvelteComponent = flexRender(header.column.columnDef.header, header.getContext())}
-												<SvelteComponent
-												/>
+												{@const SvelteComponent = flexRender(
+													header.column.columnDef.header,
+													header.getContext()
+												)}
+												<SvelteComponent />
 											{/if}
 										</div>
 										<div class="bi bi-chevron-down"></div>
@@ -144,21 +145,21 @@
 								<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 								<div
 									tabindex="0"
-									class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-max text-sm shadow-2xl"
+									class="dropdown-content menu w-max rounded-box bg-base-100 p-2 text-sm shadow shadow-2xl"
 								>
 									<div
-										class="flex flex-col overflow-x-auto text-sm font-normal normal-case w-full space-y-2"
+										class="flex w-full flex-col space-y-2 overflow-x-auto text-sm font-normal normal-case"
 									>
-										<div class="w-full p-2 rounded-box flex flex-col space-y-2">
+										<div class="flex w-full flex-col space-y-2 rounded-box p-2">
 											<div
-												class="w-full pr-2 hover:text-primary cursor-pointer max-w-xs md:max-w-sm overflow-x-auto"
+												class="w-full max-w-xs cursor-pointer overflow-x-auto pr-2 hover:text-primary md:max-w-sm"
 											>
 												<ColumnInfo stepsOfFields={header.column.columnDef.stepsOfFields} />
 												<!-- {colsData[index].stepsOfFields.join(' > ')} -->
 											</div>
 											<button
 												type="button"
-												class="w-full pr-2 hover:text-primary cursor-pointer text-left"
+												class="w-full cursor-pointer pr-2 text-left hover:text-primary"
 												onclick={() => {
 													onHideColumn?.({ column: header.column.columnDef.header });
 												}}
@@ -178,7 +179,7 @@
 			{#each $table.getRowModel().rows as row, i (row.id)}
 				<tr
 					tabindex="0"
-					class="bg-base-100 hover:bg-base-300 cursor-pointer hover z-0"
+					class="hover z-0 cursor-pointer bg-base-100 hover:bg-base-300"
 					onkeydown={(e) => {
 						if (e.key === 'Enter' || e.key === ' ') {
 							onRowClicked?.(row.original);
@@ -190,7 +191,12 @@
 					}}
 				>
 					{#if enableRowSelectionState}
-						<th class="z-0" onclick={(e) => { e.stopPropagation(); }}>
+						<th
+							class="z-0"
+							onclick={(e) => {
+								e.stopPropagation();
+							}}
+						>
 							<label>
 								<input
 									checked={row.getIsSelected()}
@@ -200,7 +206,6 @@
 									onchange={(e) => {
 										const toggleSelectedHandler = row.getToggleSelectedHandler();
 										toggleSelectedHandler(e);
-
 									}}
 								/>
 							</label>
@@ -226,14 +231,14 @@
 	{#if $paginationOptions?.infiniteScroll && !loadMore && data?.length > 0}
 		<!-- content here -->
 		<button
-			class="btn btn-primary w-full mt-4 sticky left-0"
+			class="btn sticky left-0 mt-4 w-full btn-primary"
 			onclick={() => {
 				loadMore = true;
 			}}
 		>
 			Load more
 		</button>
-		<div class="text-center text-xs text-gray-500 mt-4 sticky left-0">
+		<div class="sticky left-0 mt-4 text-center text-xs text-gray-500">
 			For now pagination works for 'limit' over 20 if set using 'filters',works for any 'limit' if
 			set by 'pagination store'.
 		</div>

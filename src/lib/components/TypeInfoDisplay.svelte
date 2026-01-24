@@ -150,29 +150,32 @@
 			currentQMSWraperCtxData = mergedChildren_QMSWraperCtxData_Store.getObj(stepsOfFields);
 		}
 	});
-	let currentQMSArguments = $derived(getValueAtPath($mergedChildren_finalGqlArgObj_Store, [
-		...stepsOfFields,
-		'QMSarguments'
-	]));
+	let currentQMSArguments = $derived(
+		getValueAtPath($mergedChildren_finalGqlArgObj_Store, [...stepsOfFields, 'QMSarguments'])
+	);
 </script>
 
 {#if template == 'default'}
-	<div class="flex space-x-2 min-w-max w-full">
-		<div class="flex space-x-2 w-1/3 min-w-max w-full">
+	<div class="flex w-full min-w-max space-x-2">
+		<div class="flex w-1/3 w-full min-w-max space-x-2">
 			{#if canExpand}
-				<button type="button" class="btn btn-xs p-1 rounded normal-case" onclick={expand}>
+				<button type="button" class="btn rounded p-1 normal-case btn-xs" onclick={expand}>
 					{showExpand ? '-' : '+'}
 				</button>
 			{:else}
-				<button type="button" class="btn btn-xs p-1 rounded normal-case btn-disabled" onclick={expand}>+</button>
+				<button
+					type="button"
+					class="btn btn-disabled rounded p-1 normal-case btn-xs"
+					onclick={expand}>+</button
+				>
 			{/if}
-			<div class="bg-secondary p-1 rounded">{index + 1}</div>
-			<div class="btn btn-xs btn-info normal-case font-light">
+			<div class="rounded bg-secondary p-1">{index + 1}</div>
+			<div class="btn font-light normal-case btn-xs btn-info">
 				{dd_displayName}
 			</div>
 		</div>
 		{#if !canExpand}
-			<div class="btn btn-xs bg-base-200 p-1 rounded">
+			<div class="btn rounded bg-base-200 p-1 btn-xs">
 				{#if dd_displayName == dd_namesArray[dd_namesArray.length - 1]}
 					{''}
 				{:else}
@@ -181,7 +184,7 @@
 			</div>
 		{/if}
 		{#if canExpand}
-			<div class="btn btn-xs btn-accent normal-case rounded px-2 py-1">
+			<div class="btn rounded px-2 py-1 normal-case btn-xs btn-accent">
 				{#if dd_namesArray?.[1] && dd_namesArray?.[1] !== dd_displayName}
 					{dd_namesArray?.[1]}
 				{:else}
@@ -191,7 +194,7 @@
 		{/if}
 		<div class="w-1/2">
 			<div class="flex">
-				<div class="bg-secondary p-1 rounded">{dd_kindsArray?.join(' of ')}</div>
+				<div class="rounded bg-secondary p-1">{dd_kindsArray?.join(' of ')}</div>
 			</div>
 
 			<div class="flex"></div>
@@ -200,16 +203,16 @@
 	</div>
 {:else if template == 'columnAddDisplay'}
 	<div
-		class="min-w-max w-full cursor-pointer rounded-box flex text-base select-none hover:text-primary"
+		class="flex w-full min-w-max cursor-pointer rounded-box text-base select-none hover:text-primary"
 	>
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 
 		{#if canExpand}
-			<div class="overflow-visible grid grid-col gap-[-10px] h-2 w-6">
+			<div class="grid-col grid h-2 w-6 gap-[-10px] overflow-visible">
 				<button
 					type="button"
 					aria-label={showExpand ? 'Collapse' : 'Expand'}
-					class="w-10 duration-100 mx-auto w-min pl-1 {hasSelected
+					class="mx-auto w-10 w-min pl-1 duration-100 {hasSelected
 						? 'text-secondary'
 						: ''} {showExpand ? 'bi-arrow-90deg-down mt-2 ' : 'bi-chevron-expand'}"
 					onclick={expand}
@@ -221,7 +224,7 @@
 			{isSelected} -->
 			<input
 				type="checkbox"
-				class=" checkbox-xs checkbox input-accent mr-1 self-center ml-1"
+				class=" checkbox mr-1 ml-1 self-center checkbox-xs input-accent"
 				bind:checked={isSelected}
 				onchange={() => {
 					if (isSelected) {
@@ -249,7 +252,7 @@
 		<div
 			role="button"
 			tabindex="0"
-			class="min-w-max w-full pr-2 text-md duration-100=="
+			class="text-md duration-100== w-full min-w-max pr-2"
 			onkeydown={(e) => {
 				if (e.key === 'Enter' || e.key === ' ') {
 					if (canExpand) {
@@ -290,7 +293,7 @@
 
 			{#if canAcceptArguments}
 				<button
-					class="btn btn-xs btn-ghost normal-case rounded px-2 {hasQMSarguments
+					class="btn rounded px-2 normal-case btn-ghost btn-xs {hasQMSarguments
 						? 'text-success'
 						: ''} "
 					onclick={(e) => {

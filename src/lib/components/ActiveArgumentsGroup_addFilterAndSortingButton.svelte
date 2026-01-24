@@ -65,27 +65,27 @@
 	const endpointInfo = QMSMainWraperContext?.endpointInfo;
 </script>
 
-<div class="bg-base-100  rounded-box">
-	<div class="font-bold flex">
+<div class="rounded-box bg-base-100">
+	<div class="flex font-bold">
 		<div class=" ">
-			<div class="dropdown dropdown-start ">
+			<div class="dropdown dropdown-start">
 				<!-- svelte-ignore a11y_label_has_associated_control -->
 				<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 				<label
 					tabindex="0"
-					class="btn btn-sm btn-ghost bi bi-plus-circle text-lg p-1 mr-2 overscroll-contain"
+					class="bi bi-plus-circle btn mr-2 overscroll-contain p-1 text-lg btn-ghost btn-sm"
 				></label>
 				<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 				<div
 					tabindex="0"
-					class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-max text-sm shadow-2xl overflow-y-auto overscroll-contain  max-h-52 sm:max-h-72 md:max-h-90    max-w-xs sm:max-w-md md:max-w-xl lg:max-w-2xl"
+					class="dropdown-content menu max-h-52 w-max max-w-xs overflow-y-auto overscroll-contain rounded-box bg-base-100 p-2 text-sm shadow shadow-2xl sm:max-h-72 sm:max-w-md md:max-h-90 md:max-w-xl lg:max-w-2xl"
 				>
 					<div
-						class="flex flex-col overflow-x-auto overscroll-contain text-sm font-normal normal-case min-w-max w-full "
+						class="flex w-full min-w-max flex-col overflow-x-auto overscroll-contain text-sm font-normal normal-case"
 					>
 						{#if hasGroup_argsNode}
 							<button
-								class="btn btn-primary btn-xs mt-4 normal-case font-thin text-base sticky top-0"
+								class="btn sticky top-0 mt-4 text-base font-thin normal-case btn-xs btn-primary"
 								onclick={() => {
 									let randomNr = Math.random();
 									group.group_argsNode[`${randomNr}`] = {
@@ -136,7 +136,7 @@
 			<i
 				role="button"
 				tabindex="0"
-				class="bi bi-info-circle text-secondary px-2 cursor-pointer"
+				class="bi bi-info-circle cursor-pointer px-2 text-secondary"
 				title={group.description}
 				onkeydown={(e) => {
 					if (e.key === 'Enter' || e.key === ' ') {

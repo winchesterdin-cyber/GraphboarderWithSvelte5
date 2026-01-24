@@ -35,9 +35,7 @@
 			// 3. Legacy: Check for prefixes (if any legacy links still exist)
 			if (!found) {
 				if (endpointid.startsWith('localEndpoint--')) {
-					found = localEndpoints.find(
-						(endpoint) => endpoint.id == endpointid.split('--')[1]
-					);
+					found = localEndpoints.find((endpoint) => endpoint.id == endpointid.split('--')[1]);
 				} else if (endpointid.startsWith('localstorageEndpoint--') && $localStorageEndpoints) {
 					found = $localStorageEndpoints.find(
 						(endpoint) => endpoint.id == endpointid.split('--')[1]
@@ -64,21 +62,21 @@
 
 {#if endpointid}
 	{#if isLoading}
-		<div class="flex items-center justify-center h-screen w-full">
-			<span class="loading loading-spinner loading-lg"></span>
+		<div class="flex h-screen w-full items-center justify-center">
+			<span class="loading loading-lg loading-spinner"></span>
 		</div>
 	{:else if endpointConfiguration}
 		<MainWraper endpointInfoProvided={endpointConfiguration}>
-			<main class="bg-base-300  flex w-[100vw] overflow-hidden">
+			<main class="flex w-[100vw] overflow-hidden bg-base-300">
 				<div class="  md:max-w-[300px]">
 					<Sidebar bind:forceVisibleSidebar />
 				</div>
-				<div class="flex flex-col w-full md:w-[65vw]   grow h-screen">
-					<div class=" bg-base-100 min-h-[50px] flex">
+				<div class="flex h-screen w-full grow flex-col md:w-[65vw]">
+					<div class=" flex min-h-[50px] bg-base-100">
 						<button
 							type="button"
 							aria-label="Open sidebar"
-							class="btn btn-square btn-ghost  md:hidden"
+							class="btn btn-square btn-ghost md:hidden"
 							onclick={() => {
 								forceVisibleSidebar = true;
 							}}
@@ -87,7 +85,7 @@
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
 								viewBox="0 0 24 24"
-								class="inline-block w-6 h-6 stroke-current "
+								class="inline-block h-6 w-6 stroke-current"
 								><path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -103,7 +101,7 @@
 			</main>
 		</MainWraper>
 	{:else}
-		<div class="flex items-center justify-center h-screen w-full">
+		<div class="flex h-screen w-full items-center justify-center">
 			<div class="text-center">
 				<h2 class="text-xl font-bold">Endpoint Not Found</h2>
 				<p class="py-4">Could not find configuration for ID: {endpointid}</p>

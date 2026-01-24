@@ -56,7 +56,7 @@ describe('usefulFunctions', () => {
 
 		it('should identify function type', () => {
 			expect(getPreciseType(() => {})).toBe('function');
-			expect(getPreciseType(function() {})).toBe('function');
+			expect(getPreciseType(function () {})).toBe('function');
 		});
 
 		it('should identify date type', () => {

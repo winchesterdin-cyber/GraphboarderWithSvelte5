@@ -102,7 +102,7 @@
 			showSelectQMSModal = false;
 		}}
 	>
-		<div class="flex flex-col ">
+		<div class="flex flex-col">
 			<!-- <div class="w-full text-lg text-center  mb-2 ">
 				<p class="badge badge-info font-bold">
 					{groupDisplayTitle}

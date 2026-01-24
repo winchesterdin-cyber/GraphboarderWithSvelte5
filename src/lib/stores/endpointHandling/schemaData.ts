@@ -9,13 +9,19 @@ import {
 import { get, writable } from 'svelte/store';
 
 export const create_schemaData = () => {
-	const store = writable({ rootTypes: [], queryFields: [], mutationFields: [], schema: {}, isReady: false });
+	const store = writable({
+		rootTypes: [],
+		queryFields: [],
+		mutationFields: [],
+		schema: {},
+		isReady: false
+	});
 	const { subscribe, set, update } = store;
 	let returnObject = {
 		subscribe,
 		set,
 		update,
-		set_schema: (schema) => { },
+		set_schema: (schema) => {},
 		set_rootTypes: (withDerivedData: false, set_storeVal = true, endpointInfo) => {
 			let storeValue = get(store);
 			let { rootTypes, queryFields, mutationFields, schema } = storeValue;
@@ -33,12 +39,17 @@ export const create_schemaData = () => {
 						});
 					});
 					el?.inputFields?.forEach((inputField) => {
-						Object.assign(inputField, generate_derivedData(inputField, new_rootTypes, false, endpointInfo));
+						Object.assign(
+							inputField,
+							generate_derivedData(inputField, new_rootTypes, false, endpointInfo)
+						);
 					});
 					el?.enumValues?.forEach((enumValue) => {
-						Object.assign(enumValue, generate_derivedData(enumValue, new_rootTypes, false, endpointInfo));
+						Object.assign(
+							enumValue,
+							generate_derivedData(enumValue, new_rootTypes, false, endpointInfo)
+						);
 					});
-
 				});
 			}
 
@@ -49,11 +60,12 @@ export const create_schemaData = () => {
 
 			return new_rootTypes;
 		},
-		set_rootTypes_DerivedData: () => { },
+		set_rootTypes_DerivedData: () => {},
 		set_QMSFields: (
 			withDerivedData: false,
 			set_storeVal = true,
-			QMS = ['query', 'mutation', 'subscription'], endpointInfo
+			QMS = ['query', 'mutation', 'subscription'],
+			endpointInfo
 		) => {
 			//QMS -> Query,Mutation,Subscription
 			let storeValue = get(store);
@@ -76,22 +88,35 @@ export const create_schemaData = () => {
 					new_QMS_Fields?.forEach((el) => {
 						Object.assign(el, generate_derivedData(el, rootTypes, isQMSField, endpointInfo));
 						el?.args?.forEach((arg) => {
-							Object.assign(arg, generate_derivedData(arg, rootTypes, 'is QMS sub-field', endpointInfo));
+							Object.assign(
+								arg,
+								generate_derivedData(arg, rootTypes, 'is QMS sub-field', endpointInfo)
+							);
 						});
 						el?.fields?.forEach((field) => {
-							Object.assign(field, generate_derivedData(field, rootTypes, 'is QMS sub-field', endpointInfo));
+							Object.assign(
+								field,
+								generate_derivedData(field, rootTypes, 'is QMS sub-field', endpointInfo)
+							);
 							field?.args?.forEach((arg) => {
-								Object.assign(arg, generate_derivedData(arg, rootTypes, 'is QMS sub-field', endpointInfo));
+								Object.assign(
+									arg,
+									generate_derivedData(arg, rootTypes, 'is QMS sub-field', endpointInfo)
+								);
 							});
 						});
 						el?.inputFields?.forEach((inputField) => {
-							Object.assign(inputField, generate_derivedData(inputField, 'is QMS sub-field', rootTypes, endpointInfo));
+							Object.assign(
+								inputField,
+								generate_derivedData(inputField, 'is QMS sub-field', rootTypes, endpointInfo)
+							);
 						});
 						el?.enumValues?.forEach((enumValue) => {
-							Object.assign(enumValue, generate_derivedData(enumValue, 'is QMS sub-field', rootTypes, endpointInfo));
+							Object.assign(
+								enumValue,
+								generate_derivedData(enumValue, 'is QMS sub-field', rootTypes, endpointInfo)
+							);
 						});
-
-
 					});
 				}
 
@@ -107,20 +132,21 @@ export const create_schemaData = () => {
 			//set rootTypes,queryFields,mutationFields,subscriptionFields //fields or types?
 			let rootTypes = returnObject.set_rootTypes(true, true, endpointInfo);
 			let storeValue = get(store);
-			let QMSFields = returnObject.set_QMSFields(true, false, [
-				'query',
-				'mutation',
-				'subscription'
-			], endpointInfo);
+			let QMSFields = returnObject.set_QMSFields(
+				true,
+				false,
+				['query', 'mutation', 'subscription'],
+				endpointInfo
+			);
 			set({
 				rootTypes,
-				...QMSFields, isReady: true
+				...QMSFields,
+				isReady: true
 			});
-
 		},
 		get_rootType: (rootTypes, RootType_Name, schemaData) => {
 			if (!rootTypes) {
-				rootTypes = get(schemaData).rootTypes
+				rootTypes = get(schemaData).rootTypes;
 			}
 
 			return rootTypes.filter((type) => {
@@ -135,10 +161,15 @@ export const create_schemaData = () => {
 				return field.name == name;
 			})[0];
 			if (!QMSField) {
-
-				console.info({ QMSField }, name, { storeValue }, get(store), storeValue?.[`${_QMS_}Fields`])
+				console.info(
+					{ QMSField },
+					name,
+					{ storeValue },
+					get(store),
+					storeValue?.[`${_QMS_}Fields`]
+				);
 			}
-			return QMSField
+			return QMSField;
 		}
 	};
 	return returnObject;

@@ -5,6 +5,7 @@ Thank you for your interest in contributing to GraphboarderWithSvelte5!
 ## Setup
 
 1.  **Install Dependencies**:
+
     ```bash
     npm install
     ```
@@ -48,20 +49,20 @@ npm test
 
 ## Coding Standards
 
--   **Naming Convention**: Use `camelCase` for variables and functions.
--   **Semicolons**: Use explicit semicolons.
--   **Logging**: Avoid `console.log` in production code. Use `console.warn` or `console.error` if necessary, or better yet, proper UI feedback.
--   **Components**: Prefer passing callbacks as props (e.g., `onRowClicked`) over dispatching custom events.
--   **State**: Use Svelte 5 runes (`$state`, `$derived`, `$effect`) instead of legacy stores where appropriate.
+- **Naming Convention**: Use `camelCase` for variables and functions.
+- **Semicolons**: Use explicit semicolons.
+- **Logging**: Avoid `console.log` in production code. Use `console.warn` or `console.error` if necessary, or better yet, proper UI feedback.
+- **Components**: Prefer passing callbacks as props (e.g., `onRowClicked`) over dispatching custom events.
+- **State**: Use Svelte 5 runes (`$state`, `$derived`, `$effect`) instead of legacy stores where appropriate.
 
 ## Refactoring Guidelines
 
--   Keep components small and focused.
--   Extract reusable logic into `src/lib/utils`.
--   Avoid "any" types; define interfaces in `src/lib/types`.
--   Ensure tests cover new logic.
+- Keep components small and focused.
+- Extract reusable logic into `src/lib/utils`.
+- Avoid "any" types; define interfaces in `src/lib/types`.
+- Ensure tests cover new logic.
 
 ## Project Structure
 
--   `src/lib`: Library code (components, stores, utils).
--   `src/routes`: Showcase/Preview application.
+- `src/lib`: Library code (components, stores, utils).
+- `src/routes`: Showcase/Preview application.

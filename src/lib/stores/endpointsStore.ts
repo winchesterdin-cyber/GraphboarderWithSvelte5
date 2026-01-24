@@ -5,8 +5,14 @@ import { getSortedAndOrderedEndpoints } from '$lib/utils/usefulFunctions';
 import type { AvailableEndpoint } from '$lib/types';
 import { browser } from '$app/environment';
 
-export const userEndpoints: Writable<AvailableEndpoint[]> = persisted<AvailableEndpoint[]>('userEndpoints', []);
-export const localStorageEndpoints: Writable<AvailableEndpoint[]> = persisted<AvailableEndpoint[]>('localStorageEndpoints', []);
+export const userEndpoints: Writable<AvailableEndpoint[]> = persisted<AvailableEndpoint[]>(
+	'userEndpoints',
+	[]
+);
+export const localStorageEndpoints: Writable<AvailableEndpoint[]> = persisted<AvailableEndpoint[]>(
+	'localStorageEndpoints',
+	[]
+);
 
 const migrateLegacyEndpoints = () => {
 	if (!browser) return;

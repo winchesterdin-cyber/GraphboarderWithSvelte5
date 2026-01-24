@@ -4,10 +4,10 @@ A Svelte 5 library for exploring and visualizing GraphQL endpoints.
 
 ## Features
 
--   **GraphQL Explorer**: Connect to any GraphQL endpoint.
--   **Visual Query Builder**: Build queries visually without writing code.
--   **Data Visualization**: View results in tables and other formats.
--   **Local Persistence**: Save your endpoints locally.
+- **GraphQL Explorer**: Connect to any GraphQL endpoint.
+- **Visual Query Builder**: Build queries visually without writing code.
+- **Data Visualization**: View results in tables and other formats.
+- **Local Persistence**: Save your endpoints locally.
 
 ## Getting Started
 
@@ -25,15 +25,15 @@ A Svelte 5 library for exploring and visualizing GraphQL endpoints.
 
 For detailed guides, please check the [guides](./guides) folder:
 
--   [Usage Guide](./guides/usage.md)
--   [Setup Guide](./guides/setup.md)
--   [Architecture Guide](./guides/architecture.md)
--   [Project Structure](./guides/project_structure.md)
--   [State Management](./guides/state_management.md)
--   [Components Guide](./guides/components.md)
--   [Utilities Guide](./guides/utilities.md)
--   [Testing Guide](./guides/testing.md)
--   [Contribution Guide](./guides/contribution.md)
+- [Usage Guide](./guides/usage.md)
+- [Setup Guide](./guides/setup.md)
+- [Architecture Guide](./guides/architecture.md)
+- [Project Structure](./guides/project_structure.md)
+- [State Management](./guides/state_management.md)
+- [Components Guide](./guides/components.md)
+- [Utilities Guide](./guides/utilities.md)
+- [Testing Guide](./guides/testing.md)
+- [Contribution Guide](./guides/contribution.md)
 
 ## Development
 

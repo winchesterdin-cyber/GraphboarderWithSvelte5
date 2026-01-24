@@ -16,13 +16,12 @@
 		id: Date.now() + Math.random()
 	};
 	let objIsStarred = $derived(mergedChildren_controlPanel_Store.getObj(currentObject));
-	run(() => {
-	});
+	run(() => {});
 </script>
 
 <button
-	class="flex btn btn-xs "
-  aria-label="Add node to control panel"
+	class="btn flex btn-xs"
+	aria-label="Add node to control panel"
 	onclick={() => {
 		if (objIsStarred) {
 			mergedChildren_controlPanel_Store.delete(currentObject);
@@ -32,5 +31,5 @@
 		objIsStarred = mergedChildren_controlPanel_Store.getObj(currentObject);
 	}}
 >
-	<i class="bi  {objIsStarred ? 'bi-star-fill' : 'bi-star'}"></i>
+	<i class="bi {objIsStarred ? 'bi-star-fill' : 'bi-star'}"></i>
 </button>

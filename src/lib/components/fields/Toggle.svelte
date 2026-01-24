@@ -19,12 +19,6 @@
 <div class="form-control">
 	<label class="label cursor-pointer">
 		<span class="label-text mr-2">{label}</span>
-		<input
-			type="checkbox"
-			class="toggle"
-			bind:checked={value}
-			{disabled}
-			onchange={handleChange}
-		/>
+		<input type="checkbox" class="toggle" bind:checked={value} {disabled} onchange={handleChange} />
 	</label>
 </div>

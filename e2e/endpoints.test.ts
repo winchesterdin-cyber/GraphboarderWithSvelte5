@@ -41,7 +41,10 @@ test.describe('Endpoints Page', () => {
 		await expect(page.locator('input[placeholder="my-endpoint"]')).toHaveValue('test-endpoint');
 
 		// Change URL
-		await page.fill('input[placeholder="https://example.com/graphql"]', 'https://test.com/graphql/v2');
+		await page.fill(
+			'input[placeholder="https://example.com/graphql"]',
+			'https://test.com/graphql/v2'
+		);
 		await page.click('button:has-text("Save")');
 
 		// Verify updated
@@ -57,36 +60,42 @@ test.describe('Endpoints Page', () => {
 		await expect(page.locator('text=test-endpoint')).not.toBeVisible();
 	});
 
-    test('should sort endpoints', async ({ page }) => {
-        // Add two endpoints
-        await page.click('text=Add Endpoint');
-        await page.fill('input[placeholder="my-endpoint"]', 'A-Endpoint');
-        await page.fill('input[placeholder="https://example.com/graphql"]', 'https://a.com');
-        await page.click('button:has-text("Save")');
+	test('should sort endpoints', async ({ page }) => {
+		// Add two endpoints
+		await page.click('text=Add Endpoint');
+		await page.fill('input[placeholder="my-endpoint"]', 'A-Endpoint');
+		await page.fill('input[placeholder="https://example.com/graphql"]', 'https://a.com');
+		await page.click('button:has-text("Save")');
 
-        await page.click('text=Add Endpoint');
-        await page.fill('input[placeholder="my-endpoint"]', 'Z-Endpoint');
-        await page.fill('input[placeholder="https://example.com/graphql"]', 'https://z.com');
-        await page.click('button:has-text("Save")');
+		await page.click('text=Add Endpoint');
+		await page.fill('input[placeholder="my-endpoint"]', 'Z-Endpoint');
+		await page.fill('input[placeholder="https://example.com/graphql"]', 'https://z.com');
+		await page.click('button:has-text("Save")');
 
-        // Default sort is A-Z
-        const cards = page.locator('.card-title');
-        // We might have other endpoints, but A-Endpoint should be before Z-Endpoint
+		// Default sort is A-Z
+		const cards = page.locator('.card-title');
+		// We might have other endpoints, but A-Endpoint should be before Z-Endpoint
 
-        // Select Z-A
-        await page.selectOption('select', 'name-desc');
+		// Select Z-A
+		await page.selectOption('select', 'name-desc');
 
-        // Now Z-Endpoint should be before A-Endpoint (relative order)
-        // Let's just check the text content of the first few cards or specific logic
-        // But verifying strict order might be hard if there are other endpoints.
+		// Now Z-Endpoint should be before A-Endpoint (relative order)
+		// Let's just check the text content of the first few cards or specific logic
+		// But verifying strict order might be hard if there are other endpoints.
 
-        // Clean up
-        await page.locator('.card', { hasText: 'A-Endpoint' }).hover();
-        await page.locator('.card', { hasText: 'A-Endpoint' }).locator('button[title="Delete Endpoint"]').click();
-        await page.click('button:has-text("Confirm")');
+		// Clean up
+		await page.locator('.card', { hasText: 'A-Endpoint' }).hover();
+		await page
+			.locator('.card', { hasText: 'A-Endpoint' })
+			.locator('button[title="Delete Endpoint"]')
+			.click();
+		await page.click('button:has-text("Confirm")');
 
-        await page.locator('.card', { hasText: 'Z-Endpoint' }).hover();
-        await page.locator('.card', { hasText: 'Z-Endpoint' }).locator('button[title="Delete Endpoint"]').click();
-        await page.click('button:has-text("Confirm")');
-    });
+		await page.locator('.card', { hasText: 'Z-Endpoint' }).hover();
+		await page
+			.locator('.card', { hasText: 'Z-Endpoint' })
+			.locator('button[title="Delete Endpoint"]')
+			.click();
+		await page.click('button:has-text("Confirm")');
+	});
 });

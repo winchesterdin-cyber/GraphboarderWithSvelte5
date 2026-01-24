@@ -1,9 +1,7 @@
 import _ from 'lodash';
 import { get } from 'svelte/store';
 import { page } from '$app/stores';
-import {
-    stringToQMSString_transformer
-} from '$lib/utils/dataStructureTransformers';
+import { stringToQMSString_transformer } from '$lib/utils/dataStructureTransformers';
 import {
 	deleteIfChildrenHaveOneKeyAndLastKeyIsQMSarguments,
 	filterElFromArr,
@@ -31,15 +29,12 @@ import type {
 	ActiveArgumentsDataGroupedStore
 } from '$lib/types';
 
+import { argumentCanRunQuery, sortingFunctionMutipleColumnsGivenArray } from './data-processing';
 import {
-    argumentCanRunQuery,
-    sortingFunctionMutipleColumnsGivenArray
-} from './data-processing';
-import {
-    getFields_Grouped,
-    getRootType,
-    get_nodeFieldsQMS_info,
-    get_scalarColsData
+	getFields_Grouped,
+	getRootType,
+	get_nodeFieldsQMS_info,
+	get_scalarColsData
 } from './schema-traversal';
 
 export const build_QMS_bodyPart = (
@@ -55,26 +50,37 @@ export const build_QMS_bodyPart = (
 	}
 	// Warning: console.info removed to reduce noise
 
-	const QMSarguments = { [QMS_name]: { QMSarguments: QMS_args } }
-	const fullObject = JSON.parse(JSON.stringify(deleteIfChildrenHaveOneKeyAndLastKeyIsQMSarguments(_.mergeWith({}, QMSarguments, mergedChildren_finalGqlArgObj, QMS_fields))
-	))
+	const QMSarguments = { [QMS_name]: { QMSarguments: QMS_args } };
+	const fullObject = JSON.parse(
+		JSON.stringify(
+			deleteIfChildrenHaveOneKeyAndLastKeyIsQMSarguments(
+				_.mergeWith({}, QMSarguments, mergedChildren_finalGqlArgObj, QMS_fields)
+			)
+		)
+	);
 
 	const inputString = JSON.stringify(fullObject, function (key, value) {
-		if (key === "QMSarguments") {
-			return "(" + JSON.stringify(value) + ")";
+		if (key === 'QMSarguments') {
+			return '(' + JSON.stringify(value) + ')';
 		}
 		return value;
-	}).replaceAll('\"QMSarguments\":', '')
-	const listOfSubstrings = generateListOfSubstrings(inputString)
+	}).replaceAll('\"QMSarguments\":', '');
+	const listOfSubstrings = generateListOfSubstrings(inputString);
 	const outsideTextModifier = (text: string): string => {
-		return text.replaceAll(/novaluehere|"|:/gi, '')
-	}
+		return text.replaceAll(/novaluehere|"|:/gi, '');
+	};
 
-	const modifiedString = smartModifyStringBasedOnBoundries(listOfSubstrings.join(''), '(', ')', stringToQMSString_transformer, outsideTextModifier);
+	const modifiedString = smartModifyStringBasedOnBoundries(
+		listOfSubstrings.join(''),
+		'(',
+		')',
+		stringToQMSString_transformer,
+		outsideTextModifier
+	);
 
-	const QMS_bodyPart = modifiedString.slice(1, -1)
+	const QMS_bodyPart = modifiedString.slice(1, -1);
 
-	return QMS_bodyPart
+	return QMS_bodyPart;
 };
 
 export const generate_gqlArgObj = (group_argumentsData: ActiveArgumentData[]): GQLArgObj => {
@@ -82,16 +88,15 @@ export const generate_gqlArgObj = (group_argumentsData: ActiveArgumentData[]): G
 	let gqlArgObj = {};
 	let canRunQuery = true;
 	group_argumentsData.every((argData) => {
-		let _argumentCanRunQuery = argumentCanRunQuery(argData)
+		let _argumentCanRunQuery = argumentCanRunQuery(argData);
 		if (!_argumentCanRunQuery) {
-			canRunQuery = false
-			return false
+			canRunQuery = false;
+			return false;
 		}
-		let { chd_dispatchValue, stepsOfFields, dd_displayName } =
-			argData;
+		let { chd_dispatchValue, stepsOfFields, dd_displayName } = argData;
 
 		let curr_gqlArgObj: any = gqlArgObj;
-		curr_gqlArgObj[dd_displayName] = chd_dispatchValue
+		curr_gqlArgObj[dd_displayName] = chd_dispatchValue;
 	});
 
 	return {
@@ -103,13 +108,20 @@ export const generate_gqlArgObj = (group_argumentsData: ActiveArgumentData[]): G
 	};
 };
 
-export const generate_group_gqlArgObjForRoot = (group_argumentsData: ActiveArgumentData[]): Record<string, unknown> => {
-	return _.merge({}, ...group_argumentsData.map((arggumentData) => {
-		return arggumentData.gqlArgObj
-	}))
-}
+export const generate_group_gqlArgObjForRoot = (
+	group_argumentsData: ActiveArgumentData[]
+): Record<string, unknown> => {
+	return _.merge(
+		{},
+		...group_argumentsData.map((arggumentData) => {
+			return arggumentData.gqlArgObj;
+		})
+	);
+};
 
-export const generate_group_gqlArgObj = (group: ActiveArgumentGroup): {
+export const generate_group_gqlArgObj = (
+	group: ActiveArgumentGroup
+): {
 	group_gqlArgObj: Record<string, unknown>;
 	group_gqlArgObj_string: string;
 	group_canRunQuery: boolean;
@@ -125,9 +137,9 @@ export const generate_group_gqlArgObj = (group: ActiveArgumentGroup): {
 	});
 	if (group_argumentsData?.length > 0) {
 		if (group.group_isRoot) {
-			group_gqlArgObj = generate_group_gqlArgObjForRoot(group_argumentsData)
+			group_gqlArgObj = generate_group_gqlArgObjForRoot(group_argumentsData);
 		} else {
-            // Logic for non-root group is missing, but error suppression was requested.
+			// Logic for non-root group is missing, but error suppression was requested.
 		}
 	}
 
@@ -139,73 +151,90 @@ export const generate_group_gqlArgObj = (group: ActiveArgumentGroup): {
 	};
 };
 
-const validItems = (items: { id: string }[], nodes: Record<string, ContainerData>): { id: string }[] => {
+const validItems = (
+	items: { id: string }[],
+	nodes: Record<string, ContainerData>
+): { id: string }[] => {
 	return items.filter((item) => {
 		let itemData = nodes[item.id];
-		return itemData.inUse || (itemData.operator && validItems(itemData.items, nodes).length > 0 || itemData.selectedRowsColValues);
+		return (
+			itemData.inUse ||
+			(itemData.operator && validItems(itemData.items, nodes).length > 0) ||
+			itemData.selectedRowsColValues
+		);
 	});
 };
 
-export const generate_group_gqlArgObj_forHasOperators = (items: { id: string }[], group_name: string, nodes: Record<string, ContainerData>): {
+export const generate_group_gqlArgObj_forHasOperators = (
+	items: { id: string }[],
+	group_name: string,
+	nodes: Record<string, ContainerData>
+): {
 	resultingGqlArgObj: Record<string, unknown> | undefined;
 	itemsResultingData: Record<string, unknown>[];
 } => {
-	let resultingGqlArgObj: Record<string, unknown> | undefined
-	let itemsResultingData: Record<string, unknown>[] = []
+	let resultingGqlArgObj: Record<string, unknown> | undefined;
+	let itemsResultingData: Record<string, unknown>[] = [];
 	const spreadItemsIfInSpreadContainers = (items: { id: string }[]): { id: string }[] => {
-		const spreadOutItems: { id: string }[] = []
-		items.forEach(item => {
+		const spreadOutItems: { id: string }[] = [];
+		items.forEach((item) => {
 			if ((item as any)?.operator == '~spread~') {
 				const validItemsResult = validItems((item as any).items, nodes);
-				spreadOutItems.push(...validItemsResult)
+				spreadOutItems.push(...validItemsResult);
 			} else {
-				spreadOutItems.push(item)
+				spreadOutItems.push(item);
 			}
 		});
-		return spreadOutItems
-	}
+		return spreadOutItems;
+	};
 
-	const spreadOutItems = spreadItemsIfInSpreadContainers(items)
+	const spreadOutItems = spreadItemsIfInSpreadContainers(items);
 	spreadOutItems.forEach((item) => {
 		let itemData = nodes[item.id];
-		const isContainer = itemData.hasOwnProperty('items')
-		const nodeStep = itemData?.stepsOfNodes[itemData?.stepsOfNodes.length - 1]
-		const nodeStepClean = filterElFromArr(nodeStep, [null, undefined, 'bonded', 'list'])
+		const isContainer = itemData.hasOwnProperty('items');
+		const nodeStep = itemData?.stepsOfNodes[itemData?.stepsOfNodes.length - 1];
+		const nodeStepClean = filterElFromArr(nodeStep, [null, undefined, 'bonded', 'list']);
 
-		const operator = itemData.operator
+		const operator = itemData.operator;
 		let itemObj = {};
-		let itemObjCurr: any = itemObj
-		const displayName = itemData?.dd_displayName
-		let dataToAssign
+		let itemObjCurr: any = itemObj;
+		const displayName = itemData?.dd_displayName;
+		let dataToAssign;
 
 		if (isContainer) {
 			const validItemsResult = validItems(spreadItemsIfInSpreadContainers(itemData.items), nodes);
-			const gqlArgObjForItems = generate_group_gqlArgObj_forHasOperators(validItemsResult, group_name, nodes).itemsResultingData
+			const gqlArgObjForItems = generate_group_gqlArgObj_forHasOperators(
+				validItemsResult,
+				group_name,
+				nodes
+			).itemsResultingData;
 			if (operator == 'bonded' || !itemData?.dd_kindList) {
-				const merged_gqlArgObjForItems = _.merge({}, ...gqlArgObjForItems)
-				dataToAssign = merged_gqlArgObjForItems
+				const merged_gqlArgObjForItems = _.merge({}, ...gqlArgObjForItems);
+				dataToAssign = merged_gqlArgObjForItems;
 			} else {
-				dataToAssign = gqlArgObjForItems
+				dataToAssign = gqlArgObjForItems;
 			}
 		} else {
-			dataToAssign = nodes[item.id]?.gqlArgObj
+			dataToAssign = nodes[item.id]?.gqlArgObj;
 		}
 		if (itemData.selectedRowsColValues) {
 			if (Array.isArray(dataToAssign)) {
-				dataToAssign = [...itemData.selectedRowsColValues, ...dataToAssign]
+				dataToAssign = [...itemData.selectedRowsColValues, ...dataToAssign];
 			} else {
-				dataToAssign = _.merge({}, itemData.selectedRowsColValues[0], dataToAssign)
-
+				dataToAssign = _.merge({}, itemData.selectedRowsColValues[0], dataToAssign);
 			}
 		}
-		resultingGqlArgObj = setValueAtPath({}, nodeStepClean, dataToAssign, true) as Record<string, unknown>
-		let itemObjectTestCurr = setValueAtPath({}, nodeStepClean, dataToAssign, true)
-		let itemObjectTest2 = 'not set'
+		resultingGqlArgObj = setValueAtPath({}, nodeStepClean, dataToAssign, true) as Record<
+			string,
+			unknown
+		>;
+		let itemObjectTestCurr = setValueAtPath({}, nodeStepClean, dataToAssign, true);
+		let itemObjectTest2 = 'not set';
 		if (resultingGqlArgObj == undefined) {
 			// let itemObjectTest2 = 'set'
 			//itemObjectTest2 = dataToAssign
-			resultingGqlArgObj = dataToAssign
-			itemObjectTestCurr = dataToAssign
+			resultingGqlArgObj = dataToAssign;
+			itemObjectTestCurr = dataToAssign;
 		}
 
 		if (isContainer) {
@@ -214,10 +243,10 @@ export const generate_group_gqlArgObj_forHasOperators = (items: { id: string }[]
 				itemObjCurr = itemObjCurr['_not'];
 			}
 			if (displayName) {
-				itemObjCurr[displayName] = dataToAssign
-				itemObjCurr = itemObjCurr[displayName]
+				itemObjCurr[displayName] = dataToAssign;
+				itemObjCurr = itemObjCurr[displayName];
 			} else {
-				itemObjCurr = _.merge(itemObjCurr, dataToAssign)
+				itemObjCurr = _.merge(itemObjCurr, dataToAssign);
 			}
 		}
 
@@ -226,12 +255,11 @@ export const generate_group_gqlArgObj_forHasOperators = (items: { id: string }[]
 				itemObjCurr['_not'] = dataToAssign;
 				itemObjCurr = itemObjCurr['_not'];
 			} else {
-				itemObj = dataToAssign
+				itemObj = dataToAssign;
 			}
 		}
 
-		itemsResultingData.push(itemObj)
-
+		itemsResultingData.push(itemObj);
 	});
 	return {
 		resultingGqlArgObj,
@@ -239,7 +267,9 @@ export const generate_group_gqlArgObj_forHasOperators = (items: { id: string }[]
 	};
 };
 
-export const generate_group_gqlArgObjAndCanRunQuery_forHasOperators = (group: ActiveArgumentGroup): {
+export const generate_group_gqlArgObjAndCanRunQuery_forHasOperators = (
+	group: ActiveArgumentGroup
+): {
 	group_gqlArgObj: Record<string, unknown> | undefined;
 	group_gqlArgObj_string: string;
 	group_canRunQuery: boolean;
@@ -257,7 +287,7 @@ export const generate_group_gqlArgObjAndCanRunQuery_forHasOperators = (group: Ac
 		[mainContainer],
 		group_name,
 		nodes
-	)
+	);
 
 	let group_argumentsData = group.group_args.filter((arg) => {
 		return arg.inUse;
@@ -265,11 +295,14 @@ export const generate_group_gqlArgObjAndCanRunQuery_forHasOperators = (group: Ac
 	group_canRunQuery = group_argumentsData.every((arg) => {
 		return arg.canRunQuery;
 	});
-	let group_gqlArgObj
+	let group_gqlArgObj;
 	if (group_hasAllArgs) {
-		group_gqlArgObj = generate_group_gqlArgObj_forHasOperatorsRESULT.resultingGqlArgObj?.[mainContainer.dd_displayName]
+		group_gqlArgObj =
+			generate_group_gqlArgObj_forHasOperatorsRESULT.resultingGqlArgObj?.[
+				mainContainer.dd_displayName
+			];
 	} else {
-		group_gqlArgObj = generate_group_gqlArgObj_forHasOperatorsRESULT.resultingGqlArgObj
+		group_gqlArgObj = generate_group_gqlArgObj_forHasOperatorsRESULT.resultingGqlArgObj;
 	}
 	let group_gqlArgObj_string = gqlArgObjToString(group_gqlArgObj as Record<string, unknown>);
 	return {
@@ -279,9 +312,13 @@ export const generate_group_gqlArgObjAndCanRunQuery_forHasOperators = (group: Ac
 	};
 };
 
-export const generate_finalGqlArgObj_fromGroups = (activeArgumentsDataGrouped: ActiveArgumentGroup[]): FinalGQLArgObj => {
+export const generate_finalGqlArgObj_fromGroups = (
+	activeArgumentsDataGrouped: ActiveArgumentGroup[]
+): FinalGQLArgObj => {
 	let finalGqlArgObj = {};
-	let final_canRunQuery = activeArgumentsDataGrouped.every((group) => { return group.group_canRunQuery })
+	let final_canRunQuery = activeArgumentsDataGrouped.every((group) => {
+		return group.group_canRunQuery;
+	});
 
 	activeArgumentsDataGrouped.forEach((group) => {
 		Object.assign(finalGqlArgObj, group.group_gqlArgObj);
@@ -290,7 +327,12 @@ export const generate_finalGqlArgObj_fromGroups = (activeArgumentsDataGrouped: A
 	return { finalGqlArgObj, final_canRunQuery };
 };
 
-export const getQMSLinks = (QMSName: QMSType = 'query', parentURL: string, endpointInfo: EndpointInfoStore, schemaData: SchemaData): { url: string; title: string }[] => {
+export const getQMSLinks = (
+	QMSName: QMSType = 'query',
+	parentURL: string,
+	endpointInfo: EndpointInfoStore,
+	schemaData: SchemaData
+): { url: string; title: string }[] => {
 	let $page = get(page);
 	// let origin = $page.url.origin; // Unused
 	let queryLinks: { url: string; title: string }[] = [];
@@ -309,7 +351,7 @@ export const getQMSLinks = (QMSName: QMSType = 'query', parentURL: string, endpo
 				[ga, gb]
 			]);
 		});
-	}
+	};
 
 	queryLinks = sortIt($schemaData?.[`${QMSName}Fields`])?.map((query) => {
 		let queryName = query.name;
@@ -318,10 +360,11 @@ export const getQMSLinks = (QMSName: QMSType = 'query', parentURL: string, endpo
 		let currentQMS_info = schemaData.get_QMS_Field(queryName, QMSName, schemaData);
 		const rowsLocation = endpointInfo.get_rowsLocation(currentQMS_info, schemaData);
 		const nodeFieldsQMS_info = get_nodeFieldsQMS_info(currentQMS_info, rowsLocation, schemaData);
-		let scalarFields = get_scalarColsData(nodeFieldsQMS_info, [
-			currentQMS_info.dd_displayName,
-			...rowsLocation
-		], schemaData);
+		let scalarFields = get_scalarColsData(
+			nodeFieldsQMS_info,
+			[currentQMS_info.dd_displayName, ...rowsLocation],
+			schemaData
+		);
 
 		let mandatoryArgs = query?.args?.filter((arg) => {
 			return arg.dd_NON_NULL;
@@ -352,7 +395,6 @@ export const stepsOfFieldsToQueryFragmentObject = (
 	let _stepsOfFields = [...stepsOfFields];
 	if (excludeFirstStep) {
 		_stepsOfFields.shift();
-
 	}
 	let _stepsOfFields_length = _stepsOfFields.length;
 	let queryObject = {};
@@ -368,8 +410,10 @@ export const stepsOfFieldsToQueryFragmentObject = (
 	return queryObject;
 };
 
-export const tableColsDataToQueryFields = (tableColsData: TableColumnData[]): StepsOfFieldsObject | string => {
-	if (tableColsData.length as any == '') {
+export const tableColsDataToQueryFields = (
+	tableColsData: TableColumnData[]
+): StepsOfFieldsObject | string => {
+	if ((tableColsData.length as any) == '') {
 		return ``;
 	}
 	const queryFragmentsObjects = tableColsData
@@ -393,19 +437,21 @@ export const nodeAddDefaultFields = (
 	schemaData: SchemaData,
 	endpointInfo: EndpointInfoStore
 ): void => {
-
 	const group_argsNode = group.group_argsNode;
 
 	const dd_displayNameToExclude = [
 		...node.items.map((item) => {
 			return group_argsNode?.[item.id]?.dd_displayName;
-		}), '_and', '_or', '_not', 'and', 'or', 'not'
+		}),
+		'_and',
+		'_or',
+		'_not',
+		'and',
+		'or',
+		'not'
 	];
 
-	let fields_Grouped = getFields_Grouped(
-		node,
-		dd_displayNameToExclude, schemaData
-	);
+	let fields_Grouped = getFields_Grouped(node, dd_displayNameToExclude, schemaData);
 	let scalarFields = fields_Grouped.scalarFields;
 	let non_scalarFields = fields_Grouped.non_scalarFields;
 	let enumFields = fields_Grouped.enumFields;
@@ -421,7 +467,12 @@ export const nodeAddDefaultFields = (
 			id: `${JSON.stringify(stepsOfFields)}${Math.random()}`,
 			...element
 		};
-		activeArgumentsDataGrouped_Store.add_activeArgument(newArgData, group.group_name, node?.id, endpointInfo);
+		activeArgumentsDataGrouped_Store.add_activeArgument(
+			newArgData,
+			group.group_name,
+			node?.id,
+			endpointInfo
+		);
 	});
 
 	let baseFilterOperators = ['_and', '_or', '_not', 'and', 'or', 'not'];
@@ -466,7 +517,7 @@ export const nodeAddDefaultFields = (
 				id: randomNr,
 				operator,
 				not: false,
-				isMain: false,
+				isMain: false
 			};
 			if (node?.items) {
 				node.items.push({ id: randomNr });
@@ -474,10 +525,12 @@ export const nodeAddDefaultFields = (
 				group.group_argsNode['mainContainer'].items.push({ id: randomNr });
 			}
 		});
-	activeArgumentsDataGrouped_Store.update((data) => { return data })//force update
+	activeArgumentsDataGrouped_Store.update((data) => {
+		return data;
+	}); //force update
 
 	node.addDefaultFields = false;
-}
+};
 
 export const generate_finalGqlArgObjAndCanRunQuery = (
 	activeArgumentsDataGrouped: ActiveArgumentGroup[],
@@ -497,4 +550,4 @@ export const generate_finalGqlArgObjAndCanRunQuery = (
 		}
 	});
 	return generate_finalGqlArgObj_fromGroups(groups_gqlArgObj);
-}
+};

@@ -63,30 +63,30 @@
 
 {#if template == 'default'}
 	<div class="flex space-x-2">
-		<div class="flex space-x-2 w-1/3">
+		<div class="flex w-1/3 space-x-2">
 			{#if dd_canExpand}
-				<button type="button" class="btn btn-xs  p-1 rounded normal-case" onclick={expand}>
+				<button type="button" class="btn rounded p-1 normal-case btn-xs" onclick={expand}>
 					{showExpand ? '-' : '+'}
 				</button>
 			{:else}
 				<button
 					type="button"
-					class="btn btn-xs  p-1 rounded normal-case btn-disabled"
+					class="btn btn-disabled rounded p-1 normal-case btn-xs"
 					onclick={expand}>+</button
 				>
 			{/if}
-			<div class="bg-secondary p-1 rounded">{index + 1}</div>
-			<div class="btn btn-xs btn-info normal-case font-light ">
+			<div class="rounded bg-secondary p-1">{index + 1}</div>
+			<div class="btn font-light normal-case btn-xs btn-info">
 				{dd_displayName}
 			</div>
 		</div>
 
-		<div class="w-1/2 ">
+		<div class="w-1/2">
 			<div class="flex">
-				<div class="bg-secondary p-1 rounded ">{dd_kindsArray.join(' of ')}</div>
+				<div class="rounded bg-secondary p-1">{dd_kindsArray.join(' of ')}</div>
 
 				{#if !dd_canExpand}
-					<div class="btn btn-xs  bg-base-200 p-1 rounded">
+					<div class="btn rounded bg-base-200 p-1 btn-xs">
 						{#if dd_displayName == dd_namesArray[dd_namesArray.length - 1]}
 							{''}
 						{:else}
@@ -95,7 +95,7 @@
 					</div>
 				{/if}
 				{#if dd_canExpand}
-					<div class="btn btn-xs  bg-base-200  rounded px-2 py-1">
+					<div class="btn rounded bg-base-200 px-2 py-1 btn-xs">
 						{#if dd_namesArray[0] !== dd_displayName}
 							({dd_namesArray[0]})
 						{:else if dd_namesArray[1] && dd_namesArray[1] !== dd_displayName}
@@ -115,7 +115,7 @@
 	<!-- svelte-ignore a11y_label_has_associated_control -->
 	<button
 		type="button"
-		class=" cursor-pointer  hover:text-primary px-2 py-2 rounded-box flex text-base min-w-max  w-full active:font-black duration-100 select-none"
+		class=" flex w-full min-w-max cursor-pointer rounded-box px-2 py-2 text-base duration-100 select-none hover:text-primary active:font-black"
 		onclick={() => {
 			/////
 			if (dd_kindEl == 'INPUT_OBJECT') {
@@ -145,11 +145,11 @@
 			// // }
 		}}
 	>
-		<div class=" pr-2  w-full min-w-max {dd_NON_NULL && 'underline underline-offset-0'}">
+		<div class=" w-full min-w-max pr-2 {dd_NON_NULL && 'underline underline-offset-0'}">
 			{dd_displayName}
 		</div>
 
-		<div class="w-10  ">
+		<div class="w-10">
 			{#if dd_kindEl == 'INPUT_OBJECT'}
 				{#if dd_kindList}
 					<div class="bi bi-card-list mx-auto w-min"></div>

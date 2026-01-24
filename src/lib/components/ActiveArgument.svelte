@@ -5,11 +5,7 @@
 	import AutoInterface from '$lib/components/fields/AutoInterface.svelte';
 	import { SHADOW_ITEM_MARKER_PROPERTY_NAME } from 'svelte-dnd-action';
 	import { getContext, setContext } from 'svelte';
-	import type {
-		ActiveArgumentData,
-		ActiveArgumentGroup,
-		ContainerData
-	} from '$lib/types/index';
+	import type { ActiveArgumentData, ActiveArgumentGroup, ContainerData } from '$lib/types/index';
 	import Toggle from '$lib/components/fields/Toggle.svelte';
 	import { clickOutside } from '$lib/actions/clickOutside';
 	import Modal from './Modal.svelte';
@@ -259,8 +255,8 @@
 		}}
 	>
 		<div class="flex flex-col">
-			<div class="w-full text-lg text-center mb-2">
-				<p class="badge badge-info font-bold">
+			<div class="mb-2 w-full text-center text-lg">
+				<p class="badge font-bold badge-info">
 					<!-- {#if group.group_name == 'root'}
 						{activeArgumentData.stepsOfFields?.join(' > ')}
 					{:else}
@@ -275,7 +271,7 @@
 					return inputField.dd_displayName == '_not';
 				})}
 					<div class="form-control">
-						<label class="label cursor-pointer w-min py-0">
+						<label class="label w-min cursor-pointer py-0">
 							<span class="label-text pr-1">Not</span>
 							<input
 								type="checkbox"
@@ -290,18 +286,21 @@
 				{/if}
 
 				<div class="form-control mr-1">
-					<label class="label cursor-pointer w-min py-0">
+					<label class="label w-min cursor-pointer py-0">
 						<span class="label-text pr-1">active</span>
 						<input
 							type="checkbox"
 							class="toggle toggle-xs"
 							checked={activeArgumentData?.inUse}
-							onchangecapture={(e) => { e.stopPropagation(); inUse_toggle(); }}
+							onchangecapture={(e) => {
+								e.stopPropagation();
+								inUse_toggle();
+							}}
 						/>
 					</label>
 				</div>
 				<button
-					class="btn btn-xs btn-warning flex-1"
+					class="btn flex-1 btn-xs btn-warning"
 					aria-label="Delete argument"
 					onclick={() => {
 						activeArgumentsDataGrouped_Store.delete_activeArgument(
@@ -337,8 +336,7 @@
 					type={activeArgumentData}
 					template="default"
 					depth={0}
-					on:colAddRequest={(e) => {
-					}}
+					on:colAddRequest={(e) => {}}
 				/>
 			</div>
 		</div>
@@ -348,19 +346,19 @@
 <label
 	use:clickOutside
 	onclick_outside={handleClickOutside}
-	class="   rounded-box {group.group_isRoot ? ' min-w-fit w-min' : 'w-min-fit '}  {!expandedVersion
+	class="   rounded-box {group.group_isRoot ? ' w-min min-w-fit' : 'w-min-fit '}  {!expandedVersion
 		? ' pr-1 '
 		: ' '} 
 	{expandedVersion ? ' pr-2 ' : ' '}
 	{$mutationVersion ? ' pr-2 pb-2 ' : ' '} 
 		{!expandedVersion && !$mutationVersion ? ' md:max-w-[25vw]' : ' '} 
-		 my-1 flex dnd-item
+		 dnd-item my-1 flex
 		 {activeArgumentData?.inUse && !$mutationVersion
 		? activeArgumentData.canRunQuery
-			? 'ring ring-[1px]  bg-base-200/75 ring-primary/25 '
-			: 'ring ring-[1px]  ring-primary/100 bg-error/50'
+			? 'bg-base-200/75 ring  ring-[1px] ring-primary/25 '
+			: 'bg-error/50 ring  ring-[1px] ring-primary/100'
 		: 'bg-base-200/50'} 
-		{$mutationVersion ? 'p-1 min-w-[80vw] md:min-w-[50vw]' : 'pr-[1px]'}
+		{$mutationVersion ? 'min-w-[80vw] p-1 md:min-w-[50vw]' : 'pr-[1px]'}
 		"
 	bind:this={labelEl}
 >
@@ -368,7 +366,7 @@
 		<div class="  flex {$mutationVersion ? 'flex-col' : ''}  space-x-0">
 			<input
 				type="checkbox"
-				class="checkbox input-primary hidden"
+				class="checkbox hidden input-primary"
 				onchange={(e) => {
 					if (e.target === e.currentTarget) {
 						//leave this here,will prevent the click to go trough
@@ -376,7 +374,7 @@
 				}}
 			/>
 			<div
-				class="   text-xs select-none flex grow flex-nowrap
+				class="   flex grow flex-nowrap text-xs select-none
 											"
 			>
 				<button
@@ -388,7 +386,7 @@
 						{activeArgumentData.inUse ? 'font-semibold' : 'font-normal outline-0'}
 						{$mutationVersion ? 'mb-1 ml-1' : ''}
 						
-						btn-ghost text-base-content btn btn-xs text-xs normal-case rounded-box pl-1 py-0 h-full min-h-min
+						btn h-full min-h-min rounded-box py-0 pl-1 text-xs text-base-content normal-case btn-ghost btn-xs
 						{isNot ? ' bg-gradient-to-r from-secondary/30 outline-dashed' : 'bg-error/0'} {selectedQMS
 						? 'text-secondary'
 						: ''}"
@@ -412,7 +410,7 @@
 					{activeArgumentData.stepsOfFields[activeArgumentData.stepsOfFields.length - 1]}
 					{#if activeArgumentData.dd_NON_NULL}
 						<sup>
-							<i class="text-primary bi bi-asterisk"></i>
+							<i class="bi bi-asterisk text-primary"></i>
 						</sup>
 					{/if}
 					<!-- {#if selectedRowsColValuesProcessed}
@@ -421,12 +419,12 @@
 				</button>
 
 				<div
-					class="flex flex-nowrap overflow-x-auto max-w-[65vw]
+					class="flex max-w-[65vw] flex-nowrap overflow-x-auto
 								"
 				>
 					{#if !expandedVersion && !$mutationVersion && !$showInputField}
 						<button
-							class="shrink-0 text-base-content text-xs font-light pt-[1px] mx-2 btn btn-ghost btn-xs normal-case"
+							class="btn mx-2 shrink-0 pt-[1px] text-xs font-light text-base-content normal-case btn-ghost btn-xs"
 							onclick={(e) => {
 								if (e.target === e.currentTarget) {
 									e.stopPropagation();
@@ -459,5 +457,9 @@
 </label>
 
 {#if activeArgumentData[SHADOW_ITEM_MARKER_PROPERTY_NAME]}
-	<div class=" ml-8 h-0 absolute w-11/12 top-0 left-0 visible" id="shadowEl" bind:this={shadowEl}></div>
+	<div
+		class=" visible absolute top-0 left-0 ml-8 h-0 w-11/12"
+		id="shadowEl"
+		bind:this={shadowEl}
+	></div>
 {/if}

@@ -1,9 +1,5 @@
 import { get } from 'svelte/store';
-import type {
-	TableColumnData,
-	ActiveArgumentData,
-	EndpointInfoStore,
-} from '$lib/types';
+import type { TableColumnData, ActiveArgumentData, EndpointInfoStore } from '$lib/types';
 
 export const sortingFunctionMutipleColumnsGivenArray = (array: [unknown, unknown][]): number => {
 	let maxIndex = array.length - 1;
@@ -23,7 +19,9 @@ export const sortingFunctionMutipleColumnsGivenArray = (array: [unknown, unknown
 	return check(0);
 };
 
-export const getSortedAndOrderedEndpoints = <T extends { id: string | number; isMaintained?: boolean }>(
+export const getSortedAndOrderedEndpoints = <
+	T extends { id: string | number; isMaintained?: boolean }
+>(
 	endpoints: T[],
 	filterOutIfNotMaintained: boolean = false
 ): T[] => {
@@ -85,28 +83,28 @@ export const getDataGivenStepsOfFields = (
 	}
 
 	const handleStep = (step: string, colResultData: unknown): unknown => {
-        // Handle null/undefined cases explicitly
-        if (colResultData === undefined && row_resultData === null) return null;
-        if (colResultData === undefined && Array.isArray(row_resultData)) return row_resultData[0];
-        if (colResultData !== undefined && colResultData === null) return null;
+		// Handle null/undefined cases explicitly
+		if (colResultData === undefined && row_resultData === null) return null;
+		if (colResultData === undefined && Array.isArray(row_resultData)) return row_resultData[0];
+		if (colResultData !== undefined && colResultData === null) return null;
 
-        // Fallback to row_resultData check if colResultData is undefined
-        if (colResultData === undefined && (row_resultData as any)?.[step] !== undefined) {
-             return (row_resultData as any)[step];
-        }
+		// Fallback to row_resultData check if colResultData is undefined
+		if (colResultData === undefined && (row_resultData as any)?.[step] !== undefined) {
+			return (row_resultData as any)[step];
+		}
 
-        if (colResultData === undefined) return row_resultData;
-        if (colResultData === null) return null;
+		if (colResultData === undefined) return row_resultData;
+		if (colResultData === null) return null;
 
 		if (Array.isArray(colResultData)) {
 			if (colResultData.length === 0 && colResultData?.[0]?.[step] !== undefined) {
 				return colResultData[0][step];
 			}
 
-            // Map over array if it has elements
+			// Map over array if it has elements
 			if (colResultData.length > 0) {
 				return colResultData.map((element) => {
-                    // Recursive call for each element
+					// Recursive call for each element
 					return handleStep(step, element?.[step]);
 				});
 			}
@@ -119,7 +117,7 @@ export const getDataGivenStepsOfFields = (
 	};
 
 	let colResultData: unknown;
-    // Iterate steps
+	// Iterate steps
 	stepsOfFields.every((step) => {
 		colResultData = handleStep(step, colResultData);
 		return true;
@@ -128,7 +126,11 @@ export const getDataGivenStepsOfFields = (
 	return colResultData;
 };
 
-export const getTableCellData = (rowData: unknown, colData: TableColumnData, index: number): unknown => {
+export const getTableCellData = (
+	rowData: unknown,
+	colData: TableColumnData,
+	index: number
+): unknown => {
 	let data;
 	if (rowData) {
 		if ((rowData as any)[index] !== undefined) {

@@ -93,6 +93,13 @@
 	const endpointInfo: EndpointInfoStore = QMSMainWraperContext?.endpointInfo;
 	const schemaData: SchemaData = QMSMainWraperContext?.schemaData;
 
+	console.debug('QMSWraper initialized', {
+		QMSName,
+		QMSType,
+		isOutermostQMSWraper,
+		prefix
+	});
+
 	// Set default value for isOutermostQMSWraper after we have prefix
 	if (isOutermostQMSWraper === undefined) {
 		isOutermostQMSWraper = getContext(`${prefix}QMSWraperContext`) ? false : true;
@@ -129,9 +136,10 @@
 	// 	schemaData
 	// );
 
-	const possibleLocations = QMSType == 'query'
-		? $endpointInfo.returningColumnsPossibleLocationsInQueriesPerRow
-		: $endpointInfo.returningColumnsPossibleLocationsInMutations;
+	const possibleLocations =
+		QMSType == 'query'
+			? $endpointInfo.returningColumnsPossibleLocationsInQueriesPerRow
+			: $endpointInfo.returningColumnsPossibleLocationsInMutations;
 
 	const returningColumnsResult = findReturningColumnsLocation(
 		nodeFieldsQMS_info,
@@ -162,11 +170,8 @@
 		schemaData
 	);
 
-	const dependencyColsData = paginationTypeInfo?.get_dependencyColsData(
-		QMSName,
-		'query',
-		schemaData
-	) || [];
+	const dependencyColsData =
+		paginationTypeInfo?.get_dependencyColsData(QMSName, 'query', schemaData) || [];
 
 	tableColsData_StoreInitialValue = mergeColumnData(
 		scalarColsData,
@@ -199,18 +204,14 @@
 		);
 	}
 
-	run(() => {
-	});
+	run(() => {});
 
-	run(() => {
-	});
+	run(() => {});
 	// 	'$mergedChildren_activeArgumentsDataGrouped_Store',
 	// 	$mergedChildren_activeArgumentsDataGrouped_Store
 	// );
-	run(() => {
-	});
-	run(() => {
-	});
+	run(() => {});
+	run(() => {});
 
 	const QMS_bodyPart_StoreDerived = Create_QMS_bodyPart_StoreDerived(
 		finalGqlArgObj_Store,
@@ -261,10 +262,8 @@
 		schemaData
 	);
 
-	run(() => {
-	});
-	run(() => {
-	});
+	run(() => {});
+	run(() => {});
 
 	// Build the context object
 	QMSWraperContext = {

@@ -10,7 +10,7 @@
 	export let onDuplicateRow = () => {};
 </script>
 
-<div class="mx-auto pl-4 pt-4 h-[50vh]">
+<div class="mx-auto h-[50vh] pt-4 pl-4">
 	<ExplorerTable
 		{data}
 		{columns}

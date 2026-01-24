@@ -1,4 +1,9 @@
-import { argumentCanRunQuery, generate_gqlArgObj, getPreciseType, getRootType } from '$lib/utils/usefulFunctions';
+import {
+	argumentCanRunQuery,
+	generate_gqlArgObj,
+	getPreciseType,
+	getRootType
+} from '$lib/utils/usefulFunctions';
 import { json } from '@sveltejs/kit';
 import { get, writable } from 'svelte/store';
 import _ from 'lodash';
@@ -29,15 +34,13 @@ export const Create_activeArgumentsDataGrouped_Store = (
 			QMSarguments: Record<string, unknown> | null,
 			endpointInfo: EndpointInfoStore
 		) => {
-			const QMS_infoRoot = getRootType(null, QMS_info.dd_rootName, schemaData)
+			const QMS_infoRoot = getRootType(null, QMS_info.dd_rootName, schemaData);
 			const argsInfo = QMS_info?.args;
 			//handle generating activeArgumentsDataGrouped
 			const activeArgumentsDataGrouped = [];
 			const hasRootArgs = argsInfo?.find((el) => {
 				return el.dd_isRootArg;
 			});
-
-
 
 			////-------- all encompassing group !!!put this first to have it overriden by other groups,or last for opposite result
 			const addAllArgsGroup = () => {
@@ -62,7 +65,7 @@ export const Create_activeArgumentsDataGrouped_Store = (
 					}
 				};
 				activeArgumentsDataGrouped.push(newGroupData);
-			}
+			};
 			////-----------
 			//////////////////////////----------Smart groups
 			const addSmartGroups = () => {
@@ -132,12 +135,10 @@ export const Create_activeArgumentsDataGrouped_Store = (
 						activeArgumentsDataGrouped.push(newGroupData);
 					}
 				});
-			}
+			};
 			//////////////////////////----------
 			//addSmartGroups()
-			addAllArgsGroup()//!!!put this first to have it's result overriden by other groups, or last for opposite result
-
-
+			addAllArgsGroup(); //!!!put this first to have it's result overriden by other groups, or last for opposite result
 
 			//filter out duplicate groups:
 			const seenGroupNames = [];
@@ -150,7 +151,12 @@ export const Create_activeArgumentsDataGrouped_Store = (
 			//
 			//Handle QMSarguments data if present
 			if (QMSarguments) {
-				gqlArgObjToActiveArgumentsDataGrouped(QMSarguments, activeArgumentsDataGrouped, schemaData, endpointInfo);
+				gqlArgObjToActiveArgumentsDataGrouped(
+					QMSarguments,
+					activeArgumentsDataGrouped,
+					schemaData,
+					endpointInfo
+				);
 			}
 
 			addAllRootArgs(activeArgumentsDataGrouped, schemaData, endpointInfo);
@@ -175,24 +181,34 @@ export const Create_activeArgumentsDataGrouped_Store = (
 				});
 
 				if (!group) {
-					console.warn('Group not found for update_activeArgument', { groupName, activeArgumentData });
+					console.warn('Group not found for update_activeArgument', {
+						groupName,
+						activeArgumentData
+					});
 					return activeArgumentsDataGrouped;
 				}
 
 				const activeArgumentIndex = group.group_args?.findIndex((arg) => {
 					return arg.id == activeArgumentData.id;
 				});
-				const activeArgument = activeArgumentIndex >= 0 ? group.group_args[activeArgumentIndex] : null;
+				const activeArgument =
+					activeArgumentIndex >= 0 ? group.group_args[activeArgumentIndex] : null;
 				const activeArgumentNode = group?.group_argsNode?.[activeArgumentData.id];
 
 				if (!activeArgument && !activeArgumentNode) {
-					console.warn('Argument not found in group, cannot update', { groupName, argumentId: activeArgumentData.id });
+					console.warn('Argument not found in group, cannot update', {
+						groupName,
+						argumentId: activeArgumentData.id
+					});
 					return activeArgumentsDataGrouped;
 				}
 
 				if (activeArgumentNode) {
 					// Create new object to maintain immutability for better reactivity
-					group.group_argsNode[activeArgumentData.id] = { ...activeArgumentNode, ...activeArgumentData };
+					group.group_argsNode[activeArgumentData.id] = {
+						...activeArgumentNode,
+						...activeArgumentData
+					};
 				}
 				if (activeArgument && activeArgumentIndex >= 0) {
 					// Replace the argument in the array to maintain immutability
@@ -209,7 +225,10 @@ export const Create_activeArgumentsDataGrouped_Store = (
 				});
 
 				if (!group) {
-					console.warn('Group not found for delete_activeArgument', { groupName, activeArgumentData });
+					console.warn('Group not found for delete_activeArgument', {
+						groupName,
+						activeArgumentData
+					});
 					return activeArgumentsDataGrouped;
 				}
 
@@ -218,7 +237,10 @@ export const Create_activeArgumentsDataGrouped_Store = (
 				});
 
 				if (activeArgumentIndex < 0) {
-					console.warn('Argument not found in group, cannot delete', { groupName, argumentId: activeArgumentData.id });
+					console.warn('Argument not found in group, cannot delete', {
+						groupName,
+						argumentId: activeArgumentData.id
+					});
 					return activeArgumentsDataGrouped;
 				}
 
@@ -298,31 +320,38 @@ export const add_activeArgumentOrContainerTo_activeArgumentsDataGrouped = (
 	if (!group) {
 		group = activeArgumentsDataGrouped?.find((currGroup) => {
 			return currGroup.group_name == groupName;
-		})
+		});
 	}
 	if (!group) {
-		console.warn('group not found', { groupName, newArgumentOrContainerData })
-		return activeArgumentsDataGrouped
+		console.warn('group not found', { groupName, newArgumentOrContainerData });
+		return activeArgumentsDataGrouped;
 	}
-	; (function () {
+	(function () {
 		if (dataIsForContainer) {
-			return
+			return;
 		}
-		if (!endpointInfo) { return }
+		if (!endpointInfo) {
+			return;
+		}
 		let typeExtraData = endpointInfo.get_typeExtraData(newArgumentOrContainerData);
-		if (!typeExtraData) { return }
-		const gqlArgObj = generate_gqlArgObj([newArgumentOrContainerData])
-		newArgumentOrContainerData = _.merge({}, newArgumentOrContainerData, gqlArgObj)
-		if (typeExtraData.defaultValue == undefined) { return }
+		if (!typeExtraData) {
+			return;
+		}
+		const gqlArgObj = generate_gqlArgObj([newArgumentOrContainerData]);
+		newArgumentOrContainerData = _.merge({}, newArgumentOrContainerData, gqlArgObj);
+		if (typeExtraData.defaultValue == undefined) {
+			return;
+		}
 
 		if (newArgumentOrContainerData.chd_rawValue == undefined) {
-			newArgumentOrContainerData.chd_rawValue = typeExtraData.defaultValue
+			newArgumentOrContainerData.chd_rawValue = typeExtraData.defaultValue;
 		}
 		if (newArgumentOrContainerData.chd_dispatchValue == undefined) {
-			newArgumentOrContainerData.chd_dispatchValue = typeExtraData.use_transformer(typeExtraData.defaultValue);
+			newArgumentOrContainerData.chd_dispatchValue = typeExtraData.use_transformer(
+				typeExtraData.defaultValue
+			);
 		}
-	})()
-
+	})();
 
 	{
 		if (group.group_argsNode) {
@@ -363,9 +392,9 @@ export const generateContainerData = (
 		stepsOfFields.push(dd_displayName); //take care might caus eproblems
 	}
 
-	const lastDefiningData = {}
+	const lastDefiningData = {};
 	if (type && type.dd_kindList) {
-		lastDefiningData.operator = 'list'
+		lastDefiningData.operator = 'list';
 	}
 
 	return {
@@ -416,7 +445,7 @@ const addAllRootArgs = (
 		return group.group_name == 'root';
 	});
 	if (!group) {
-		return
+		return;
 	}
 	const groupName = group.group_name;
 	const groupOriginType = group.originType;
@@ -429,7 +458,8 @@ const addAllRootArgs = (
 			argData,
 			groupName,
 			null,
-			activeArgumentsDataGrouped, endpointInfo
+			activeArgumentsDataGrouped,
+			endpointInfo
 		);
 	});
 };
@@ -492,7 +522,9 @@ const gqlArgObjToActiveArgumentsDataGrouped = (
 					argData,
 					groupName,
 					null,
-					activeArgumentsDataGrouped, endpointInfo, undefined
+					activeArgumentsDataGrouped,
+					endpointInfo,
+					undefined
 				);
 			});
 		} else {
@@ -548,19 +580,16 @@ const gqlArgObjToActiveArgumentsDataGroupedForHasArgsNode = (
 	schemaData: SchemaData,
 	endpointInfo: EndpointInfoStore
 ): void => {
-	let group_argsNode
+	let group_argsNode;
 	const gqlArgObjTypeOf = getPreciseType(gqlArgObj);
-	const isContainer = type.dd_shouldExpand
-		; (function () {//handle containers only
-			if (!isContainer) {
-				return
-			}
-			if (gqlArgObjTypeOf == 'array') {
-
-				gqlArgObj.forEach(element => {
-				});
-
-			}
-
-		})()
-}
+	const isContainer = type.dd_shouldExpand;
+	(function () {
+		//handle containers only
+		if (!isContainer) {
+			return;
+		}
+		if (gqlArgObjTypeOf == 'array') {
+			gqlArgObj.forEach((element) => {});
+		}
+	})();
+};

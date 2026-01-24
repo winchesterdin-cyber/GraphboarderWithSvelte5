@@ -3,4 +3,4 @@
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
-@plugin "daisyui";
+@plugin 'daisyui';

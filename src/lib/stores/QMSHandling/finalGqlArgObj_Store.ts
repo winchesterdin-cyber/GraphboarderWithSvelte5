@@ -2,7 +2,7 @@ import {
 	generate_finalGqlArgObjAndCanRunQuery,
 	generate_finalGqlArgObj_fromGroups,
 	generate_group_gqlArgObjAndCanRunQuery_forHasOperators,
-	generate_group_gqlArgObj,
+	generate_group_gqlArgObj
 } from '$lib/utils/usefulFunctions';
 import { writable, get } from 'svelte/store';
 
@@ -20,7 +20,11 @@ export const Create_finalGqlArgObj_Store = (
 		update,
 		regenerate_groupsAndfinalGqlArgObj: () => {
 			const activeArgumentsDataGrouped = get(_activeArgumentsDataGrouped_Store);
-			const finalGqlArgObjAndCanRunQuery = generate_finalGqlArgObjAndCanRunQuery(activeArgumentsDataGrouped, _paginationState_Store, true)
+			const finalGqlArgObjAndCanRunQuery = generate_finalGqlArgObjAndCanRunQuery(
+				activeArgumentsDataGrouped,
+				_paginationState_Store,
+				true
+			);
 			if (finalGqlArgObjAndCanRunQuery.final_canRunQuery) {
 				set(finalGqlArgObjAndCanRunQuery);
 			} else {
@@ -28,5 +32,3 @@ export const Create_finalGqlArgObj_Store = (
 		}
 	};
 };
-
-

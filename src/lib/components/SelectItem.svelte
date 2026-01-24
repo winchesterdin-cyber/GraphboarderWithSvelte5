@@ -52,10 +52,7 @@
 			QMSType="query"
 			tableColsData_StoreInitialValue={[]}
 		>
-			<ComponentForLayout
-				{rowSelectionState}
-				{enableMultiRowSelectionState}
-			/>
+			<ComponentForLayout {rowSelectionState} {enableMultiRowSelectionState} />
 		</QmsWraper>{/if}
 {/key}
 

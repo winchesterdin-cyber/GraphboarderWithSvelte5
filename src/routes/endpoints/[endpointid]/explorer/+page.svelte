@@ -278,22 +278,22 @@
 </script>
 
 <Page MenuItem={true}>
-	<section class="h-screen pb-20 w-screen overflow-auto ml-4">
-		<div class="sticky top-0 bg-base-300 z-10 p-3 shadow-md space-y-3 rounded-b-box mb-4">
+	<section class="ml-4 h-screen w-screen overflow-auto pb-20">
+		<div class="sticky top-0 z-10 mb-4 space-y-3 rounded-b-box bg-base-300 p-3 shadow-md">
 			<!-- Row 1: Filter and View Toggles -->
-			<div class="flex flex-col md:flex-row gap-3 justify-between items-start md:items-center">
+			<div class="flex flex-col items-start justify-between gap-3 md:flex-row md:items-center">
 				<div class="join w-full md:w-auto">
 					<input
-						class="input input-sm input-bordered join-item flex-grow md:w-64"
+						class="input-bordered input input-sm join-item flex-grow md:w-64"
 						placeholder="Filter (e.g. +user -id)"
 						bind:value={sortingInputValue}
 						onkeydown={(e) => e.key === 'Enter' && filterByWord()}
 					/>
-					<button class="btn btn-sm btn-primary join-item" onclick={filterByWord} title="Filter">
+					<button class="btn join-item btn-sm btn-primary" onclick={filterByWord} title="Filter">
 						<i class="bi bi-funnel"></i>
 					</button>
 					<button
-						class="btn btn-sm join-item"
+						class="btn join-item btn-sm"
 						class:btn-active={caseSensitive}
 						onclick={() => {
 							caseSensitive = !caseSensitive;
@@ -306,49 +306,43 @@
 
 				<div class="join shadow-sm">
 					<button
-						class="btn btn-sm join-item"
+						class="btn join-item btn-sm"
 						class:btn-neutral={showExplorer}
 						onclick={toggleExplorer}
 					>
 						<i class="bi bi-list-nested"></i> Explorer
 					</button>
-					<button
-						class="btn btn-sm join-item"
-						class:btn-neutral={showTable}
-						onclick={toggleTable}
-					>
+					<button class="btn join-item btn-sm" class:btn-neutral={showTable} onclick={toggleTable}>
 						<i class="bi bi-table"></i> Table
 					</button>
 				</div>
 			</div>
 
 			<!-- Row 2: Scope and Actions -->
-			<div
-				class="flex flex-col md:flex-row gap-3 justify-between items-center overflow-x-auto"
-			>
+			<div class="flex flex-col items-center justify-between gap-3 overflow-x-auto md:flex-row">
 				<div class="join shadow-sm">
 					<button
-						class="btn btn-sm join-item"
+						class="btn join-item btn-sm"
 						onclick={showRootTypes}
 						class:btn-active={whatToShowLastUsed === showRootTypes}>Root</button
 					>
 					<button
-						class="btn btn-sm join-item"
+						class="btn join-item btn-sm"
 						onclick={showQueries}
 						class:btn-active={whatToShowLastUsed === showQueries}>Queries</button
 					>
 					<button
-						class="btn btn-sm join-item"
+						class="btn join-item btn-sm"
 						onclick={showMutations}
 						class:btn-active={whatToShowLastUsed === showMutations}>Mutations</button
 					>
 					<button
-						class="btn btn-sm join-item"
+						class="btn join-item btn-sm"
 						onclick={showQueriesAndMutations}
 						class:btn-active={whatToShowLastUsed === showQueriesAndMutations}>Q&M</button
 					>
 					<button
-						class="btn btn-sm join-item"
+						class="btn join-item btn-sm"
 						onclick={showAll}
 						class:btn-active={whatToShowLastUsed === showAll}>All</button
 					>
@@ -356,18 +350,18 @@
 
 				<div class="join shadow-sm">
 					<button
-						class="btn btn-sm join-item"
+						class="btn join-item btn-sm"
 						onclick={() => navigator.clipboard.writeText(csvData)}
 						title="Copy CSV"
 						disabled={!csvData}
 					>
 						<i class="bi bi-clipboard"></i> Copy CSV
 					</button>
-					<button class="btn btn-sm join-item" onclick={handleEdit} title="Edit Table Name">
+					<button class="btn join-item btn-sm" onclick={handleEdit} title="Edit Table Name">
 						<i class="bi bi-pencil"></i> Edit
 					</button>
 					<button
-						class="btn btn-sm join-item"
+						class="btn join-item btn-sm"
 						onclick={() => {
 							whatToShow = whatToShow;
 							showTable = false;
@@ -390,8 +384,8 @@
 				{columns}
 				onRowSelectionChange={(detail) => {
 					selectedRowsOriginal = detail.rows.map((row) => row.original);
-					let columnNames = [];
-					let rowsData;
+					let columnNames: string[] = [];
+					let rowsData: string[];
 					rowsData = detail.rows.map((row, i) => {
 						return row
 							.getVisibleCells()
@@ -411,14 +405,7 @@
 			<div class="">
 				{#key whatToShow}
 					{#each whatToShow as type, index (index)}
-						<Type
-							{index}
-							{type}
-							template="default"
-							depth={0}
-							on:colAddRequest={(e) => {
-							}}
-						/>
+						<Type {index} {type} template="default" depth={0} />
 					{/each}
 				{/key}
 			</div>{/if}

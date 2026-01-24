@@ -26,11 +26,11 @@
 
 <Modal bind:show {onCancel} modalIdentifier="edit-tablename-modal">
 	<div class="p-4">
-		<h3 class="font-bold text-lg mb-4">Edit Table Base Name</h3>
+		<h3 class="mb-4 text-lg font-bold">Edit Table Base Name</h3>
 		<input
 			type="text"
 			placeholder="Enter table name"
-			class="input input-bordered w-full"
+			class="input-bordered input w-full"
 			bind:value
 			onkeydown={(e) => e.key === 'Enter' && handleConfirm()}
 		/>

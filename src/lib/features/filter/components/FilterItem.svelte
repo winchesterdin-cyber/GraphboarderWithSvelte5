@@ -8,7 +8,6 @@
 		toggleFilterChoice,
 		createChoisesWithId
 	} from '$lib/utils/filterStateUtils';
-	
 
 	let chosenInternal = $state(JSON.parse(JSON.stringify(chosen)));
 	let extraInfo = $state('');
@@ -53,7 +52,6 @@
 		}
 		onFilterApplied?.({ id: id, chosen: chosen, extraData, choises: choises });
 	};
-
 
 	import { flip } from 'svelte/animate';
 	interface Props {
@@ -211,20 +209,20 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <btn
-	class="btn  btn-{size} {btnExtraClass}  flex  w-full normal-case"
+	class="btn btn-{size} {btnExtraClass}  flex w-full normal-case"
 	onclickcapture={handleBtnClick}
 >
 	{isToggle ? choises[0] : title}
 
 	{#if extraInfo && !isToggle}
 		<div
-			class="ml-2 space-y-0 border  leading-3 {extraInfoExtraClass} rounded-box  flex space-x-1 px-1"
+			class="ml-2 space-y-0 border leading-3 {extraInfoExtraClass} flex space-x-1 rounded-box px-1"
 		>
-			<p class=" mx-auto pt-[1px] my-0 p-0 text-xs leading-3 text-primary-content">
+			<p class=" mx-auto my-0 p-0 pt-[1px] text-xs leading-3 text-primary-content">
 				{extraInfo}
 			</p>
 			<p></p>
-			<i class="bi bi-chevron-down  mx-auto pt-[1px] my-0 p-0 text-xs leading-3"></i>
+			<i class="bi bi-chevron-down mx-auto my-0 p-0 pt-[1px] text-xs leading-3"></i>
 		</div>
 	{/if}
 
@@ -234,20 +232,20 @@
 </btn>
 {#if modalVisible}
 	<Modal onApply={applyFilter} onCancel={hideModal}>
-		<div class="rounded-box overflow-hidden ">
-			<div class="form-control px-2 mt-2 pt-2">
+		<div class="overflow-hidden rounded-box">
+			<div class="form-control mt-2 px-2 pt-2">
 				{#if type == 'radio'}
 					{#each choises as choice}
 						<label
-							class="label rounded-box  cursor-pointer   border-2 border-dotted  border-transparent font-light transition  active:border-base-content/50 active:bg-primary/5 {chosenInternal ==
+							class="label cursor-pointer rounded-box border-2 border-dotted border-transparent font-light transition active:border-base-content/50 active:bg-primary/5 {chosenInternal ==
 							choice
 								? 'font-extrabold '
 								: ''}"
 						>
-							<span class="label-text  text-lg"
+							<span class="label-text text-lg"
 								>{choice}
 								{#if chosenDefault && chosenDefault == choice}
-									<div class="badge badge-xs  badge-info">default</div>
+									<div class="badge badge-xs badge-info">default</div>
 								{/if}
 							</span>
 							<input
@@ -276,7 +274,7 @@
 								<div
 									tabindex={dragDisabled ? 0 : -1}
 									aria-label="drag-handle"
-									class="bi bi-grip-vertical pt-3 px-2"
+									class="bi bi-grip-vertical px-2 pt-3"
 									style={dragDisabled ? 'cursor: grab' : 'cursor: grabbing'}
 									onmousedown={startDrag}
 									ontouchstart={startDrag}
@@ -295,18 +293,18 @@
 									}}
 								>
 									<label
-										class="cursor-pointer label  rounded-box my-[1px] transition-all   font-light border-transparent border-[1px] active:border-base-content/50 active:bg-primary/5  duration-75    {chosenInternal?.includes(
+										class="my-[1px] label cursor-pointer rounded-box border-[1px] border-transparent font-light transition-all duration-75 active:border-base-content/50 active:bg-primary/5 {chosenInternal?.includes(
 											choice.title
 										)
 											? 'font-extrabold '
 											: ''} dnd-item
 									"
 									>
-										<span class="label-text  text-lg">
+										<span class="label-text text-lg">
 											{choice.title}
 
 											{#if chosenDefault && chosenDefault.includes(choice.title)}
-												<div class="badge badge-xs  badge-info">default</div>
+												<div class="badge badge-xs badge-info">default</div>
 											{/if}
 										</span>
 
@@ -322,22 +320,22 @@
 
 								{#if choice[SHADOW_ITEM_MARKER_PROPERTY_NAME]}
 									<div
-										class="ml-8 rounded-box mx-2 py-5 border-dotted  border-accent/20 border-2 text-primary absolute w-11/12   top-0 left-0 visible"
+										class="visible absolute top-0 left-0 mx-2 ml-8 w-11/12 rounded-box border-2 border-dotted border-accent/20 py-5 text-primary"
 									></div>
 								{/if}
 							</div>
 						{/each}
 					</ul>
-					<div class="flex space-x-2 pr-2 mt-10"></div>
+					<div class="mt-10 flex space-x-2 pr-2"></div>
 				{/if}
 			</div>
-			<div class="alert alert-info shadow-lg py-2 mt-2 text-md  ">
+			<div class="text-md mt-2 alert py-2 alert-info shadow-lg">
 				<div class="flex space-x-4">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
-						class="stroke-current flex-shrink-0 w-6 h-6 my-auto"
+						class="my-auto h-6 w-6 flex-shrink-0 stroke-current"
 						><path
 							stroke-linecap="round"
 							stroke-linejoin="round"

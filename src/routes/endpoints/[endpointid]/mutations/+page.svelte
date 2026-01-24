@@ -8,9 +8,9 @@
 </script>
 
 <Page MenuItem={true} CustomId="fdsfds" backPath={`/`} title="Mutations">
-	<div class="overflow-auto h-full">
+	<div class="h-full overflow-auto">
 		<input
-			class="input input-xs w-32 m-5"
+			class="input m-5 input-xs w-32"
 			type="text"
 			bind:this={input}
 			onchange={(e) => {

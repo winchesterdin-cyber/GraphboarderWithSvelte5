@@ -5,7 +5,7 @@ import type {
 	RootType,
 	SchemaData,
 	EndpointInfoStore,
-	FieldsGrouped,
+	FieldsGrouped
 } from '$lib/types';
 import { get_paginationTypes } from '$lib/stores/pagination/paginationTypes';
 import { sortingFunctionMutipleColumnsGivenArray } from './data-processing';
@@ -25,34 +25,34 @@ export const get_KindsArray = (type: Partial<FieldWithDerivedData>): GraphQLKind
 	// just made recursive or cleaner.
 
 	// Original logic was manual unrolling. Let's stick to manual unrolling to match exact behavior
-    // but ensure we cover enough depth.
-    // The original code went up to type.type.ofType.ofType.ofType.kind
-    // Let's implement a recursive helper to capture all kinds.
+	// but ensure we cover enough depth.
+	// The original code went up to type.type.ofType.ofType.ofType.kind
+	// Let's implement a recursive helper to capture all kinds.
 
-    const collectKinds = (t: any) => {
-        if (t?.kind) kinds.push(t.kind);
-        if (t?.type) collectKinds(t.type);
-        if (t?.ofType) collectKinds(t.ofType);
-    }
+	const collectKinds = (t: any) => {
+		if (t?.kind) kinds.push(t.kind);
+		if (t?.type) collectKinds(t.type);
+		if (t?.ofType) collectKinds(t.ofType);
+	};
 
-    // However, the original code had a specific order and selection.
-    // e.g. type.kind, type.type.kind, type.ofType.kind...
-    // Let's replicate the original explicit checks but formatted cleaner.
+	// However, the original code had a specific order and selection.
+	// e.g. type.kind, type.type.kind, type.ofType.kind...
+	// Let's replicate the original explicit checks but formatted cleaner.
 
-    if (type?.kind) kinds.push(type.kind);
+	if (type?.kind) kinds.push(type.kind);
 	if (type?.type?.kind) kinds.push(type.type.kind);
 	if (type?.ofType?.kind) kinds.push(type.ofType.kind);
 	if (type?.type?.ofType?.kind) kinds.push(type.type.ofType.kind);
 	if (type?.type?.ofType?.ofType?.kind) kinds.push(type.type.ofType.ofType.kind);
 	if (type?.type?.ofType?.ofType?.ofType?.kind) kinds.push(type.type.ofType.ofType.ofType.kind);
 
-    // Additional depth from original code
-    if (type?.ofType?.ofType?.kind) kinds.push(type.ofType.ofType.kind);
+	// Additional depth from original code
+	if (type?.ofType?.ofType?.kind) kinds.push(type.ofType.ofType.kind);
 	if (type?.ofType?.ofType?.ofType?.kind) kinds.push(type.ofType.ofType.ofType.kind);
-    if (type?.type?.ofType?.ofType?.ofType?.kind) {
-         // This check was repeated in original code, likely redundant but harmless
-         // kinds.push(type.type.ofType.ofType.ofType.kind);
-    }
+	if (type?.type?.ofType?.ofType?.ofType?.kind) {
+		// This check was repeated in original code, likely redundant but harmless
+		// kinds.push(type.type.ofType.ofType.ofType.kind);
+	}
 
 	return kinds;
 };
@@ -118,9 +118,12 @@ export const getFields_Grouped = (
 		fieldsArray
 			.filter((field) => !dd_displayNameToExclude.includes(field.dd_displayName))
 			.forEach((field) => {
-                const kinds = get_KindsArray(field);
+				const kinds = get_KindsArray(field);
 				if (kinds.includes('ENUM')) {
-					enumFields.push({ ...schemaData.get_rootType(null, field.dd_rootName, schemaData), ...field });
+					enumFields.push({
+						...schemaData.get_rootType(null, field.dd_rootName, schemaData),
+						...field
+					});
 				} else if (kinds.includes('SCALAR')) {
 					scalarFields.push(field);
 				} else {
@@ -147,7 +150,10 @@ export const get_displayInterface = (
 	return null;
 };
 
-export const mark_paginationArgs = (args: FieldWithDerivedData[], endpointInfo: EndpointInfoStore): void => {
+export const mark_paginationArgs = (
+	args: FieldWithDerivedData[],
+	endpointInfo: EndpointInfoStore
+): void => {
 	const paginationPossibleNames = get(endpointInfo).paginationArgsPossibleNames;
 	const paginationPossibleNamesKeys = Object.keys(paginationPossibleNames);
 	args.forEach((arg) => {
@@ -177,7 +183,11 @@ export const get_paginationType = (
 };
 
 const prepareStrForFuseComparison = (str: string): string => {
-	return str.replace(/(?=[A-Z_])/g, ' ').replace(/_/g, ' ').replace(/s|null/g, '').toLowerCase();
+	return str
+		.replace(/(?=[A-Z_])/g, ' ')
+		.replace(/_/g, ' ')
+		.replace(/s|null/g, '')
+		.toLowerCase();
 };
 
 export const generate_derivedData = (
@@ -200,7 +210,7 @@ export const generate_derivedData = (
 	derivedData.dd_kindList_NON_NULL = false;
 	derivedData.dd_NON_NULL = derivedData.dd_kindsArray[0] === 'NON_NULL';
 
-    // Logic to determine list/element properties
+	// Logic to determine list/element properties
 	const dd_kindsArray_REVERSE = toReversed(derivedData.dd_kindsArray);
 	dd_kindsArray_REVERSE.forEach((el) => {
 		if (el === 'LIST') {
@@ -229,7 +239,7 @@ export const generate_derivedData = (
 	derivedData.dd_canExpand =
 		!derivedData.dd_kindsArray?.includes('SCALAR') && derivedData.dd_kindsArray.length > 0;
 
-    if (derivedData.dd_isArg) {
+	if (derivedData.dd_isArg) {
 		const baseFilterOperatorNames = ['_and', '_or', '_not', 'and', 'or', 'not'];
 		let dd_baseFilterOperators: string[] = [];
 		let dd_nonBaseFilterOperators: string[] = [];
@@ -243,13 +253,14 @@ export const generate_derivedData = (
 				}
 			});
 
-            derivedData.dd_baseFilterOperators = dd_baseFilterOperators.length > 0 ? dd_baseFilterOperators : undefined;
-            derivedData.dd_nonBaseFilterOperators = dd_nonBaseFilterOperators.length > 0 ? dd_nonBaseFilterOperators : undefined;
+			derivedData.dd_baseFilterOperators =
+				dd_baseFilterOperators.length > 0 ? dd_baseFilterOperators : undefined;
+			derivedData.dd_nonBaseFilterOperators =
+				dd_nonBaseFilterOperators.length > 0 ? dd_nonBaseFilterOperators : undefined;
 		}
 
 		derivedData.dd_isRootArg = !(
-			derivedData.dd_canExpand &&
-			!derivedData?.dd_relatedRoot?.enumValues
+			derivedData.dd_canExpand && !derivedData?.dd_relatedRoot?.enumValues
 		);
 	}
 
@@ -270,7 +281,11 @@ export const generate_derivedData = (
 	if (derivedData.args) {
 		mark_paginationArgs(derivedData.args, endpointInfo);
 		derivedData.dd_paginationArgs = derivedData.args.filter((arg) => arg.dd_isPaginationArg);
-		derivedData.dd_paginationType = get_paginationType(derivedData.dd_paginationArgs, endpointInfo, schemaData);
+		derivedData.dd_paginationType = get_paginationType(
+			derivedData.dd_paginationArgs,
+			endpointInfo,
+			schemaData
+		);
 	}
 
 	derivedData.dd_StrForFuseComparison = `${prepareStrForFuseComparison(`${derivedData.dd_displayName}   `)} `;
@@ -319,17 +334,17 @@ export const get_nodeFieldsQMS_info = (
 		if (!nodeFieldsQMS_info?.dd_rootName) {
 			break;
 		}
-        const rootType = getRootType(null, nodeFieldsQMS_info.dd_rootName, schemaData);
+		const rootType = getRootType(null, nodeFieldsQMS_info.dd_rootName, schemaData);
 		if (!rootType?.fields) {
 			break;
 		}
-        const nextNode = rootType.fields.find((field) => field.dd_displayName === curr_rowsLocation);
-        if (nextNode) {
-		    nodeFieldsQMS_info = nextNode;
-        } else {
-            // Path broken
-            break;
-        }
+		const nextNode = rootType.fields.find((field) => field.dd_displayName === curr_rowsLocation);
+		if (nextNode) {
+			nodeFieldsQMS_info = nextNode;
+		} else {
+			// Path broken
+			break;
+		}
 	}
 	return nodeFieldsQMS_info;
 };
@@ -348,11 +363,11 @@ export const get_scalarColsData = (
 		keep_currentQMS_info_dd_displayName = false;
 	}
 	let dd_relatedRoot = getRootType(null, currentQMS_info.dd_rootName, schemaData);
-    // Note: getFields_Grouped is available in this module
+	// Note: getFields_Grouped is available in this module
 	let { scalarFields } = getFields_Grouped(dd_relatedRoot!, [], schemaData);
 	let currentQuery_fields_SCALAR_names = scalarFields.map((field) => field.name);
 
-    let scalarColsData = currentQuery_fields_SCALAR_names.map((name) => {
+	let scalarColsData = currentQuery_fields_SCALAR_names.map((name) => {
 		let stepsOfFields;
 		if (keep_currentQMS_info_dd_displayName) {
 			stepsOfFields = [...prefixStepsOfFields, currentQMS_info.dd_displayName, name];
@@ -360,23 +375,23 @@ export const get_scalarColsData = (
 			stepsOfFields = [...prefixStepsOfFields, name];
 		}
 
-        // stepsOfFieldsToQueryFragmentObject logic is in data-processing or builder?
-        // It was in builder. But we need it here.
-        // It's a simple function, maybe I can duplicate it or move it to a shared place?
-        // Or import it from data-processing if I put it there.
-        // But data-processing might depend on schema-traversal.
-        // Let's defer stepsOfFieldsOBJ creation or assume it's handled by caller if possible.
-        // But the original code returned it.
+		// stepsOfFieldsToQueryFragmentObject logic is in data-processing or builder?
+		// It was in builder. But we need it here.
+		// It's a simple function, maybe I can duplicate it or move it to a shared place?
+		// Or import it from data-processing if I put it there.
+		// But data-processing might depend on schema-traversal.
+		// Let's defer stepsOfFieldsOBJ creation or assume it's handled by caller if possible.
+		// But the original code returned it.
 
-        // Let's implement a simple version of stepsOfFieldsToQueryFragmentObject here or make it shared.
-        // It seems purely structural, no schema dependency.
+		// Let's implement a simple version of stepsOfFieldsToQueryFragmentObject here or make it shared.
+		// It seems purely structural, no schema dependency.
 
 		let scalarColData = {
 			title: name,
 			stepsOfFields: stepsOfFields,
-            // stepsOfFieldsOBJ: stepsOfFieldsToQueryFragmentObject(stepsOfFields, false) // Circular dep potentially
-            // I'll leave stepsOfFieldsOBJ out for now or define a local helper.
-            stepsOfFieldsOBJ: _localStepsOfFieldsToQueryFragmentObject(stepsOfFields, false)
+			// stepsOfFieldsOBJ: stepsOfFieldsToQueryFragmentObject(stepsOfFields, false) // Circular dep potentially
+			// I'll leave stepsOfFieldsOBJ out for now or define a local helper.
+			stepsOfFieldsOBJ: _localStepsOfFieldsToQueryFragmentObject(stepsOfFields, false)
 		};
 		return scalarColData;
 	});

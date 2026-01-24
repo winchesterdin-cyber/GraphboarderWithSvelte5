@@ -22,9 +22,22 @@
 	import ActiveArgumentsGroup_addFilterAndSortingButtonContent from '$lib/components/ActiveArgumentsGroup_addFilterAndSortingButtonContent.svelte';
 	import Modal from './Modal.svelte';
 	import { nodeAddDefaultFields } from '$lib/utils/usefulFunctions';
-	import { stepsOfNodesToStepsOfFields, getUpdatedStepsOfNodes, updateNodeSteps } from '$lib/utils/nodeStepsUtils';
+	import {
+		stepsOfNodesToStepsOfFields,
+		getUpdatedStepsOfNodes,
+		updateNodeSteps
+	} from '$lib/utils/nodeStepsUtils';
 	import { generateGroupDisplayTitle, getNodeDisplayClasses } from '$lib/utils/displayTitleUtils';
-	import { getShadowDimensions, updateShadowElement, handleDragStart, handleDragKeyDown, transformDraggedElement as transformDraggedElementUtil, handleDndConsider as handleDndConsiderUtil, handleDndFinalize as handleDndFinalizeUtil, handleDeleteItem } from '$lib/utils/dndUtils';
+	import {
+		getShadowDimensions,
+		updateShadowElement,
+		handleDragStart,
+		handleDragKeyDown,
+		transformDraggedElement as transformDraggedElementUtil,
+		handleDndConsider as handleDndConsiderUtil,
+		handleDndFinalize as handleDndFinalizeUtil,
+		handleDeleteItem
+	} from '$lib/utils/dndUtils';
 	import { getRowSelectionState } from '$lib/utils/rowSelectionUtils';
 	import ExplorerTable from '$lib/components/ExplorerTable.svelte';
 	import { string_transformer } from '$lib/utils/dataStructureTransformers.ts';
@@ -103,7 +116,6 @@
 	let QMSColumnsAAA = nodeContext_forDynamicData.itemColumns;
 	let requiredColNamesAAA = nodeContext_forDynamicData.requiredColNames;
 
-
 	setContext(`${prefix}nodeContext_forDynamicData`, nodeContext_forDynamicData);
 	///
 	// $: if ($selectedQMSAAA) {
@@ -170,7 +182,6 @@
 		}
 	});
 
-
 	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
 	const endpointInfo = QMSMainWraperContext?.endpointInfo;
 	const schemaData = QMSMainWraperContext?.schemaData;
@@ -205,8 +216,6 @@
 	let shadowWidth = $state(20);
 
 	let labelElClone = $state();
-
-
 
 	function startDrag(e) {
 		// preventing default to prevent lag on touch devices (because of the browser checking for screen scrolling)
@@ -320,16 +329,16 @@
 				showModal = false;
 			}}
 		>
-			<div class="flex flex-col ">
-				<div class="w-full text-lg text-center  mb-2 ">
-					<p class="badge badge-info font-bold">
+			<div class="flex flex-col">
+				<div class="mb-2 w-full text-center text-lg">
+					<p class="badge font-bold badge-info">
 						{groupDisplayTitle}
 					</p>
 				</div>
 
 				{#if node?.isMain}
 					<button
-						class="btn btn-xs btn-info normal-case  mb-6 flex-1"
+						class="btn mb-6 flex-1 normal-case btn-xs btn-info"
 						onclick={() => {
 							nodeAddDefaultFields(
 								node,
@@ -347,12 +356,12 @@
 				{/if}
 
 				{#if !node?.isMain}
-					<div class="flex space-x-4 ">
+					<div class="flex space-x-4">
 						{#if parentNode?.inputFields?.some((inputField) => {
 							return inputField.dd_displayName == '_not';
 						})}
 							<div class="form-control mr-1">
-								<label class="label cursor-pointer w-min py-0">
+								<label class="label w-min cursor-pointer py-0">
 									<span class="label-text pr-1">Not</span>
 									<input
 										type="checkbox"
@@ -374,7 +383,7 @@
 						{/if}
 
 						<button
-							class="btn btn-xs btn-info  normal-case mb-6 flex-1"
+							class="btn mb-6 flex-1 normal-case btn-xs btn-info"
 							onclick={() => {
 								nodeAddDefaultFields(
 									node,
@@ -391,7 +400,7 @@
 						</button>
 
 						<button
-							class="btn btn-xs text-sm mb-1 normal-case flex-1"
+							class="btn mb-1 flex-1 text-sm normal-case btn-xs"
 							onclick={() => {
 								if (node?.operator && !node?.isMain) {
 									if (node?.operator == '~spread~') {
@@ -411,7 +420,7 @@
 						</button>
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
 						<button
-							class="btn btn-xs btn-warning  mb-6 flex-1"
+							class="btn mb-6 flex-1 btn-xs btn-warning"
 							aria-label="Delete group"
 							onclick={() => {
 								alert('not yet implemented');
@@ -478,20 +487,20 @@
 	/>
 
 	{#if !node?.isMain}
-		<div class="   grid   content-center  rounded-full w-min-max w-max">
+		<div class="   w-min-max grid w-max content-center rounded-full">
 			<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-			<div class="flex ">
+			<div class="flex">
 				{#if $dndIsOn && !nodeIsInCP}
 					<div
 						role="button"
 						tabindex={dragDisabled ? 0 : -1}
 						aria-label="drag-handle"
-						class="  transition:all duration-500 bi bi-grip-vertical ml-2  -mr-1 text-lg rounded-l-md {node?.operator ==
+						class="  transition:all bi bi-grip-vertical -mr-1 ml-2 rounded-l-md text-lg duration-500 {node?.operator ==
 							undefined || node?.operator == 'bonded'
 							? 'text-base-content'
 							: node?.operator == '_and'
-							? 'text-primary'
-							: 'text-secondary'} 
+								? 'text-primary'
+								: 'text-secondary'}
 						{node?.not ? ' bg-gradient-to-r== from-base-300/100==' : 'bg-error/0'}
 						"
 						style={dragDisabled ? 'cursor: grab' : 'cursor: grabbing'}
@@ -517,12 +526,12 @@
 				<!-- node?.items?.length <= 1 -->
 				{#if node?.operator && !$mutationVersion}
 					<button
-						class="btn btn-xs btn-ghost px-[1px] text-xs font-light transition-all duration-500  rounded-full  normal-case   {node?.operator ==
+						class="btn rounded-full px-[1px] text-xs font-light normal-case btn-ghost transition-all duration-500 btn-xs {node?.operator ==
 							'bonded' || node?.operator == 'list'
 							? 'text-base-content'
 							: node?.operator == '_and'
-							? 'text-primary'
-							: 'text-secondary'} break-all h-max  w-max
+								? 'text-primary'
+								: 'text-secondary'} h-max w-max break-all
 						{node?.not ? ' bg-gradient-to-r from-secondary/50' : 'bg-error/0'}
 						"
 						onclick={() => {
@@ -537,7 +546,7 @@
 						<!-- <sub>{stepsOfFields.join('->')}</sub> -->
 						{#if node.dd_NON_NULL}
 							<sup>
-								<i class="text-primary bi bi-asterisk"></i>
+								<i class="bi bi-asterisk text-primary"></i>
 							</sup>
 						{/if}
 					</button>
@@ -556,15 +565,15 @@
 	
 	
 	{node?.operator && (node.items.length > 1 || ($mutationVersion && node.items.length >= 1))
-			? 'rounded-l-md bg-gradient-to-rxxx   border-l-[1px] my-1== shadow-sm'
+			? 'bg-gradient-to-rxxx my-1==   rounded-l-md border-l-[1px] shadow-sm'
 			: ''} 
-	{node?.isMain ? '  rounded-l-md bg-gradient-to-rxxx   border-l-[2px] my-1== shadow-sm' : ''}
+	{node?.isMain ? '  bg-gradient-to-rxxx my-1==   rounded-l-md border-l-[2px] shadow-sm' : ''}
 {node?.operator && node?.not ? 'border-dashed  ' : ''} 
 {node?.operator == 'bonded' || node?.operator == 'list'
 			? 'border-base-content'
 			: node?.operator == '_and'
-			? 'border-primary'
-			: 'border-secondary '}
+				? 'border-primary'
+				: 'border-secondary '}
 
 
 "
@@ -587,14 +596,14 @@
 			{#if $mutationVersion && !node?.isMain}
 				<div class="flex">
 					<button
-						class="btn btn-xs btn-ghost px-[1px] text-xs font-light transition-all duration-500  rounded-full  normal-case {getManyQMS ||
+						class="btn rounded-full px-[1px] text-xs font-light normal-case btn-ghost transition-all duration-500 btn-xs {getManyQMS ||
 						$selectedQMSAAA
 							? 'text-secondary'
 							: ''}   {node?.operator == 'bonded' || node?.operator == 'list'
 							? 'text-base-content'
 							: node?.operator == '_and'
-							? 'text-primary'
-							: 'text-secondary'} break-all h-max  w-max
+								? 'text-primary'
+								: 'text-secondary'} h-max w-max break-all
 						{node?.not ? ' bg-gradient-to-r from-secondary/50' : 'bg-error/0'}
 						"
 						onclick={() => {
@@ -609,7 +618,7 @@
 						{groupDisplayTitle}
 						{#if node.dd_NON_NULL}
 							<sup>
-								<i class="text-primary bi bi-asterisk"></i>
+								<i class="bi bi-asterisk text-primary"></i>
 							</sup>
 						{/if}
 					</button>
@@ -638,18 +647,18 @@
 
 				<SelectedRowsDisplay />
 			{/if}
-			<div class="flex ">
+			<div class="flex">
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<!-- node?.items?.length > 1 || node?.isMain -->
 
 				{#if node?.isMain}
 					<button
-						class="btn btn-xs btn-ghost px-[1px] text-xs font-light transition-all duration-500  rounded-full  normal-case   {node?.operator ==
+						class="btn rounded-full px-[1px] text-xs font-light normal-case btn-ghost transition-all duration-500 btn-xs {node?.operator ==
 							'bonded' || node?.operator == 'list'
 							? 'text-base-content'
 							: node?.operator == '_and'
-							? 'text-primary'
-							: 'text-secondary'} break-all h-max  w-max"
+								? 'text-primary'
+								: 'text-secondary'} h-max w-max break-all"
 						onclick={() => {
 							showModal = true;
 						}}
@@ -657,7 +666,7 @@
 						{groupDisplayTitle}
 						{#if node.dd_NON_NULL}
 							<sup>
-								<i class="text-primary bi bi-asterisk"></i>
+								<i class="bi bi-asterisk text-primary"></i>
 							</sup>
 						{/if}
 					</button>
@@ -665,8 +674,8 @@
 				<p class="grow"></p>
 			</div>
 		{:else}
-			<div class="pr-2 rounded-box  w-full">
-				<div class=" transition-color duration-500 rounded-box ringxxx  ring-1xxx    ">
+			<div class="w-full rounded-box pr-2">
+				<div class=" transition-color ringxxx ring-1xxx rounded-box duration-500">
 					<ActiveArgument
 						bind:selectedRowsColValues
 						bind:showSelectModal
@@ -696,8 +705,8 @@
 			<section
 				class=" duration-500 {$dndIsOn
 					? '  min-h-[30px] min-w-[200px]'
-					: 'pl-1'} rounded-l-none  {node?.isMain && !isCPChild
-					? ' border-l-2 border-l-transparent  min-h-[40vh] md:min-h-[60vh] '
+					: 'pl-1'} rounded-l-none {node?.isMain && !isCPChild
+					? ' min-h-[40vh] border-l-2  border-l-transparent md:min-h-[60vh] '
 					: ' '}
 				 w-full"
 				use:dndzone={{
@@ -718,9 +727,9 @@
 					}) as item (item.id)}
 						<div
 							animate:flip={{ duration: flipDurationMs }}
-							class="    border-2== max-w-min  {$mutationVersion && 'mt-2'} "
+							class="    border-2== max-w-min {$mutationVersion && 'mt-2'} "
 						>
-							<div class="flex dnd-item">
+							<div class="dnd-item flex">
 								{#if testName_stepsOFFieldsWasUpdated}
 									{#key stepsOfFields}
 										<ActiveArgumentsGroupHasFilterOperators
@@ -750,6 +759,6 @@
 		{/if}
 	</div>
 	{#if node.id == SHADOW_PLACEHOLDER_ITEM_ID}
-		<div class=" ml-8 h-0     top-0 left-0 visible" id="shadowEl" bind:this={shadowEl}></div>
+		<div class=" visible top-0 left-0 ml-8 h-0" id="shadowEl" bind:this={shadowEl}></div>
 	{/if}
 {/if}

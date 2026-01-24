@@ -5,19 +5,19 @@
 	<title>Home</title>
 </svelte:head>
 
-<main class="min-h-screen bg-base-200 flex flex-col items-center justify-center p-4">
-	<div class="hero bg-base-100 rounded-box shadow-xl max-w-4xl w-full overflow-hidden">
-		<div class="hero-content flex-col lg:flex-row-reverse p-0">
-			<div class="bg-primary/10 h-full w-full lg:w-1/2 flex items-center justify-center p-10">
+<main class="flex min-h-screen flex-col items-center justify-center bg-base-200 p-4">
+	<div class="hero w-full max-w-4xl overflow-hidden rounded-box bg-base-100 shadow-xl">
+		<div class="hero-content flex-col p-0 lg:flex-row-reverse">
+			<div class="flex h-full w-full items-center justify-center bg-primary/10 p-10 lg:w-1/2">
 				<i class="bi bi-graph-up-arrow text-9xl text-primary opacity-80"></i>
 			</div>
-			<div class="w-full lg:w-1/2 p-8 lg:p-12">
-				<h1 class="text-5xl font-bold text-base-content mb-6">GraphQL Explorer</h1>
+			<div class="w-full p-8 lg:w-1/2 lg:p-12">
+				<h1 class="mb-6 text-5xl font-bold text-base-content">GraphQL Explorer</h1>
 				<p class="py-6 text-lg text-base-content/70">
 					Explore, visualize, and interact with your GraphQL data. Connect to any endpoint or use
 					our demo APIs to see it in action.
 				</p>
-				<ul class="space-y-3 mb-8 text-base-content/80">
+				<ul class="mb-8 space-y-3 text-base-content/80">
 					<li class="flex items-center gap-2">
 						<i class="bi bi-check-circle-fill text-success"></i> Visual Data Exploration
 					</li>
@@ -29,7 +29,7 @@
 					</li>
 				</ul>
 				<div class="flex gap-4">
-					<a href="/endpoints" class="btn btn-primary btn-lg gap-2">
+					<a href="/endpoints" class="btn gap-2 btn-lg btn-primary">
 						Get Started <i class="bi bi-arrow-right"></i>
 					</a>
 					<a

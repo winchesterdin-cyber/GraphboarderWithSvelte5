@@ -172,11 +172,11 @@
 	};
 </script>
 
-<button class="btn btn-xs btn-ghost" onclick={handleClick}
+<button class="btn btn-ghost btn-xs" onclick={handleClick}
 	>{field.dd_displayName}
 	{#if field.dd_NON_NULL}
 		<sup>
-			<i class="text-primary bi bi-asterisk"></i>
+			<i class="bi bi-asterisk text-primary"></i>
 		</sup>
 	{/if}
 </button>

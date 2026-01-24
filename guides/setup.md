@@ -4,18 +4,20 @@
 
 Before you begin, ensure you have the following installed:
 
-*   **Node.js**: The runtime environment.
-*   **npm**: The package manager (usually bundled with Node.js).
+- **Node.js**: The runtime environment.
+- **npm**: The package manager (usually bundled with Node.js).
 
 ## Installation
 
 1.  **Clone the repository**:
+
     ```bash
     git clone <repository_url>
     cd <repository_name>
     ```
 
 2.  **Install dependencies**:
+
     ```bash
     npm install
     ```

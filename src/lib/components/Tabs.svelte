@@ -7,7 +7,7 @@
 	let { tabs, activeTab }: { tabs: Tab[]; activeTab: string } = $props();
 </script>
 
-<div class="tabs tabs-boxed">
+<div class="tabs-boxed tabs">
 	{#each tabs as tab}
 		<button
 			class="tab"
