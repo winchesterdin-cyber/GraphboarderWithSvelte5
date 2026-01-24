@@ -13,5 +13,5 @@
 
 {@render children?.()}
 <QMSWraper isOutermostQMSWraper={true} QMSName={queryName}>
-	<ComponentForLayout />
+	<ComponentForLayout rowSelectionState={{}} />
 </QMSWraper>

@@ -7,6 +7,7 @@
 	import { localStorageEndpoints } from '$lib/stores/endpointsStore';
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
+	import type { AvailableEndpoint } from '$lib/types';
 
 	interface Props {
 		data: LayoutData;
@@ -15,8 +16,8 @@
 
 	let { data, children }: Props = $props();
 
-	let endpointConfiguration = $state();
-	let endpointid = $state();
+	let endpointConfiguration = $state<AvailableEndpoint | undefined>();
+	let endpointid = $state<string>('');
 	let isLoading = $state(true);
 
 	let forceVisibleSidebar = $state(false);

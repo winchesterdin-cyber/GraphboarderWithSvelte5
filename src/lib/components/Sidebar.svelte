@@ -6,12 +6,17 @@
 
 	interface Props {
 		forceVisibleSidebar?: boolean;
-		portalSelector: any;
-		links: any;
+		portalSelector?: any;
+		links?: any;
 		prefix?: string;
 	}
 
-	let { forceVisibleSidebar = $bindable(), portalSelector, links, prefix = '' }: Props = $props();
+	let {
+		forceVisibleSidebar = $bindable(),
+		portalSelector = undefined,
+		links = undefined,
+		prefix = ''
+	}: Props = $props();
 
 	if (forceVisibleSidebar === undefined) {
 		forceVisibleSidebar = false;

@@ -12,9 +12,9 @@
 	let { data, children }: Props = $props();
 
 	const prefix = '';
-	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`) as QMSMainWraperContext;
-	const endpointInfo = QMSMainWraperContext?.endpointInfo;
-	const schemaData = QMSMainWraperContext?.schemaData;
+	let qmsMainWraperContext = getContext(`${prefix}QMSMainWraperContext`) as QMSMainWraperContext;
+	const endpointInfo = qmsMainWraperContext?.endpointInfo;
+	const schemaData = qmsMainWraperContext?.schemaData;
 	let queryFields = $derived($schemaData.queryFields);
 </script>
 

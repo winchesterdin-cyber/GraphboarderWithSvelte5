@@ -14,8 +14,8 @@
 
 	let { prefix = '' } = $props();
 
-	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`) as QMSMainWraperContext;
-	const schemaData = QMSMainWraperContext?.schemaData;
+	let qmsMainWraperContext = getContext(`${prefix}QMSMainWraperContext`) as QMSMainWraperContext;
+	const schemaData = qmsMainWraperContext?.schemaData;
 
 	let rootTypes = $schemaData.rootTypes;
 	let queries = $schemaData.queryFields;
@@ -31,8 +31,8 @@
 			return;
 		}
 
-		const positiveWords = [];
-		const negativeWords = [];
+		const positiveWords: string[] = [];
+		const negativeWords: string[] = [];
 		sortingArray.forEach((word) => {
 			if (word.startsWith('-') || word.startsWith('!')) {
 				const processedWord = word.slice(1);

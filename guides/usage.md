@@ -48,7 +48,7 @@ As you build the query, the results are fetched and displayed automatically.
 - **Export**:
     - **CSV**: Click the **"Copy CSV"** button (clipboard icon) to copy the current table view to your clipboard.
 - **Maintenance**:
-    - **Edit Table Name**: Click the **"Edit"** button (pencil icon) to alias table names for better readability in the UI.
+    - **Edit Table Name**: Click the **"Edit"** button (pencil icon) to open a modal where you can alias table names for better readability in the UI.
 
 ## 5. View Generated GraphQL
 
@@ -63,3 +63,7 @@ For mutations (creating/updating data):
 2.  Fill in the required arguments in the form.
 3.  Click **Submit** to execute the mutation.
 4.  View the result (success/error) and returned data.
+
+## 7. Debugging
+
+- Open your browser's developer console to view debug logs (`console.debug`) for actions like data fetching, endpoint updates, and pagination logic.

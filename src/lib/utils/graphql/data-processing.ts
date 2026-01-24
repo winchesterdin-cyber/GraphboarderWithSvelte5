@@ -52,7 +52,7 @@ export const duplicateEndpoint = (endpointToDuplicate: any, existingEndpoints: a
 };
 
 export const getStepsOfFieldsForDataGetter = (
-	colInfo: TableColumnData,
+	colInfo: TableColumnData | undefined,
 	stepsOfFieldsInput?: string[]
 ): string[] => {
 	const stepsOfFieldsOBJ = colInfo?.stepsOfFieldsOBJ;
@@ -73,7 +73,7 @@ export const getStepsOfFieldsForDataGetter = (
 };
 
 export const getDataGivenStepsOfFields = (
-	colInfo: TableColumnData,
+	colInfo: TableColumnData | undefined,
 	row_resultData: unknown,
 	stepsOfFieldsInput?: string[]
 ): unknown => {

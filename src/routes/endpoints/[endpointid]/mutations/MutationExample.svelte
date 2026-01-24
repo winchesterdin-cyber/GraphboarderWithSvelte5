@@ -33,10 +33,10 @@
 	let { prefix = '', children }: Props = $props();
 
 	// Now we can safely use prefix in getContext calls
-	let QMSMainWraperContext: any = getContext(`${prefix}QMSMainWraperContext`);
-	const endpointInfo = QMSMainWraperContext?.endpointInfo;
-	const schemaData = QMSMainWraperContext?.schemaData;
-	const urqlCoreClient = QMSMainWraperContext?.urqlCoreClient;
+	let qmsMainWraperContext: any = getContext(`${prefix}QMSMainWraperContext`);
+	const endpointInfo = qmsMainWraperContext?.endpointInfo;
+	const schemaData = qmsMainWraperContext?.schemaData;
+	const urqlCoreClient = qmsMainWraperContext?.urqlCoreClient;
 
 	const QMSWraperContext = getContext(`${prefix}QMSWraperContext`);
 	const {
@@ -74,7 +74,10 @@
 	});
 	//
 
-	let { scalarFields } = getFields_Grouped(dd_relatedRoot, [], schemaData);
+	let scalarFields: any[] = [];
+	if (dd_relatedRoot) {
+		({ scalarFields } = getFields_Grouped(dd_relatedRoot, [], schemaData));
+	}
 
 	let queryData = $state({ fetching: false, error: null, data: null });
 	let rows = $state<any[]>([]);
@@ -86,7 +89,7 @@
 	function infiniteHandler({ detail: { loaded, complete } }: any) {
 		loadedF = loaded;
 		completeF = complete;
-		const rowLimitingArgNames = paginationTypeInfo?.get_rowLimitingArgNames(
+		const rowLimitingArgNames = paginationTypeInfo?.get_rowLimitingArgNames?.(
 			QMS_info.dd_paginationArgs
 		);
 		if (
@@ -136,7 +139,7 @@
 				}
 				if ($paginationOptions.infiniteScroll) {
 					if (
-						paginationTypeInfo?.isFirstPage(paginationState, QMS_info.dd_paginationArgs) &&
+						paginationTypeInfo?.isFirstPage?.(paginationState, QMS_info.dd_paginationArgs) &&
 						rowsCurrent?.length > 0
 					) {
 						infiniteId += 1;
@@ -146,7 +149,7 @@
 							rows = [...rows, ...rowsCurrent];
 						}
 						if (
-							paginationTypeInfo?.isFirstPage(paginationState, QMS_info.dd_paginationArgs) &&
+							paginationTypeInfo?.isFirstPage?.(paginationState, QMS_info.dd_paginationArgs) &&
 							rowsCurrent?.length == 0
 						) {
 							rows = rowsCurrent;
@@ -155,7 +158,7 @@
 				} else {
 					rows = rowsCurrent;
 				}
-				const rowLimitingNames = paginationTypeInfo?.get_rowLimitingArgNames(
+				const rowLimitingNames = paginationTypeInfo?.get_rowLimitingArgNames?.(
 					QMS_info.dd_paginationArgs
 				);
 				if (
@@ -174,7 +177,7 @@
 				rowsCurrent = [];
 			});
 	};
-	QMS_bodyPartsUnifier_StoreDerived.subscribe((QMS_body) => {
+	QMS_bodyPartsUnifier_StoreDerived.subscribe((QMS_body: any) => {
 		if (QMS_body && QMS_body !== '') {
 			//runQuery(QMS_body);
 		}

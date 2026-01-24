@@ -124,11 +124,12 @@
 		console.debug('infiniteHandler triggered', { loaded, complete });
 		loadedF = loaded;
 		completeF = complete;
-		const rowLimitingArgNames = paginationTypeInfo?.get_rowLimitingArgNames(
+		const rowLimitingArgNames = paginationTypeInfo?.get_rowLimitingArgNames?.(
 			currentQMS_info.dd_paginationArgs
 		);
 		if (
-			rowLimitingArgNames?.some((argName: string) => {
+			rowLimitingArgNames?.some((argName) => {
+				if (!argName) return false;
 				const pageSize = $paginationState?.[argName] as number;
 				return pageSize && rows.length / pageSize >= 1; //means that all previous pages contained nr of items == page items size
 			}) ||
@@ -175,7 +176,7 @@
 				}
 				if ($paginationOptions.infiniteScroll) {
 					if (
-						paginationTypeInfo?.isFirstPage(paginationState, currentQMS_info.dd_paginationArgs) &&
+						paginationTypeInfo?.isFirstPage?.(paginationState, currentQMS_info.dd_paginationArgs) &&
 						rowsCurrent?.length > 0
 					) {
 						infiniteId += 1;
@@ -185,7 +186,7 @@
 							rows = [...rows, ...rowsCurrent];
 						}
 						if (
-							paginationTypeInfo?.isFirstPage(paginationState, currentQMS_info.dd_paginationArgs) &&
+							paginationTypeInfo?.isFirstPage?.(paginationState, currentQMS_info.dd_paginationArgs) &&
 							rowsCurrent?.length == 0
 						) {
 							rows = rowsCurrent;
@@ -194,13 +195,14 @@
 				} else {
 					rows = rowsCurrent;
 				}
-				const rowLimitingNames = paginationTypeInfo?.get_rowLimitingArgNames(
+				const rowLimitingNames = paginationTypeInfo?.get_rowLimitingArgNames?.(
 					currentQMS_info.dd_paginationArgs
 				);
 				if (
 					(rowLimitingNames &&
 						rowLimitingNames.length > 0 &&
-						rowLimitingNames.some((argName: string) => {
+						rowLimitingNames.some((argName) => {
+							if (!argName) return false;
 							return rowsCurrent?.length == ($paginationState?.[argName] as number);
 						})) ||
 					paginationTypeInfo?.name == 'pageBased'
