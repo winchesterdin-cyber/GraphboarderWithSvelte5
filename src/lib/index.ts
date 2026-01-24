@@ -76,7 +76,7 @@ import TanTable from './components/TanTable.svelte';
 import Type from './components/Type.svelte';
 import TypeInfoDisplay from './components/TypeInfoDisplay.svelte';
 import TypeList from './components/TypeList.svelte';
-import AddEndpointToLocalStorage from './components/AddEndpointToLocalStorage.svelte';
+import EndpointForm from './components/EndpointForm.svelte';
 import EndpointPicker from './components/EndpointPicker.svelte';
 
 export {
@@ -128,6 +128,6 @@ export {
 	Type,
 	TypeInfoDisplay,
 	TypeList,
-	AddEndpointToLocalStorage,
+	EndpointForm,
 	EndpointPicker
 };

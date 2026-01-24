@@ -1,14 +1,16 @@
 <script lang="ts">
-	import { addEndpoint } from '$lib/stores/endpointsStore';
+	import { addEndpoint, removeEndpoint } from '$lib/stores/endpointsStore';
 	import { localEndpoints } from '$lib/stores/testData/testEndpoints';
 	import { addToast } from '$lib/stores/toastStore';
+	import type { AvailableEndpoint } from '$lib/types';
 
 	interface Props {
 		onEndpointAdded?: () => void;
 		onHide?: () => void;
+		endpointToEdit?: AvailableEndpoint | null;
 	}
 
-	let { onEndpointAdded, onHide }: Props = $props();
+	let { onEndpointAdded, onHide, endpointToEdit = null }: Props = $props();
 
 	let id = $state('');
 	let url = $state('');
@@ -19,6 +21,19 @@
 	let headersError = $state('');
 	let generalError = $state('');
 
+	// Effect to populate form when endpointToEdit changes
+	$effect(() => {
+		if (endpointToEdit) {
+			id = endpointToEdit.id;
+			url = endpointToEdit.url;
+			headers = endpointToEdit.headers ? JSON.stringify(endpointToEdit.headers, null, 2) : '';
+		} else {
+			// Only reset if we are switching from edit to add, usually this component is remounted
+			// but if the modal stays open and props change, we might want to reset.
+			// However, usually the parent controls the modal visibility.
+		}
+	});
+
 	const placeholderHeaders = '{"Authorization": "Bearer token"}';
 
 	const validateId = () => {
@@ -27,6 +42,12 @@
 			idError = 'ID is required';
 			return false;
 		}
+
+		// If editing and ID hasn't changed, it's valid
+		if (endpointToEdit && id === endpointToEdit.id) {
+			return true;
+		}
+
 		if (localEndpoints.some((e) => e.id === id)) {
 			idError = `Cannot overwrite built-in endpoint '${id}'.`;
 			return false;
@@ -78,29 +99,40 @@
 				headersObj = JSON.parse(headers);
 			}
 
-			const newEndpoint = {
+			const newEndpoint: AvailableEndpoint = {
 				id,
 				url,
 				headers: headersObj,
 				isMaintained: false,
-				description: 'User added endpoint'
+				description: endpointToEdit?.description || 'User added endpoint'
 			};
 
+			// If we are editing and the ID changed, remove the old one first
+			if (endpointToEdit && endpointToEdit.id !== id) {
+				removeEndpoint(endpointToEdit.id);
+			}
+
 			addEndpoint(newEndpoint);
-			addToast('Endpoint added successfully!', 'success');
+
+			const action = endpointToEdit ? 'updated' : 'added';
+			addToast(`Endpoint ${action} successfully!`, 'success');
 
 			onEndpointAdded?.();
 			onHide?.();
 		} catch (e: any) {
 			generalError = e.message;
-			addToast('Failed to add endpoint', 'error');
+			addToast('Failed to save endpoint', 'error');
 		}
 	};
 </script>
 
 <div class="w-full">
-	<h2 class="text-2xl font-bold mb-4">Add new Endpoint</h2>
-	<p class="mb-4 text-base-content/70">Save endpoint to your browser's Local Storage</p>
+	<h2 class="text-2xl font-bold mb-4">
+		{endpointToEdit ? 'Edit Endpoint' : 'Add new Endpoint'}
+	</h2>
+	<p class="mb-4 text-base-content/70">
+		{endpointToEdit ? 'Update your endpoint configuration' : "Save endpoint to your browser's Local Storage"}
+	</p>
 
 	<div class="form-control w-full mb-4">
 		<label class="label" for="endpoint-id">

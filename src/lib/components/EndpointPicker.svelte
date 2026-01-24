@@ -9,23 +9,33 @@
 	interface Props {
 		endpoints: AvailableEndpoint[];
 		onAddEndpoint?: () => void;
+		onEditEndpoint?: (endpoint: AvailableEndpoint) => void;
 	}
 
-	let { endpoints, onAddEndpoint }: Props = $props();
+	let { endpoints, onAddEndpoint, onEditEndpoint }: Props = $props();
 
 	let searchTerm = $state('');
+	let sortOption = $state<'name-asc' | 'name-desc'>('name-asc');
 	let showDeleteModal = $state(false);
 	let endpointToDelete = $state<AvailableEndpoint | null>(null);
 
 	let filteredEndpoints = $derived(
-		endpoints.filter((endpoint) => {
-			const term = searchTerm.toLowerCase();
-			return (
-				endpoint.id.toLowerCase().includes(term) ||
-				endpoint.url.toLowerCase().includes(term) ||
-				(endpoint.description && endpoint.description?.toLowerCase().includes(term))
-			);
-		})
+		endpoints
+			.filter((endpoint) => {
+				const term = searchTerm.toLowerCase();
+				return (
+					endpoint.id.toLowerCase().includes(term) ||
+					endpoint.url.toLowerCase().includes(term) ||
+					(endpoint.description && endpoint.description?.toLowerCase().includes(term))
+				);
+			})
+			.sort((a, b) => {
+				if (sortOption === 'name-asc') {
+					return a.id.localeCompare(b.id);
+				} else {
+					return b.id.localeCompare(a.id);
+				}
+			})
 	);
 
 	const handleEndpointClick = (endpoint: AvailableEndpoint) => {
@@ -48,21 +58,30 @@
 	};
 </script>
 
-<div class="mb-6 flex gap-4 items-center">
-	<div class="relative w-full max-w-md">
-		<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-			<i class="bi bi-search text-base-content/50"></i>
+<div class="mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
+	<div class="flex gap-4 w-full md:w-auto flex-1">
+		<div class="relative w-full max-w-md">
+			<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+				<i class="bi bi-search text-base-content/50"></i>
+			</div>
+			<input
+				type="text"
+				bind:value={searchTerm}
+				placeholder="Search endpoints..."
+				class="input input-bordered w-full pl-10"
+			/>
 		</div>
-		<input
-			type="text"
-			bind:value={searchTerm}
-			placeholder="Search endpoints..."
-			class="input input-bordered w-full pl-10"
-		/>
+		{#if endpoints.length > 0 && filteredEndpoints.length === 0}
+			<button class="btn btn-ghost" onclick={() => (searchTerm = '')}>Clear Search</button>
+		{/if}
 	</div>
-	{#if endpoints.length > 0 && filteredEndpoints.length === 0}
-		<button class="btn btn-ghost" onclick={() => (searchTerm = '')}>Clear Search</button>
-	{/if}
+
+	<div class="flex items-center gap-2 w-full md:w-auto justify-end">
+		<select bind:value={sortOption} class="select select-bordered">
+			<option value="name-asc">Name (A-Z)</option>
+			<option value="name-desc">Name (Z-A)</option>
+		</select>
+	</div>
 </div>
 
 {#if endpoints.length === 0}
@@ -123,7 +142,20 @@
 				</div>
 
 				{#if !endpoint.isMaintained}
-					<div class="absolute top-2 right-2 z-20">
+					<div class="absolute top-2 right-2 z-20 flex gap-1">
+						{#if onEditEndpoint}
+							<button
+								class="btn btn-square btn-xs btn-ghost text-info opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+								onclick={(e) => {
+									e.stopPropagation();
+									onEditEndpoint(endpoint);
+								}}
+								onkeydown={(e) => e.stopPropagation()}
+								title="Edit Endpoint"
+							>
+								<i class="bi bi-pencil"></i>
+							</button>
+						{/if}
 						<button
 							class="btn btn-square btn-xs btn-ghost text-error opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
 							onclick={(e) => confirmDelete(endpoint, e)}
