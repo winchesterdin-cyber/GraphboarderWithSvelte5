@@ -160,27 +160,19 @@
 	<div class="flex space-x-2 min-w-max w-full">
 		<div class="flex space-x-2 w-1/3 min-w-max w-full">
 			{#if canExpand}
-				<div class="btn btn-xs p-1 rounded normal-case" onclick={expand}>
+				<button type="button" class="btn btn-xs p-1 rounded normal-case" onclick={expand}>
 					{showExpand ? '-' : '+'}
-				</div>
+				</button>
 			{:else}
-				<div class="btn btn-xs p-1 rounded normal-case btn-disabled" onclick={expand}>+</div>
+				<button type="button" class="btn btn-xs p-1 rounded normal-case btn-disabled" onclick={expand}>+</button>
 			{/if}
 			<div class="bg-secondary p-1 rounded">{index + 1}</div>
-			<div
-				class="btn btn-xs btn-info normal-case font-light"
-				onclick={() => {
-				}}
-			>
+			<div class="btn btn-xs btn-info normal-case font-light">
 				{dd_displayName}
 			</div>
 		</div>
 		{#if !canExpand}
-			<div
-				class="btn btn-xs bg-base-200 p-1 rounded"
-				onclick={() => {
-				}}
-			>
+			<div class="btn btn-xs bg-base-200 p-1 rounded">
 				{#if dd_displayName == dd_namesArray[dd_namesArray.length - 1]}
 					{''}
 				{:else}
@@ -189,11 +181,7 @@
 			</div>
 		{/if}
 		{#if canExpand}
-			<div
-				class="btn btn-xs btn-accent normal-case rounded px-2 py-1"
-				onclick={() => {
-				}}
-			>
+			<div class="btn btn-xs btn-accent normal-case rounded px-2 py-1">
 				{#if dd_namesArray?.[1] && dd_namesArray?.[1] !== dd_displayName}
 					{dd_namesArray?.[1]}
 				{:else}
@@ -218,12 +206,14 @@
 
 		{#if canExpand}
 			<div class="overflow-visible grid grid-col gap-[-10px] h-2 w-6">
-				<div
+				<button
+					type="button"
+					aria-label={showExpand ? 'Collapse' : 'Expand'}
 					class="w-10 duration-100 mx-auto w-min pl-1 {hasSelected
 						? 'text-secondary'
 						: ''} {showExpand ? 'bi-arrow-90deg-down mt-2 ' : 'bi-chevron-expand'}"
 					onclick={expand}
-				></div>
+				></button>
 			</div>
 		{/if}
 		{#if !canExpand}
@@ -257,7 +247,25 @@
 
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<div
+			role="button"
+			tabindex="0"
 			class="min-w-max w-full pr-2 text-md duration-100=="
+			onkeydown={(e) => {
+				if (e.key === 'Enter' || e.key === ' ') {
+					if (canExpand) {
+						expand();
+					} else {
+						let tableColData = {
+							title: `col-${Math.floor(Math.random() * 200)},${generateTitleFromStepsOfFields(
+								stepsOfFields
+							)} `,
+							stepsOfFields: stepsOfFields,
+							stepsOfFieldsOBJ: stepsOfFieldsToQueryFragmentObject(stepsOfFields, false)
+						};
+						tableColsData_Store.addColumn(tableColData);
+					}
+				}
+			}}
 			onclick={() => {
 				if (canExpand) {
 					expand();

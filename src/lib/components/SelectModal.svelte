@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import {
 		filterElFromArr,
 		formatData,
@@ -75,15 +73,14 @@
 	if (nodeContext) {
 		pathIsInCP = nodeContext?.pathIsInCP;
 	}
-	let nodeIsInCP = false;
+	let nodeIsInCP = $derived(CPItemContext?.CPItem.nodeId == node.id);
 	const CPItemContext = getContext(`${prefix}CPItemContext`);
 	if (CPItemContext?.CPItem.nodeId == node.id) {
 		setContext(`${prefix}nodeContext`, { pathIsInCP: true });
-		nodeIsInCP = true;
 	}
 	const isCPChild = CPItemContext ? true : false;
-	const visibleInCP = pathIsInCP || nodeIsInCP;
-	const visible = visibleInCP || !CPItemContext || node.isMain;
+	let visibleInCP = $derived(pathIsInCP || nodeIsInCP);
+	let visible = $derived(visibleInCP || !CPItemContext || node.isMain);
 	let correctQMSWraperContext = '';
 	if (isCPChild) {
 		correctQMSWraperContext = getQMSWraperCtxDataGivenControlPanelItem(
@@ -211,17 +208,19 @@
 
 	let groupDisplayTitle = $state('');
 
-	if (node?.addDefaultFields || (node?.isMain && addDefaultFields)) {
-		nodeAddDefaultFields(
-			node,
-			prefix,
-			group,
-			activeArgumentsDataGrouped_Store,
-			schemaData,
-			endpointInfo,
-			stepsOfFields
-		);
-	}
+	$effect(() => {
+		if (node?.addDefaultFields || (node?.isMain && addDefaultFields)) {
+			nodeAddDefaultFields(
+				node,
+				prefix,
+				group,
+				activeArgumentsDataGrouped_Store,
+				schemaData,
+				endpointInfo,
+				stepsOfFields
+			);
+		}
+	});
 
 	let showAddModal = false;
 	let selectedRowsModel = $state({});
@@ -325,7 +324,7 @@
 	const { QMSFieldToQMSGetMany_Store } = OutermostQMSWraperContext;
 	let getManyQMS = $state();
 	let showSelectQMSModal = $state(false);
-	run(() => {
+	$effect(() => {
 		stepsOfFieldsFull = stepsOfNodesToStepsOfFields(stepsOfNodes);
 		stepsOfFields = filterElFromArr(stepsOfFieldsFull, ['list', 'bonded']);
 		node.stepsOfFieldsFull = stepsOfFieldsFull;
@@ -334,13 +333,13 @@
 		node.stepsOfNodes = stepsOfNodes;
 		node.stepsOfFieldsStringified = JSON.stringify(stepsOfFields);
 	});
-	run(() => {
+	$effect(() => {
 		if (labelEl) {
 			shadowHeight = labelEl.clientHeight;
 			shadowWidth = labelEl.clientWidth;
 		}
 	});
-	run(() => {
+	$effect(() => {
 		if (shadowHeight && shadowEl) {
 			if (shadowEl.style.height == 0) {
 				//if (shadowEl.style.height == 0) ensures the bellow runs only once per grab of element to move
@@ -359,7 +358,7 @@
 			}
 		}
 	});
-	run(() => {
+	$effect(() => {
 		groupDisplayTitle = '';
 		//if (node?.not) {
 		//	groupDisplayTitle = `${groupDisplayTitle}_not `;
@@ -392,14 +391,14 @@
 	});
 	//should work
 
-	run(() => {
+	$effect(() => {
 		if (QMSWraperContextForSelectedQMS) {
 			$idColName = QMSWraperContextForSelectedQMS.idColName;
 		}
 	});
-	run(() => {
+	$effect(() => {
 	});
-	run(() => {
+	$effect(() => {
 		if ($QMSFieldToQMSGetMany_Store.length > 0) {
 			getManyQMS = QMSFieldToQMSGetMany_Store.getObj({
 				nodeOrField: node

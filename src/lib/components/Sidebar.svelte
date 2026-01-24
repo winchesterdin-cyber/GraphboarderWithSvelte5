@@ -38,11 +38,6 @@
 		? 'visible '
 		: ' invisible'} fixed left-0  z-50  md:z-0 md:visible md:static flex  "
 	use:clickOutside
-	onclick={() => {
-		if (forceVisibleSidebar) {
-			forceVisibleSidebar = false;
-		}
-	}}
 >
 	<div class="invisible md:visible">
 		<TabContainer {endpointInfo} />

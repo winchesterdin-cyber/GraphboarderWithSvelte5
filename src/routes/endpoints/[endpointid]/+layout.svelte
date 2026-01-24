@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
 	import type { LayoutData } from './$types';
 	import { page } from '$app/stores';
 	import MainWraper from '$lib/components/MainWraper.svelte';
@@ -22,7 +21,7 @@
 
 	let forceVisibleSidebar = $state(false);
 
-	run(() => {
+	$effect(() => {
 		endpointid = $page.params.endpointid;
 		if (endpointid) {
 			// 1. Try exact match in localEndpoints (hardcoded)
@@ -76,7 +75,9 @@
 				</div>
 				<div class="flex flex-col w-full md:w-[65vw]   grow h-screen">
 					<div class=" bg-base-100 min-h-[50px] flex">
-						<label
+						<button
+							type="button"
+							aria-label="Open sidebar"
 							class="btn btn-square btn-ghost  md:hidden"
 							onclick={() => {
 								forceVisibleSidebar = true;
@@ -94,7 +95,7 @@
 									d="M4 6h16M4 12h16M4 18h16"
 								/></svg
 							>
-						</label>
+						</button>
 						<div></div>
 					</div>
 					{@render children?.()}

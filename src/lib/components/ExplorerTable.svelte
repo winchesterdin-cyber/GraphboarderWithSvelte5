@@ -123,9 +123,7 @@
 						{@const columnFlags = getColumnFlags(header.column.columnDef.header, idColName, requiredColNames)}
 						<th class="normal-case">
 							<div class="dropdown dropdown-end">
-								<!-- svelte-ignore a11y_label_has_associated_control -->
-								<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-								<label tabindex="0" class="cursor-pointer">
+								<div role="button" tabindex="0" class="cursor-pointer">
 									<div class="flex space-x-2 hover:text-primary rounded-box">
 										<div
 											class="{columnFlags.isIdColumn
@@ -142,7 +140,7 @@
 										</div>
 										<div class="bi bi-chevron-down"></div>
 									</div>
-								</label>
+								</div>
 								<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 								<div
 									tabindex="0"
@@ -157,15 +155,15 @@
 											>
 												<!-- {columnsData[index].stepsOfFields.join(' > ')} -->
 											</div>
-											<!-- svelte-ignore a11y_click_events_have_key_events -->
-											<div
-												class="w-full pr-2 hover:text-primary cursor-pointer"
+											<button
+												type="button"
+												class="w-full pr-2 hover:text-primary cursor-pointer text-left"
 												onclick={() => {
 													onHideColumn?.({ column: header.column.columnDef.header });
 												}}
 											>
 												hide field
-											</div>
+											</button>
 										</div>
 									</div>
 								</div>
@@ -179,7 +177,13 @@
 		<tbody>
 			{#each $table.getRowModel().rows as row, i (row.id)}
 				<tr
+					tabindex="0"
 					class="bg-base-100 hover:bg-base-300 cursor-pointer hover z-0"
+					onkeydown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							onRowClicked?.(row.original);
+						}
+					}}
 					onclick={() => {
 						onRowClicked?.(row.original);
 						//goto(`${$page.url.origin}/queries/${$page.params.queryName}/${row.id}`);
@@ -216,6 +220,8 @@
 						{#if onDuplicateRow}
 							<div class="tooltip" data-tip="Duplicate">
 								<button
+									type="button"
+									aria-label="Duplicate"
 									class="btn btn-sm btn-square btn-secondary"
 									onclick={(event) => {
 										event.stopPropagation();
@@ -229,6 +235,8 @@
 						{#if onDeleteRow}
 							<div class="tooltip" data-tip="Delete">
 								<button
+									type="button"
+									aria-label="Delete"
 									class="btn btn-sm btn-square btn-error"
 									onclick={(event) => {
 										event.stopPropagation();

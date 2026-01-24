@@ -125,15 +125,14 @@
 	if (nodeContext) {
 		pathIsInCP = nodeContext?.pathIsInCP;
 	}
-	let nodeIsInCP = $state(false);
+	let nodeIsInCP = $derived(CPItemContext?.CPItem.nodeId == node.id);
 	const CPItemContext = getContext(`${prefix}CPItemContext`);
 	if (CPItemContext?.CPItem.nodeId == node.id) {
 		setContext(`${prefix}nodeContext`, { pathIsInCP: true });
-		nodeIsInCP = true;
 	}
 	const isCPChild = CPItemContext ? true : false;
-	const visibleInCP = pathIsInCP || nodeIsInCP;
-	const visible = visibleInCP || !CPItemContext || node.isMain;
+	let visibleInCP = $derived(pathIsInCP || nodeIsInCP);
+	let visible = $derived(visibleInCP || !CPItemContext || node.isMain);
 	let correctQMSWraperContext = '';
 	if (isCPChild) {
 		correctQMSWraperContext = getQMSWraperCtxDataGivenControlPanelItem(
@@ -231,17 +230,20 @@
 
 	let groupDisplayTitle = $derived(generateGroupDisplayTitle(node, getPreciseType));
 
-	if (node?.addDefaultFields || (node?.isMain && addDefaultFields)) {
-		nodeAddDefaultFields(
-			node,
-			prefix,
-			group,
-			activeArgumentsDataGrouped_Store,
-			schemaData,
-			endpointInfo,
-			stepsOfFields
-		);
-	}
+	$effect(() => {
+		if (node?.addDefaultFields || (node?.isMain && addDefaultFields)) {
+			nodeAddDefaultFields(
+				node,
+				prefix,
+				group,
+				activeArgumentsDataGrouped_Store,
+				schemaData,
+				endpointInfo,
+				stepsOfFields
+			);
+		}
+	});
+
 	let showSelectModal = $state(false);
 
 	let showAddModal = $state(false);
@@ -481,6 +483,7 @@
 			<div class="flex ">
 				{#if $dndIsOn && !nodeIsInCP}
 					<div
+						role="button"
 						tabindex={dragDisabled ? 0 : -1}
 						aria-label="drag-handle"
 						class="  transition:all duration-500 bi bi-grip-vertical ml-2  -mr-1 text-lg rounded-l-md {node?.operator ==
@@ -546,7 +549,9 @@
 		</div>
 	{/if}
 
+	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 	<div
+		role="group"
 		class="  w-min-max w-max transition-all duration-500
 	
 	

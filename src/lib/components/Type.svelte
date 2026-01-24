@@ -62,10 +62,7 @@
 
 	let inDuration = $state(300);
 	let expandData = $state({});
-	let canExpand = $state(false);
-	if (!dd_kindsArray?.includes('SCALAR') && dd_kindsArray.length > 0) {
-		canExpand = true;
-	}
+	let canExpand = $derived(!dd_kindsArray?.includes('SCALAR') && dd_kindsArray.length > 0);
 
 	const expand = () => {
 		expandData = getRootType($schemaData.rootTypes, dd_rootName, schemaData);
@@ -93,9 +90,11 @@
 		}
 	};
 
-	if (canExpand && isOnMainList && !isForExplorer) {
-		expand();
-	}
+	$effect(() => {
+		if (canExpand && isOnMainList && !isForExplorer && !showExpand) {
+			expand();
+		}
+	});
 </script>
 
 {#if template == 'default'}

@@ -92,11 +92,6 @@
 		</div>
 		<ul
 			class="flex h-full w-16xxx flex-col  justify-start border-t-[1px] border-base-content border-opacity-5 bg-base-300   pt-1 pb-[25vh] overscroll-contain"
-			onclick={() => {
-				// if (itemsToShow.length == 0) {
-				// 	onHideSidebar?.();
-				// }
-			}}
 		>
 			{#each links as link}
 				<TabItem
@@ -116,9 +111,6 @@
 			<div class="h-[50px] bg-accent">{''}</div>
 			<ul
 				class="space-y-1 px-4 py-4 h-full overflow-y-auto  w-[60vw] md:w-full   overflow-x-auto  bg-base-100  grow pb-[25vh] overscroll-contain"
-				onclick={() => {
-					onHideSidebar?.();
-				}}
 			>
 				{#each itemsToShow as item}
 					<li class="md:w-[10vw] md:min-w-[170px] ">
@@ -128,7 +120,10 @@
 								.url.pathname == item.url || $page.url.pathname.startsWith(`${item.url}/`)
 								? 'font-bold bg-info/50 '
 								: 'bg-info/5'}"
-							title={item.title}>{item.title}</a
+							title={item.title}
+							onclick={() => {
+								onHideSidebar?.();
+							}}>{item.title}</a
 						>
 					</li>
 				{/each}
@@ -136,16 +131,13 @@
 		</div>
 	{/if}
 
-	<div
-		class="w-[100vw] h-screen  md:hidden "
+	<button
+		type="button"
+		aria-label="Close sidebar"
+		class="w-[100vw] h-screen md:hidden bg-transparent border-none cursor-default appearance-none"
 		onclick={() => {
 			onHideSidebar?.();
 		}}
-	></div>
+	></button>
 </div>
 
-<style>
-	.shadowTop {
-		box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
-	}
-</style>

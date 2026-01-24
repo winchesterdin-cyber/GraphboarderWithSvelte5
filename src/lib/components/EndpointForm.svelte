@@ -149,9 +149,9 @@
 			class:input-error={!!idError}
 		/>
 		{#if idError}
-			<label class="label">
+			<div class="label">
 				<span class="label-text-alt text-error">{idError}</span>
-			</label>
+			</div>
 		{/if}
 	</div>
 
@@ -170,9 +170,9 @@
 			class:input-error={!!urlError}
 		/>
 		{#if urlError}
-			<label class="label">
+			<div class="label">
 				<span class="label-text-alt text-error">{urlError}</span>
-			</label>
+			</div>
 		{/if}
 	</div>
 
@@ -190,9 +190,9 @@
 			placeholder={placeholderHeaders}
 		></textarea>
 		{#if headersError}
-			<label class="label">
+			<div class="label">
 				<span class="label-text-alt text-error">{headersError}</span>
-			</label>
+			</div>
 		{/if}
 	</div>
 

@@ -269,12 +269,15 @@
 		<div class="px-4 mx-auto  mb-2">
 			<div class="alert alert-error shadow-lg ">
 				<div>
-					<button class="btn btn-ghost btn-sm p-0">
-						<!-- svelte-ignore a11y_click_events_have_key_events -->
+					<button
+					type="button"
+					aria-label="Clear error"
+						class="btn btn-ghost btn-sm p-0"
+						onclick={() => {
+							queryData.error = null;
+						}}
+					>
 						<svg
-							onclick={() => {
-								queryData.error = null;
-							}}
 							xmlns="http://www.w3.org/2000/svg"
 							class="stroke-current flex-shrink-0 h-6 w-6"
 							fill="none"
