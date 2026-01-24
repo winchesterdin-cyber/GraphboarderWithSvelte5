@@ -50,11 +50,11 @@
 		QMSName?: string;
 		QMS_info?: FieldWithDerivedData | undefined;
 		QMSWraperContext?: Record<string, unknown>;
-		activeArgumentsDataGrouped_StoreInitialValue: ActiveArgumentGroup[] | undefined;
+		activeArgumentsDataGrouped_StoreInitialValue?: ActiveArgumentGroup[] | undefined;
 		activeArgumentsDataGrouped_Store?: any;
 		tableColsData_StoreInitialValue?: TableColumnData[];
 		finalGqlArgObj_Store?: any;
-		QMSWraperContextGiven: any;
+		QMSWraperContextGiven?: any;
 		preferGivenQMSWraperContext?: boolean;
 		children?: import('svelte').Snippet;
 	}
