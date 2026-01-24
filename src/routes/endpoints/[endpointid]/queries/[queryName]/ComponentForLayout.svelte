@@ -35,7 +35,7 @@
 		prefix?: string;
 		enableMultiRowSelectionState?: boolean;
 		currentQMS_info?: any;
-		rowSelectionState: any;
+		rowSelectionState?: any;
 		onRowSelectionChange?: (detail: any) => void;
 		onRowClicked?: (detail: any) => void;
 		children?: import('svelte').Snippet;

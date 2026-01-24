@@ -11,7 +11,7 @@
 		template: any;
 		index: any;
 		type: any;
-		stepsOfFields: any;
+		stepsOfFields?: any;
 		isOnMainList?: any;
 		//stepsOfFields = [...stepsOfFields]; // so each tree will have it's own stepsOfFields
 		depth?: number;

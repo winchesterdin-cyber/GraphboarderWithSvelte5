@@ -1,6 +1,14 @@
 import { getPreciseType } from './typeUtils';
 
 //In the future use terms like processString_transformer and unprocessString_transformer,and also use chd_processedValue and chd_unprocessedValue instead of chd_rawValue and chd_dispatchValue
+
+/**
+ * Transforms a stringified QMS object value into a clean string by removing quotes and unescaping characters.
+ * Useful for processing raw string values from the QMS system.
+ *
+ * @param value - The input value, expected to be a string.
+ * @returns The cleaned string or the original value if input is not a string.
+ */
 export const stringToQMSString_transformer = (value: unknown): string | unknown => {
 	//the input value is the result of a stringified QMS object, so we need to parse it
 	if (getPreciseType(value) !== 'string') {
@@ -17,6 +25,12 @@ export const stringToQMSString_transformer = (value: unknown): string | unknown 
 
 	return modifiedValue;
 };
+/**
+ * Wraps a string value in single quotes and escapes existing quotes for GraphQL usage.
+ *
+ * @param value - The string to transform.
+ * @returns The transformed string suitable for GraphQL arguments.
+ */
 export const string_transformer = (value: unknown): string | unknown => {
 	if (getPreciseType(value) !== 'string') {
 		console.warn('string_transformer: value is not a string', value);
@@ -24,6 +38,14 @@ export const string_transformer = (value: unknown): string | unknown => {
 	}
 	return `'${value.replaceAll(`"`, `&Prime;`).replaceAll(`'`, `&prime;`)}'`;
 };
+
+/**
+ * Reverses the transformation applied by `string_transformer`.
+ *
+ * @param value - The transformed string.
+ * @param onlySingleQuotes - If true, only removes single quotes wrapping the string.
+ * @returns The original string value.
+ */
 export const string_transformerREVERSE = (
 	value: unknown,
 	onlySingleQuotes?: boolean
@@ -49,10 +71,23 @@ export const number_transformer = (value: unknown): number | unknown => {
 export const ISO8601_transformerGETDEFAULTVAl = (): string => {
 	return ISO8601_transformerREVERSE(string_transformer(new Date().toISOString()));
 };
+/**
+ * Transforms a date string into an ISO 8601 format wrapped for GraphQL.
+ *
+ * @param value - The date string.
+ * @returns The ISO 8601 string transformed for GraphQL.
+ */
 export const ISO8601_transformer = (value: string): string | unknown => {
 	let date_ISO8601 = new Date(value).toISOString();
 	return string_transformer(date_ISO8601);
 };
+
+/**
+ * Reverses the ISO 8601 transformation to return a `YYYY-MM-DDTHH:mm` string.
+ *
+ * @param value - The transformed ISO string.
+ * @returns A date string formatted as `YYYY-MM-DDTHH:mm`.
+ */
 export const ISO8601_transformerREVERSE = (value: unknown): string => {
 	// Convert ISO 8601 string to Date object
 	const dateObject = new Date(string_transformerREVERSE(value, true));

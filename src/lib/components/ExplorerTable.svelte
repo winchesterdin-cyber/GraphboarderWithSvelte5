@@ -11,13 +11,13 @@
 		prefix?: string;
 		enableMultiRowSelectionState?: boolean;
 		enableRowSelectionState?: boolean;
-		infiniteHandler: any;
-		infiniteId: any;
+		infiniteHandler?: any;
+		infiniteId?: any;
 		data?: any;
 		columns?: any;
 		rowSelectionState?: any;
-		idColName: any;
-		requiredColNames: any;
+		idColName?: any;
+		requiredColNames?: any;
 		onRowSelectionChange?: (detail: any) => void;
 		onHideColumn?: (detail: { column: string }) => void;
 		onRowClicked?: (detail: any) => void;

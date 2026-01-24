@@ -35,6 +35,10 @@ const migrateLegacyEndpoints = () => {
 
 migrateLegacyEndpoints();
 
+/**
+ * A derived store that combines hardcoded local endpoints with user-defined endpoints from localStorage.
+ * It ensures uniqueness by ID and sorts the endpoints.
+ */
 export const endpoints = derived(localStorageEndpoints, ($localStorageEndpoints) => {
 	const userUniqueEndpoints = $localStorageEndpoints.filter(
 		(e) => !localEndpoints.find((le) => le.id === e.id)
@@ -45,6 +49,12 @@ export const endpoints = derived(localStorageEndpoints, ($localStorageEndpoints)
 	return getSortedAndOrderedEndpoints(merged);
 });
 
+/**
+ * Adds or updates an endpoint in the user's localStorage.
+ * If an endpoint with the same ID exists, it will be replaced.
+ *
+ * @param endpoint - The endpoint object to add or update.
+ */
 export const addEndpoint = (endpoint: AvailableEndpoint) => {
 	console.debug('Adding endpoint:', endpoint);
 	localStorageEndpoints.update((current) => {
@@ -53,6 +63,11 @@ export const addEndpoint = (endpoint: AvailableEndpoint) => {
 	});
 };
 
+/**
+ * Removes an endpoint from the user's localStorage by its ID.
+ *
+ * @param id - The unique identifier of the endpoint to remove.
+ */
 export const removeEndpoint = (id: string) => {
 	console.debug('Removing endpoint with id:', id);
 	localStorageEndpoints.update((current) => {

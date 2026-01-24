@@ -9,7 +9,7 @@ On the home page, you will see the **Endpoint Picker**. This displays a list of 
 - **Select**: Click on an endpoint card to connect to it.
 - **Search**: Use the search bar to filter endpoints by name.
 - **Add**: Click "Add Endpoint" to configure a new custom GraphQL endpoint (URL, headers, etc.).
-- **Edit/Delete**: User-defined endpoints can be edited or deleted.
+- **Edit/Delete**: User-defined endpoints can be edited or deleted using the buttons on the card.
 
 ## 2. Exploring the Schema
 
@@ -38,16 +38,16 @@ As you build the query, the results are fetched and displayed automatically.
 - **Pagination**: If the API supports pagination, use the controls to navigate pages or load more rows (infinite scroll).
 - **Sorting/Filtering**: Click column headers to sort or use filters if supported by the API arguments.
 - **Columns**:
-  - **Hide**: Click the column menu to hide specific fields.
-  - **Add**: Use the "Add Column" feature to include more fields from the schema.
-*   **Export**:
-    *   **CSV**: Click "Copy CSV" to copy the current table view to your clipboard as CSV.
-*   **Maintenance**:
-    *   **Edit Table Name**: You can alias table names for better readability in the UI.
+    - **Hide**: Click the column menu (chevron icon) to hide specific fields.
+    - **Add**: Use the "Add Column" feature to include more fields from the schema.
+- **Export**:
+    - **CSV**: Click the **"Copy CSV"** button (clipboard icon) to copy the current table view to your clipboard.
+- **Maintenance**:
+    - **Edit Table Name**: Click the **"Edit"** button (pencil icon) to alias table names for better readability in the UI.
 
 ## 5. View Generated GraphQL
 
-- Click the **"QMS body"** button (or similar code icon) to view the actual GraphQL query being sent to the server.
+- Click the **"QMS body"** button to toggle the view of the actual GraphQL query being sent to the server.
 - You can copy this query for use in other tools.
 
 ## 6. Mutations
