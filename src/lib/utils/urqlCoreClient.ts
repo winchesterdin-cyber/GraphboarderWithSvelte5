@@ -16,6 +16,25 @@ export const Create_urqlCoreClient = () => {
 		 */
 		set: (value: any) => {
 			console.debug('urqlCoreClient set:', value);
+			if (value) {
+				// Wrap query and mutation to log
+				if (typeof value.query === 'function' && !value._queryLogged) {
+					const originalQuery = value.query.bind(value);
+					value.query = (...args: any[]) => {
+						console.debug('GraphQL Query:', args[0], args[1]);
+						return originalQuery(...args);
+					};
+					value._queryLogged = true;
+				}
+				if (typeof value.mutation === 'function' && !value._mutationLogged) {
+					const originalMutation = value.mutation.bind(value);
+					value.mutation = (...args: any[]) => {
+						console.debug('GraphQL Mutation:', args[0], args[1]);
+						return originalMutation(...args);
+					};
+					value._mutationLogged = true;
+				}
+			}
 			set(value);
 		},
 		/**

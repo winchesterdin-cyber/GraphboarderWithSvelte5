@@ -33,7 +33,7 @@
 	let { prefix = '', children }: Props = $props();
 
 	// Now we can safely use prefix in getContext calls
-	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
+	let QMSMainWraperContext: any = getContext(`${prefix}QMSMainWraperContext`);
 	const endpointInfo = QMSMainWraperContext?.endpointInfo;
 	const schemaData = QMSMainWraperContext?.schemaData;
 	const urqlCoreClient = QMSMainWraperContext?.urqlCoreClient;
@@ -91,7 +91,8 @@
 		);
 		if (
 			rowLimitingArgNames?.some((argName: any) => {
-				return rows.length / $paginationState?.[argName] >= 1; //means that all previous pages contained nr of items == page items size
+				const pageSize = $paginationState?.[argName];
+				return pageSize && rows.length / pageSize >= 1; //means that all previous pages contained nr of items == page items size
 			}) ||
 			paginationTypeInfo?.name == 'pageBased'
 		) {
@@ -125,7 +126,11 @@
 					QMS_info.dd_displayName,
 					...endpointInfo.get_rowsLocation(QMS_info, schemaData)
 				];
-				rowsCurrent = getDataGivenStepsOfFields(undefined, queryData.data, stepsOfFieldsInput);
+				rowsCurrent = getDataGivenStepsOfFields(
+					undefined,
+					queryData.data,
+					stepsOfFieldsInput
+				) as any[];
 				if (rowsCurrent && !Array.isArray(rowsCurrent)) {
 					rowsCurrent = [rowsCurrent];
 				}
@@ -150,13 +155,15 @@
 				} else {
 					rows = rowsCurrent;
 				}
+				const rowLimitingNames = paginationTypeInfo?.get_rowLimitingArgNames(
+					QMS_info.dd_paginationArgs
+				);
 				if (
-					(paginationTypeInfo?.get_rowLimitingArgNames(QMS_info.dd_paginationArgs).length > 0 &&
-						paginationTypeInfo
-							?.get_rowLimitingArgNames(QMS_info.dd_paginationArgs)
-							.some((argName: any) => {
-								return rowsCurrent?.length == $paginationState?.[argName];
-							})) ||
+					(rowLimitingNames &&
+						rowLimitingNames.length > 0 &&
+						rowLimitingNames.some((argName: any) => {
+							return rowsCurrent?.length == $paginationState?.[argName];
+						})) ||
 					paginationTypeInfo?.name == 'pageBased'
 				) {
 					loadedF && loadedF();

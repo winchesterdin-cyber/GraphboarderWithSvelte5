@@ -3,7 +3,7 @@
 	import QMSWraper from '$lib/components/QMSWraper.svelte';
 	import Page from '$lib/components/Page.svelte';
 
-	let QMSName = $state();
+	let QMSName = $state('');
 	let input = $state<HTMLInputElement>();
 </script>
 

@@ -45,7 +45,7 @@
 		prefix = '',
 		enableMultiRowSelectionState = true,
 		currentQMS_info,
-		rowSelectionState,
+		rowSelectionState = {},
 		onRowSelectionChange,
 		onRowClicked,
 		children
@@ -101,7 +101,10 @@
 			$activeArgumentsDataGrouped_Store.length > 0 ? true : false;
 	});
 	//
-	let { scalarFields } = getFields_Grouped(dd_relatedRoot, [], schemaData);
+	let scalarFields: any[] = [];
+	if (dd_relatedRoot) {
+		({ scalarFields } = getFields_Grouped(dd_relatedRoot, [], schemaData));
+	}
 
 	let queryData: { fetching: boolean; error: any; data: any } = $state({
 		fetching: false,
@@ -126,7 +129,8 @@
 		);
 		if (
 			rowLimitingArgNames?.some((argName: string) => {
-				return rows.length / ($paginationState?.[argName] as number) >= 1; //means that all previous pages contained nr of items == page items size
+				const pageSize = $paginationState?.[argName] as number;
+				return pageSize && rows.length / pageSize >= 1; //means that all previous pages contained nr of items == page items size
 			}) ||
 			paginationTypeInfo?.name == 'pageBased'
 		) {
@@ -161,7 +165,11 @@
 					currentQMS_info.dd_displayName,
 					...endpointInfo.get_rowsLocation(currentQMS_info, schemaData)
 				];
-				rowsCurrent = getDataGivenStepsOfFields(undefined, queryData.data, stepsOfFieldsInput);
+				rowsCurrent = getDataGivenStepsOfFields(
+					undefined,
+					queryData.data,
+					stepsOfFieldsInput
+				) as any[];
 				if (rowsCurrent && !Array.isArray(rowsCurrent)) {
 					rowsCurrent = [rowsCurrent];
 				}
@@ -186,14 +194,15 @@
 				} else {
 					rows = rowsCurrent;
 				}
+				const rowLimitingNames = paginationTypeInfo?.get_rowLimitingArgNames(
+					currentQMS_info.dd_paginationArgs
+				);
 				if (
-					(paginationTypeInfo?.get_rowLimitingArgNames(currentQMS_info.dd_paginationArgs).length >
-						0 &&
-						paginationTypeInfo
-							?.get_rowLimitingArgNames(currentQMS_info.dd_paginationArgs)
-							.some((argName: string) => {
-								return rowsCurrent?.length == ($paginationState?.[argName] as number);
-							})) ||
+					(rowLimitingNames &&
+						rowLimitingNames.length > 0 &&
+						rowLimitingNames.some((argName: string) => {
+							return rowsCurrent?.length == ($paginationState?.[argName] as number);
+						})) ||
 					paginationTypeInfo?.name == 'pageBased'
 				) {
 					loadedF && loadedF();

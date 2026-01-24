@@ -6,6 +6,7 @@
 	import ExplorerTable from '$lib/components/ExplorerTable.svelte';
 	import EditTableBaseNameModal from '$lib/components/EditTableBaseNameModal.svelte';
 	import { addToast } from '$lib/stores/toastStore';
+	import type { QMSMainWraperContext } from '$lib/types/index';
 
 	interface Props {
 		prefix?: string;
@@ -13,13 +14,13 @@
 
 	let { prefix = '' } = $props();
 
-	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
+	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`) as QMSMainWraperContext;
 	const schemaData = QMSMainWraperContext?.schemaData;
 
 	let rootTypes = $schemaData.rootTypes;
 	let queries = $schemaData.queryFields;
 	let mutations = $schemaData.mutationFields;
-	let whatToShow = $state([]);
+	let whatToShow = $state<any[]>([]);
 	let whatToShowLastUsed = $state();
 	let sortingInputValue = $state('');
 	let sortingArray = $derived(sortingInputValue.split(' '));
@@ -65,7 +66,7 @@
 		});
 	};
 	const showRootTypes = () => {
-		whatToShow = rootTypes?.sort((a, b) => {
+		whatToShow = rootTypes?.sort((a: any, b: any) => {
 			let ea = a.dd_rootName;
 			let eb = b.dd_rootName;
 			// let ga = a.dd_displayName;
@@ -81,7 +82,7 @@
 
 	const showQueries = () => {
 		if (queries) {
-			whatToShow = queries?.sort((a, b) => {
+			whatToShow = queries?.sort((a: any, b: any) => {
 				let ea = a.dd_rootName;
 				let eb = b.dd_rootName;
 				let ga = a.dd_displayName;
@@ -100,7 +101,7 @@
 
 	const showMutations = () => {
 		if (mutations) {
-			whatToShow = mutations?.sort((a, b) => {
+			whatToShow = mutations?.sort((a: any, b: any) => {
 				let ea = a.dd_rootName;
 				let eb = b.dd_rootName;
 				let fa = a.dd_displayName.substring(6);
@@ -122,7 +123,7 @@
 
 	const showAll = () => {
 		if (mutations) {
-			whatToShow = [...rootTypes, ...queries, ...mutations]?.sort((a, b) => {
+			whatToShow = [...rootTypes, ...queries, ...mutations]?.sort((a: any, b: any) => {
 				let ea = a.dd_rootName;
 				let eb = b.dd_rootName;
 				let fa = a.dd_displayName.substring(6);
@@ -143,7 +144,7 @@
 	};
 	const showQueriesAndMutations = () => {
 		if (mutations) {
-			whatToShow = [...queries, ...mutations]?.sort((a, b) => {
+			whatToShow = [...queries, ...mutations]?.sort((a: any, b: any) => {
 				let ea = a.dd_rootName;
 				let eb = b.dd_rootName;
 				let fa = a.dd_displayName.substring(6);
@@ -162,63 +163,63 @@
 		whatToShowLastUsed = showQueriesAndMutations;
 		filterByWord();
 	};
-	const queryFieldByName = (name) => {
-		return $schemaData.queryFields.filter((item) => {
+	const queryFieldByName = (name: string) => {
+		return $schemaData.queryFields.filter((item: any) => {
 			return item.name == name;
 		})[0];
 	};
-	const mutationFieldByName = (name) => {
-		return $schemaData.mutationFields.filter((item) => {
+	const mutationFieldByName = (name: string) => {
+		return $schemaData.mutationFields.filter((item: any) => {
 			return item.name == name;
 		})[0];
 	};
-	let columns = $state([]);
+	let columns = $state<any[]>([]);
 
 	$effect(() => {
 		if (whatToShow.length > 0) {
 			columns = [
 				{
-					accessorFn: (row) => row.dd_displayName,
+					accessorFn: (row: any) => row.dd_displayName,
 					header: 'dd_displayName',
 					footer: 'dd_displayName',
 					enableHiding: true
 				},
 				{
-					accessorFn: (row) => row.dd_rootName,
+					accessorFn: (row: any) => row.dd_rootName,
 					header: 'dd_rootName',
 					footer: 'dd_rootName',
 					enableHiding: true
 				},
 				{
-					accessorFn: (row) => (row.dd_kindList_NON_NULL ? '!' : ''),
+					accessorFn: (row: any) => (row.dd_kindList_NON_NULL ? '!' : ''),
 					header: 'L',
 					footer: 'L',
 					enableHiding: true
 				},
 				{
-					accessorFn: (row) => (row.dd_kindList ? 'list' : ''),
+					accessorFn: (row: any) => (row.dd_kindList ? 'list' : ''),
 					header: 'LL',
 					footer: 'LL',
 					enableHiding: true
 				},
 				{
-					accessorFn: (row) => (row.dd_kindEl_NON_NULL ? '!' : ''),
+					accessorFn: (row: any) => (row.dd_kindEl_NON_NULL ? '!' : ''),
 					header: 'E',
 					footer: 'E',
 					enableHiding: true
 				},
 				{
-					accessorFn: (row) => row.dd_kindEl,
+					accessorFn: (row: any) => row.dd_kindEl,
 					header: 'EE',
 					footer: 'EE',
 					enableHiding: true
 				},
 
 				{
-					accessorFn: (row) =>
+					accessorFn: (row: any) =>
 						row.args
 							?.map(
-								(arg) =>
+								(arg: any) =>
 									`${arg.dd_displayName} (${arg.dd_kindList ? 'list of ' : ''}${arg.dd_kindEl})`
 							)
 							.join('; '),
@@ -227,13 +228,13 @@
 					enableHiding: true
 				},
 				{
-					accessorFn: (row) => row.description?.replaceAll(',', ';'),
+					accessorFn: (row: any) => row.description?.replaceAll(',', ';'),
 					header: 'description',
 					footer: 'description',
 					enableHiding: true
 				},
 				{
-					accessorFn: (row) => row?.tableBaseName,
+					accessorFn: (row: any) => row?.tableBaseName,
 					header: 'tableBaseName',
 					footer: 'tableBaseName',
 					enableHiding: true
@@ -382,14 +383,14 @@
 			<ExplorerTable
 				data={whatToShow}
 				{columns}
-				onRowSelectionChange={(detail) => {
-					selectedRowsOriginal = detail.rows.map((row) => row.original);
+				onRowSelectionChange={(detail: any) => {
+					selectedRowsOriginal = detail.rows.map((row: any) => row.original);
 					let columnNames: string[] = [];
 					let rowsData: string[];
-					rowsData = detail.rows.map((row, i) => {
+					rowsData = detail.rows.map((row: any, i: number) => {
 						return row
 							.getVisibleCells()
-							.map((cell) => {
+							.map((cell: any) => {
 								if (i == 0) {
 									columnNames.push(cell.column.id);
 								}

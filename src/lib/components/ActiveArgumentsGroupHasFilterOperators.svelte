@@ -46,6 +46,7 @@
 	import GroupDescriptionAndControls from './GroupDescriptionAndControls.svelte';
 	import ManyToAllSelectInterfaceDefinition from './ManyToAllSelectInterfaceDefinition.svelte';
 	import SelectedRowsDisplay from './SelectedRowsDisplay.svelte';
+	import { addToast } from '$lib/stores/toastStore';
 
 	// Props interface - must be declared before usage
 	interface Props {
@@ -423,7 +424,7 @@
 							class="btn mb-6 flex-1 btn-xs btn-warning"
 							aria-label="Delete group"
 							onclick={() => {
-								alert('not yet implemented');
+								addToast('Delete group not yet implemented', 'warning');
 							}}
 						>
 							<i class="bi bi-trash-fill"></i>

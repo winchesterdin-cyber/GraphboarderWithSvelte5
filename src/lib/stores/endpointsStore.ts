@@ -46,7 +46,9 @@ export const endpoints = derived(localStorageEndpoints, ($localStorageEndpoints)
 
 	const merged = [...localEndpoints, ...userUniqueEndpoints];
 	// IDs can be string or number, getSortedAndOrderedEndpoints now handles both.
-	return getSortedAndOrderedEndpoints(merged);
+	const result = getSortedAndOrderedEndpoints(merged);
+	console.debug('Endpoints updated:', result);
+	return result;
 });
 
 /**
