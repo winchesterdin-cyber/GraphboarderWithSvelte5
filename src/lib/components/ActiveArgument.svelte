@@ -260,13 +260,13 @@
 	}}
 	bind:showSelectModal
 	{onUpdateQuery}
-	bind:nodes
+		bind:nodes={nodes as any}
 	{onChanged}
 	onChildrenStartDrag={startDrag}
 	{originalNodes}
 	{type}
 	{node}
-	{parentNode}
+	parentNode={parentNode as ContainerData}
 	{parentNodeId}
 	{availableOperators}
 	{group}

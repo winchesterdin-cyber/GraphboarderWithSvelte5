@@ -246,13 +246,12 @@
 	$effect(() => {
 		if ((node as any)?.addDefaultFields || ((node as ContainerData)?.isMain && addDefaultFields)) {
 			nodeAddDefaultFields(
-				node,
+				node as ContainerData,
 				prefix,
 				group,
 				activeArgumentsDataGrouped_Store,
 				schemaData,
-				endpointInfo,
-				stepsOfFields
+				endpointInfo
 			);
 		}
 	});
@@ -355,7 +354,7 @@
 						class="btn mb-6 flex-1 normal-case btn-xs btn-info"
 						onclick={() => {
 							nodeAddDefaultFields(
-								node,
+								node as ContainerData,
 								prefix,
 								group,
 								activeArgumentsDataGrouped_Store,
@@ -399,7 +398,7 @@
 							class="btn mb-6 flex-1 normal-case btn-xs btn-info"
 							onclick={() => {
 								nodeAddDefaultFields(
-									node,
+									node as ContainerData,
 									prefix,
 									group,
 									activeArgumentsDataGrouped_Store,
@@ -470,6 +469,7 @@
 						bind:group
 						{argsInfo}
 						{node}
+						activeArgumentsDataGrouped={[]}
 					/>
 				</div>
 			</div>

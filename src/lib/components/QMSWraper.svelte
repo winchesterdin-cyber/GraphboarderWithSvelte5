@@ -30,7 +30,9 @@
 		TableColumnData,
 		SchemaData,
 		EndpointInfoStore,
-		PaginationTypeInfo
+		PaginationTypeInfo,
+		QMSWraperContext as QMSWraperContextType,
+		ActiveArgumentsDataGroupedStore
 	} from '$lib/types/index';
 	import { Create_mergedChildren_finalGqlArgObj_Store } from '$lib/stores/QMSHandling/mergedChildren_finalGqlArgObj_Store';
 	//import { Create_mergedChildren_activeArgumentsDataGrouped_Store } from '$lib/stores/QMSHandling/mergedChildren_activeArgumentsDataGrouped_Store';
@@ -48,12 +50,12 @@
 		QMSType?: QMSTypeType;
 		QMSName?: string;
 		QMS_info?: FieldWithDerivedData | undefined;
-		QMSWraperContext?: Record<string, unknown>;
+		QMSWraperContext?: QMSWraperContextType | Record<string, unknown>;
 		activeArgumentsDataGrouped_StoreInitialValue?: ActiveArgumentGroup[] | undefined;
-		activeArgumentsDataGrouped_Store?: any;
+		activeArgumentsDataGrouped_Store?: ActiveArgumentsDataGroupedStore;
 		tableColsData_StoreInitialValue?: TableColumnData[];
 		finalGqlArgObj_Store?: any;
-		QMSWraperContextGiven?: any;
+		QMSWraperContextGiven?: QMSWraperContextType | any;
 		preferGivenQMSWraperContext?: boolean;
 		children?: import('svelte').Snippet;
 	}

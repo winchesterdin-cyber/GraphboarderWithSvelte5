@@ -19,7 +19,7 @@
 			if ($selectedRowsColValues?.length > 0) {
 				columns = Object.keys($selectedRowsColValues[0]).map((columnName) => {
 					return {
-						accessorFn: (row) => formatData(row[columnName], 40, true),
+						accessorFn: (row: any) => formatData(row[columnName], 40, true),
 						header: columnName,
 						footer: columnName,
 						enableHiding: true

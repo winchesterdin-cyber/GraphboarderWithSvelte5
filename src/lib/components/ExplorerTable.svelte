@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
 	import { createSvelteTable, flexRender, getCoreRowModel } from '@tanstack/svelte-table';
-	import type { ColumnDef, TableOptions } from '@tanstack/table-core/src/types';
+	import type { ColumnDef, TableOptions } from '@tanstack/svelte-table';
 	import { formatData, getTableCellData } from '$lib/utils/usefulFunctions';
 	import { getColumnVisibility, createTableOptions, getColumnFlags } from '$lib/utils/tableUtils';
 	import ColumnInfo from './ColumnInfo.svelte';
@@ -51,7 +51,7 @@
 
 	let columnVisibility = getColumnVisibility(columns);
 
-	const setRowSelection = (updater) => {
+	const setRowSelection = (updater: any) => {
 		if (updater instanceof Function) {
 			rowSelectionState = updater(rowSelectionState);
 		} else {
@@ -119,7 +119,7 @@
 					<th>#</th>
 					{#each headerGroup.headers as header}
 						{@const columnFlags = getColumnFlags(
-							header.column.columnDef.header,
+							header.column.columnDef.header as string,
 							idColName,
 							requiredColNames
 						)}
@@ -161,7 +161,7 @@
 												type="button"
 												class="w-full cursor-pointer pr-2 text-left hover:text-primary"
 												onclick={() => {
-													onHideColumn?.({ column: header.column.columnDef.header });
+													onHideColumn?.({ column: header.column.columnDef.header as string });
 												}}
 											>
 												hide field

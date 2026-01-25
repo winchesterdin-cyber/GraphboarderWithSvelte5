@@ -17,6 +17,7 @@
 		node: any;
 		prefix?: string;
 		parent_inputFields: any;
+		onUpdateQuery?: () => void;
 	}
 
 	let {
@@ -25,7 +26,8 @@
 		activeArgumentsDataGrouped,
 		node,
 		prefix = '',
-		parent_inputFields
+		parent_inputFields,
+		onUpdateQuery
 	}: Props = $props();
 
 	const groupName = group.group_name;
@@ -34,14 +36,14 @@
 	const hasGroup_argsNode = group.group_argsNode;
 	const mainContainerOperator = group.group_argsNode?.mainContainer?.operator;
 	/////start
-	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`);
+	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`) as any;
 	let pathIsInCP = false;
-	const nodeContext = getContext(`${prefix}nodeContext`);
+	const nodeContext = getContext(`${prefix}nodeContext`) as any;
 	if (nodeContext) {
 		pathIsInCP = nodeContext?.pathIsInCP;
 	}
 	let nodeIsInCP = false;
-	const CPItemContext = getContext(`${prefix}CPItemContext`);
+	const CPItemContext = getContext(`${prefix}CPItemContext`) as any;
 	if (CPItemContext?.CPItem.nodeId == node.id) {
 		setContext(`${prefix}nodeContext`, { pathIsInCP: true });
 		nodeIsInCP = true;
@@ -56,19 +58,19 @@
 			OutermostQMSWraperContext
 		);
 	} else {
-		correctQMSWraperContext = getContext(`${prefix}QMSWraperContext`);
+		correctQMSWraperContext = getContext(`${prefix}QMSWraperContext`) as any;
 	}
 	const { finalGqlArgObj_Store, QMS_info, activeArgumentsDataGrouped_Store } =
 		correctQMSWraperContext;
 	/////end
-	let rootArgs = argsInfo.filter((arg) => {
+	let rootArgs = argsInfo.filter((arg: any) => {
 		return arg.dd_isRootArg;
 	});
 	let activeArgumentsContext = getContext(`${prefix}activeArgumentsContext`);
-	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
+	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`) as any;
 	const schemaData = QMSMainWraperContext?.schemaData;
 	const nodeRootType = getRootType(null, node.dd_rootName, schemaData);
-	let groupArgsPossibilities = $state();
+	let groupArgsPossibilities = $state<any[]>([]);
 	$effect(() => {
 		if (group.group_isRoot) {
 			groupArgsPossibilities = rootArgs;
@@ -77,10 +79,11 @@
 		} else if (parent_inputFields) {
 			groupArgsPossibilities = parent_inputFields;
 		} else {
-			groupArgsPossibilities = getRootType(null, group.dd_rootName, schemaData).inputFields;
+			groupArgsPossibilities =
+				getRootType(null, group.dd_rootName, schemaData)?.inputFields || [];
 		}
 		if (!groupArgsPossibilities) {
-			groupArgsPossibilities = node?.args;
+			groupArgsPossibilities = node?.args || [];
 		}
 	});
 	let baseFilterOperators = ['_and', '_or', '_not']; //!!!this might create problem if there is some nonBase operator with the same name as one of these
@@ -142,8 +145,8 @@
 				template="changeArguments"
 				{predefinedFirstSteps}
 				groupName={group.group_name}
-				on:argAddRequest={(e) => {
-					let newArgData = e.detail;
+				onArgAddRequest={(detail: any) => {
+					let newArgData = detail;
 					activeArgumentsDataGrouped_Store.add_activeArgument(
 						newArgData,
 						groupName,
@@ -151,8 +154,8 @@
 						endpointInfo
 					);
 				}}
-				on:containerAddRequest={(e) => {
-					let newContainerData = e.detail;
+				onContainerAddRequest={(detail: any) => {
+					let newContainerData = detail;
 					let randomNr = Math.random();
 					let newContainerDataRootType = getRootType(
 						null,
@@ -209,6 +212,6 @@
 	</div>
 	<Description QMSInfo={node} />
 	<div class="mt-2 w-full overflow-x-auto">
-		<Type index={0} type={node} template="default" depth={0} on:colAddRequest={(e) => {}} />
+		<Type index={0} type={node} template="default" depth={0} oncolAddRequest={(e) => {}} />
 	</div>
 </div>
