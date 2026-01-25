@@ -99,9 +99,9 @@
 
 	// Helper to get store value safely
 	function getStoreValue(store: any) {
-		let $val;
-		store.subscribe(($: any) => $val = $)();
-		return $val;
+		let storeVal;
+		store.subscribe(($: any) => storeVal = $)();
+		return storeVal;
 	}
 
 	const copyCurlToClipboard = () => {

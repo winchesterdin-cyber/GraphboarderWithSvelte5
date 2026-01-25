@@ -94,6 +94,12 @@
 					update_activeArgumentsDataGrouped(group);
 					onUpdateQuery?.();
 				}}
+				parentNodeId={
+					CPItemContext
+						? CPItemContext?.CPItem.nodeId
+						: group.group_argsNode.mainContainer.id
+				}
+				availableOperators={[]}
 			/>
 		</div>
 	{:else}

@@ -228,7 +228,7 @@
 	const transformDraggedElement = (
 		draggedEl: HTMLElement | undefined,
 		data: any,
-		index: number
+		index: number | undefined
 	) => {
 		transformDraggedElementUtil(draggedEl);
 	};
@@ -700,7 +700,7 @@
 						}}
 						isNot={node.not}
 						onInUseChanged={() => {}}
-						activeArgumentData={node}
+						activeArgumentData={node as ActiveArgumentData}
 						{group}
 						activeArgumentsDataGrouped={[]}
 						originalNodes={[]}
@@ -751,7 +751,7 @@
 											{type}
 											bind:nodes
 											node={nodes[item.id]}
-											parentNode={node}
+											parentNode={node as ContainerData}
 											parentNodeId={node.id}
 											{onChanged}
 											{availableOperators}
