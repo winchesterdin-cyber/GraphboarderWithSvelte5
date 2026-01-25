@@ -1,8 +1,11 @@
 <script lang="ts">
-	import FilterItem from '$lib/components/FilterItem.svelte';
+	import FilterItem from './FilterItem.svelte';
 
 	let detail;
 	let inputEl;
+	/**
+	 * Props for FilterGroup
+	 */
 	interface Props {
 		containerEl: any;
 		id: any;
@@ -53,8 +56,8 @@
 		{type}
 		{chosenDefault}
 		{chosen}
-		onFilterApplied={(detail) => {
-			chosenInputField = detail.extraData.inputFields?.filter((el) => {
+		onFilterApplied={(detail: { id: any; chosen: any; extraData: any; choises: any }) => {
+			chosenInputField = detail.extraData.inputFields?.filter((el: any) => {
 				return el.dd_displayName == detail.chosen;
 			})[0];
 

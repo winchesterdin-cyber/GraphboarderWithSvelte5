@@ -12,52 +12,53 @@
 
 	let { prefix = '', node, showSelectQMSModal = $bindable() }: Props = $props();
 
-	const nodeContext_forDynamicData = getContext(`${prefix}nodeContext_forDynamicData`);
+	const nodeContext_forDynamicData = getContext(`${prefix}nodeContext_forDynamicData`) as any;
 	//let selectedQMS = nodeContext_forDynamicData.selectedQMS;
 	let QMSRows = nodeContext_forDynamicData.QMSRows;
 	let columns = [
 		{
-			accessorFn: (row) => row.dd_displayName,
+			accessorFn: (row: any) => row.dd_displayName,
 			header: 'dd_displayName',
 			footer: 'dd_displayName',
 			enableHiding: true
 		},
 		{
-			accessorFn: (row) => row.dd_rootName,
+			accessorFn: (row: any) => row.dd_rootName,
 			header: 'dd_rootName',
 			footer: 'dd_rootName',
 			enableHiding: true
 		},
 		{
-			accessorFn: (row) => (row.dd_kindList_NON_NULL ? '!' : ''),
+			accessorFn: (row: any) => (row.dd_kindList_NON_NULL ? '!' : ''),
 			header: 'L',
 			footer: 'L',
 			enableHiding: true
 		},
 		{
-			accessorFn: (row) => (row.dd_kindList ? 'list' : ''),
+			accessorFn: (row: any) => (row.dd_kindList ? 'list' : ''),
 			header: 'LL',
 			footer: 'LL',
 			enableHiding: true
 		},
 		{
-			accessorFn: (row) => (row.dd_kindEl_NON_NULL ? '!' : ''),
+			accessorFn: (row: any) => (row.dd_kindEl_NON_NULL ? '!' : ''),
 			header: 'E',
 			footer: 'E',
 			enableHiding: true
 		},
 		{
-			accessorFn: (row) => row.dd_kindEl,
+			accessorFn: (row: any) => row.dd_kindEl,
 			header: 'EE',
 			footer: 'EE',
 			enableHiding: true
 		},
 
 		{
-			accessorFn: (row) =>
+			accessorFn: (row: any) =>
 				row.args
 					?.map(
-						(arg) => `${arg.dd_displayName} (${arg.dd_kindList ? 'list of ' : ''}${arg.dd_kindEl})`
+						(arg: any) =>
+							`${arg.dd_displayName} (${arg.dd_kindList ? 'list of ' : ''}${arg.dd_kindEl})`
 					)
 					.join('; '),
 			header: 'Arguments',
@@ -65,17 +66,17 @@
 			enableHiding: true
 		},
 		{
-			accessorFn: (row) => row.description?.replaceAll(',', ';'),
+			accessorFn: (row: any) => row.description?.replaceAll(',', ';'),
 			header: 'description',
 			footer: 'description',
 			enableHiding: true
 		}
 	];
-	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`);
+	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`) as any;
 	const { QMSFieldToQMSGetMany_Store } = OutermostQMSWraperContext;
-	let getManyData = $state();
-	let selectedQMS = $state();
-	let rowSelectionState = $state();
+	let getManyData = $state<any>();
+	let selectedQMS = $state<any>();
+	let rowSelectionState = $state<any>();
 	run(() => {
 		if ($QMSFieldToQMSGetMany_Store.length > 0) {
 			getManyData = QMSFieldToQMSGetMany_Store.getObj({
@@ -115,14 +116,14 @@
 				<ExplorerTable
 					enableMultiRowSelectionState={false}
 					bind:rowSelectionState
-					bind:data={$QMSRows}
+					data={$QMSRows}
 					{columns}
-					onRowSelectionChange={(detail) => {
+					onRowSelectionChange={(detail: any) => {
 						////
 						const objToAdd = {
 							nodeOrField: node,
 							getMany: {
-								selectedQMS: detail.rows.map((row) => row.original)[0],
+								selectedQMS: detail.rows.map((row: any) => row.original)[0],
 								rowSelectionState: detail.rowSelectionState
 							},
 							id: Math.random().toString(36).substr(2, 9)

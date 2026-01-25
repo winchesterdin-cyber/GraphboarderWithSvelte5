@@ -10,17 +10,24 @@
 	} from '$lib/utils/filterStateUtils';
 	import { flip } from 'svelte/animate';
 
+	/**
+	 * Props for FilterItem component.
+	 */
 	interface Props {
-		// notice - fade in works fine but don't add svelte's fade-out (known issue)
 		extraData: any;
 		id: any;
+		/** List of available choices */
 		choises?: any;
+		/** Title of the filter button */
 		title?: any;
 		modalTitle?: any;
+		/** Type of filter: 'radio' | 'checkbox' | 'toggle' */
 		type?: string;
+		/** Button size */
 		size?: string;
 		chosenDefault: any;
 		defaultMeansNoChange?: boolean;
+		/** Currently chosen values */
 		chosen?: any;
 		children?: import('svelte').Snippet;
 		onFilterApplied?: (detail: { id: any; chosen: any; extraData: any; choises: any }) => void;
@@ -54,7 +61,7 @@
 	let chosenInternal = $state(JSON.parse(JSON.stringify(chosen)));
 	let extraInfo = $state('');
 	let extraInfoExtraClass = $state('');
-	let btnExtraClass = $state();
+	let btnExtraClass = $state('');
 	let titlePreChange = $state(title);
 	let isToggle = $state(false);
 	if (choises.length == 1) {
@@ -62,11 +69,11 @@
 	}
 	//choises.length == 1 ? (type = 'toggle') : '';
 	let reorder = false;
-	let chosenPreChange;
+	let chosenPreChange: any;
 	let modalVisible = $state(false);
 	let chosenNew = [];
 	let choisesNew = [];
-	let choisesWithId = $state();
+	let choisesWithId = $state<any[]>([]);
 	let shouldToggle = choises.length == 1;
 	let showModalOrToggle = () => {
 		//		if (choises.length > 1) {
@@ -106,18 +113,26 @@
 		choises = choisesNew;
 	};
 
-	function handleSort(e) {
+	function handleSort(e: CustomEvent<any>) {
 		choisesWithId = e.detail.items;
 		syncOrder();
 
 		dragDisabled = true;
 	}
-	const transformDraggedElement = (draggedEl, data, index) => {
-		draggedEl.querySelector('.dnd-item').classList.add('bg-accent/20', 'border-2', 'border-accent');
+	const transformDraggedElement = (
+		draggedEl: HTMLElement | undefined,
+		data: any,
+		index: number | undefined
+	) => {
+		if (draggedEl) {
+			draggedEl
+				.querySelector('.dnd-item')
+				?.classList.add('bg-accent/20', 'border-2', 'border-accent');
+		}
 	};
 
 	//
-	function handleConsider(e) {
+	function handleConsider(e: CustomEvent<any>) {
 		const {
 			items: newItems,
 			info: { source, trigger }
@@ -128,7 +143,7 @@
 			dragDisabled = true;
 		}
 	}
-	function handleFinalize(e) {
+	function handleFinalize(e: CustomEvent<any>) {
 		const {
 			items: newItems,
 			info: { source }
@@ -139,12 +154,12 @@
 			dragDisabled = true;
 		}
 	}
-	function startDrag(e) {
+	function startDrag(e: Event) {
 		// preventing default to prevent lag on touch devices (because of the browser checking for screen scrolling)
 		e.preventDefault();
 		dragDisabled = false;
 	}
-	function handleKeyDown(e) {
+	function handleKeyDown(e: KeyboardEvent) {
 		if ((e.key === 'Enter' || e.key === ' ') && dragDisabled) dragDisabled = false;
 	}
 
@@ -208,9 +223,8 @@
 	});
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<btn
-	class="btn btn-{size} {btnExtraClass}  flex w-full normal-case"
+<button
+	class="btn btn-{size} {btnExtraClass} flex w-full normal-case"
 	onclickcapture={handleBtnClick}
 >
 	{isToggle ? choises[0] : title}
@@ -230,7 +244,7 @@
 	{#if !isToggle && !extraInfo}
 		<i class="bi bi-chevron-down ml-2 text-xs"></i>
 	{/if}
-</btn>
+</button>
 {#if modalVisible}
 	<Modal onApply={applyFilter} onCancel={hideModal}>
 		<div class="overflow-hidden rounded-box">
@@ -271,10 +285,10 @@
 					>
 						{#each choisesWithId as choice (choice.id)}
 							<div animate:flip={{ duration: flipDurationMs }} class="relative flex">
-								<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 								<div
 									tabindex={dragDisabled ? 0 : -1}
 									aria-label="drag-handle"
+									role="button"
 									class="bi bi-grip-vertical px-2 pt-3"
 									style={dragDisabled ? 'cursor: grab' : 'cursor: grabbing'}
 									onmousedown={startDrag}
@@ -283,6 +297,9 @@
 								></div>
 								<div
 									class="w-full"
+									role="button"
+									aria-label="choice item"
+									tabindex="0"
 									onmousedown={() => {
 										dragDisabled = true;
 									}}

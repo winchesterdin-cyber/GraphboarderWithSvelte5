@@ -37,11 +37,11 @@
 	}: Props = $props();
 
 	//
-	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
-	const endpointInfo = QMSMainWraperContext?.endpointInfo;
-	const schemaData = QMSMainWraperContext?.schemaData;
+	let mainWraperContext = getContext(`${prefix}QMSMainWraperContext`) as any;
+	const endpointInfo = mainWraperContext?.endpointInfo;
+	const schemaData = mainWraperContext?.schemaData;
 	//
-	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`);
+	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`) as any;
 	const { QMSFieldToQMSGetMany_Store } = OutermostQMSWraperContext;
 	const inputFieldsContainerLocation = endpointInfo.get_inputFieldsContainerLocation(
 		node,
@@ -53,7 +53,11 @@
 		schemaData,
 		'inputFields'
 	);
-	const inputFieldsContainerRoot = getRootType(null, inputFieldsContainer.dd_rootName, schemaData);
+	const inputFieldsContainerRoot = getRootType(
+		null,
+		inputFieldsContainer?.dd_rootName,
+		schemaData
+	);
 	const inputFields = inputFieldsContainerRoot?.inputFields || [];
 </script>
 
@@ -72,9 +76,7 @@
 			{originalNodes}
 			{prefix}
 			{addDefaultFields}
-			{showSelectQMSModal}
-			{rowSelectionState}
-			{selectedQMS}
+			bind:showSelectQMSModal
 			{selectedRowsColValues}
 		/>
 	{/each}

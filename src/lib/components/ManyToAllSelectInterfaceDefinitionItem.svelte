@@ -41,16 +41,16 @@
 	if (showSelectQMSModal === undefined) {
 		showSelectQMSModal = false;
 	}
-	const nodeContext_forDynamicData = getContext(`${prefix}nodeContext_forDynamicData`);
+	const nodeContext_forDynamicData = getContext(`${prefix}nodeContext_forDynamicData`) as any;
 	let selectedQMS = nodeContext_forDynamicData.selectedQMS;
 	let QMSRows = nodeContext_forDynamicData.QMSRows;
 	let rowSelectionState = nodeContext_forDynamicData.rowSelectionState;
 	//
-	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
-	const endpointInfo = QMSMainWraperContext?.endpointInfo;
-	const schemaData = QMSMainWraperContext?.schemaData;
+	let mainWraperContext = getContext(`${prefix}QMSMainWraperContext`) as any;
+	const endpointInfo = mainWraperContext?.endpointInfo;
+	const schemaData = mainWraperContext?.schemaData;
 	//
-	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`);
+	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`) as any;
 	const { QMSFieldToQMSGetMany_Store } = OutermostQMSWraperContext;
 	const inputFieldsContainerLocation = endpointInfo.get_inputFieldsContainerLocation(
 		field,
@@ -125,7 +125,7 @@
 		if (myField) {
 			const myFieldRoot = schemaData.get_rootType(null, myField.dd_rootName, schemaData);
 			const myFieldSubfields = myFieldRoot.fields;
-			$QMSRows = $schemaData.queryFields.filter((item) => {
+			$QMSRows = $schemaData.queryFields.filter((item: any) => {
 				return item.dd_kindList && item.dd_rootName == myField.dd_rootName;
 			});
 			if ($QMSRows.length == 1) {
@@ -138,15 +138,15 @@
 			}
 			$QMSRows = fuse
 				.search(`${myField.dd_StrForFuseComparison}`)
-				.map((item) => item.item)
-				.filter((item) => item.dd_kindList);
+				.map((item: any) => item.item)
+				.filter((item: any) => item.dd_kindList);
 			if ($QMSRows.length > 0) {
 				return;
 			}
 			$QMSRows = fuse
 				.search(`${myField.dd_rootName}`)
-				.map((item) => item.item)
-				.filter((item) => item.dd_kindList);
+				.map((item: any) => item.item)
+				.filter((item: any) => item.dd_kindList);
 			if ($QMSRows.length > 0) {
 				return;
 			}
@@ -159,8 +159,8 @@
 					' '
 				)}`
 			)
-			.map((item) => item.item)
-			.filter((item) => item.dd_kindList);
+			.map((item: any) => item.item)
+			.filter((item: any) => item.dd_kindList);
 		if ($QMSRows.length > 0) {
 			return;
 		}
@@ -168,7 +168,7 @@
 			.search(
 				`${node.dd_rootName.replaceAll('_', ' ')} | ${node.dd_displayName.replaceAll('_', ' ')}`
 			)
-			.map((item) => item.item);
+			.map((item: any) => item.item);
 	};
 </script>
 
@@ -180,4 +180,4 @@
 		</sup>
 	{/if}
 </button>
-<SelectQMS bind:showSelectQMSModal />
+<SelectQMS bind:showSelectQMSModal {node} />

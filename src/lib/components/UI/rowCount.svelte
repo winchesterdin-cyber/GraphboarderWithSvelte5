@@ -15,12 +15,12 @@
 	const urqlCoreClient = QMSMainWraperContext?.urqlCoreClient;
 	const schemaData = QMSMainWraperContext?.schemaData;
 
-	let countValue = $state('?');
+	let countValue = $state<any>('?');
 	let queryData = $state<any>();
 
 	const runQuery = (queryBody: string) => {
 		$urqlCoreClient
-			.query(queryBody)
+			.query(queryBody, {})
 			.toPromise()
 			.then((result: any) => {
 				let error = null;
@@ -39,7 +39,7 @@
 	$effect(() => {
 		if (queryData?.data) {
 			countValue = getDataGivenStepsOfFields(
-				null,
+				undefined,
 				queryData.data,
 				endpointInfo.get_rowCountLocation(QMS_info, schemaData)
 			);

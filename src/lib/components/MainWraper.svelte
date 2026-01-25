@@ -11,11 +11,11 @@
 
 	interface Props {
 		prefix?: string;
-		endpointInfoProvided?: EndpointConfiguration | null;
+		endpointInfoProvided?: Partial<EndpointConfiguration> | undefined;
 		children?: import('svelte').Snippet;
 	}
 
-	let { prefix = '', endpointInfoProvided = null, children }: Props = $props();
+	let { prefix = '', endpointInfoProvided = undefined, children }: Props = $props();
 
 	// Create stores (assuming factories return typed stores, if not, casting might be needed there, but here we treat them as provided)
 	const endpointInfo = create_endpointInfo_Store(endpointInfoProvided);

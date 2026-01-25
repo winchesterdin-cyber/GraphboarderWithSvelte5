@@ -6,6 +6,7 @@
 	import TypeInfoDisplay from '$lib/components/TypeInfoDisplay.svelte';
 	import { expoIn, expoOut } from 'svelte/easing';
 	import { getContext } from 'svelte';
+	import type { QMSMainWraperContext } from '$lib/types';
 
 	interface Props {
 		template: any;
@@ -17,6 +18,7 @@
 		depth?: number;
 		showExpand?: boolean;
 		prefix?: string;
+		oncolAddRequest?: (detail: any) => void;
 	}
 
 	let {
@@ -27,7 +29,8 @@
 		isOnMainList = !stepsOfFields,
 		depth = 0,
 		showExpand = $bindable(),
-		prefix = ''
+		prefix = '',
+		oncolAddRequest
 	}: Props = $props();
 
 	if (showExpand === undefined) {
@@ -35,10 +38,10 @@
 	}
 
 	// Now we can access the context and use type
-	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
-	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`);
+	let mainWraperContext = getContext(`${prefix}QMSMainWraperContext`) as QMSMainWraperContext;
+	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`) as any;
 	const isForExplorer = OutermostQMSWraperContext?.extraInfo?.isForExplorer;
-	const schemaData = QMSMainWraperContext?.schemaData;
+	const schemaData = mainWraperContext?.schemaData;
 
 	// Destructure type properties
 	let {
@@ -61,7 +64,7 @@
 	}
 
 	let inDuration = $state(300);
-	let expandData = $state({});
+	let expandData: any = $state({});
 	let canExpand = $derived(!dd_kindsArray?.includes('SCALAR') && dd_kindsArray.length > 0);
 
 	const expand = () => {
@@ -119,7 +122,13 @@
 				<div class="border-l-2 border-secondary bg-accent/5">
 					<div class="">
 						{#each type?.args as arg, index}
-							<Arg {index} type={arg} {template} />
+							<Arg
+								{index}
+								type={arg}
+								{template}
+								predefinedFirstSteps={[]}
+								groupName={'default'}
+							/>
 						{/each}
 					</div>
 				</div>
@@ -128,7 +137,15 @@
 			<div class="border-l-2 bg-accent/5">
 				<div class="w-min-max w-full">
 					{#each expandData.fields || expandData.inputFields || expandData.enumValues as type, index (index)}
-						<Type {index} {type} {template} {stepsOfFields} {depth} />
+						<Type
+							{index}
+							{type}
+							{template}
+							{stepsOfFields}
+							{depth}
+							{oncolAddRequest}
+							isOnMainList={false}
+						/>
 					{/each}
 				</div>
 			</div>

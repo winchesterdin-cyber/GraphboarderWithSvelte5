@@ -8,9 +8,17 @@
 		template: any;
 		depth: any;
 		stepsOfFields: any;
+		oncolAddRequest?: (detail: any) => void;
 	}
 
-	let { prefix = '', types, template, depth, stepsOfFields }: Props = $props();
+	let {
+		prefix = '',
+		types,
+		template,
+		depth,
+		stepsOfFields,
+		oncolAddRequest
+	}: Props = $props();
 </script>
 
 {#each types as type, index (index)}
@@ -22,6 +30,6 @@
 		{depth}
 		{stepsOfFields}
 		isOnMainList={true}
-		on:colAddRequest
+		oncolAddRequest={oncolAddRequest}
 	/>
 {/each}

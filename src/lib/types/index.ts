@@ -228,6 +228,9 @@ export interface ActiveArgumentData extends Partial<FieldWithDerivedData> {
 	inputFields?: InputFieldWithDerivedData[];
 	enumValues?: GraphQLEnumValue[];
 	selectedRowsColValues?: Record<string, unknown>[];
+	chosenDisplayInterface?: DisplayInterface;
+	defaultValue?: unknown;
+	[key: string]: any;
 }
 
 export interface ContainerData extends ActiveArgumentData {

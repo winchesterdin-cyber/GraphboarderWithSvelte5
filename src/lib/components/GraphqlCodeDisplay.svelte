@@ -8,6 +8,8 @@
 	import { getPreciseType } from '$lib/utils/usefulFunctions';
 	import { updateStoresFromAST } from '$lib/utils/astToUIState';
 	import { parse, print } from 'graphql';
+	import JSON5 from 'json5';
+	import { browser } from '$app/environment';
 
 	interface Props {
 		showNonPrettifiedQMSBody?: boolean;
@@ -46,12 +48,68 @@
 	let ast: any = $state();
 	let astPrinted = $state('');
 	let copyFeedback = $state(false);
+	let curlCopyFeedback = $state(false);
 
 	const copyToClipboard = () => {
 		navigator.clipboard.writeText(value);
 		copyFeedback = true;
 		setTimeout(() => {
 			copyFeedback = false;
+		}, 2000);
+	};
+
+	const generateCurlCommand = () => {
+		let url = 'http://localhost:4000/graphql'; // Default fallback
+		let headers = {};
+
+		if (QMSMainWraperContext) {
+			const { endpointInfo } = QMSMainWraperContext;
+			// Access store value
+			const endpoint = (endpointInfo as any)?.subscribe ? (getStoreValue(endpointInfo) as any) : endpointInfo;
+			if (endpoint?.url) {
+				url = endpoint.url;
+			}
+			if (endpoint?.headers) {
+				headers = endpoint.headers;
+			}
+		}
+
+		// Also try localStorage headers if not found in endpoint
+		if (Object.keys(headers).length === 0 && browser) {
+			const headersStr = localStorage.getItem('headers');
+			if (headersStr) {
+				try {
+					headers = JSON.parse(headersStr);
+				} catch (e) {
+					// ignore
+				}
+			}
+		}
+
+		let headerString = '';
+		for (const [key, val] of Object.entries(headers)) {
+			headerString += ` -H "${key}: ${val}"`;
+		}
+
+		// Properly escape single quotes for shell
+		const queryJson = JSON.stringify({ query: value }).replace(/'/g, "'\\''");
+
+		return `curl -X POST "${url}" -H "Content-Type: application/json"${headerString} -d '${queryJson}'`;
+	};
+
+	// Helper to get store value safely
+	function getStoreValue(store: any) {
+		let storeVal;
+		store.subscribe(($: any) => storeVal = $)();
+		return storeVal;
+	}
+
+	const copyCurlToClipboard = () => {
+		const curl = generateCurlCommand();
+		navigator.clipboard.writeText(curl);
+		curlCopyFeedback = true;
+		setTimeout(() => {
+			curlCopyFeedback = false;
 		}, 2000);
 	};
 
@@ -164,6 +222,17 @@
 		{/if}
 	</div>
 	<div class="absolute top-3 right-4 flex gap-2">
+		<button
+			class="btn btn-xs btn-primary normal-case"
+			onclick={copyCurlToClipboard}
+			aria-label="Copy cURL"
+		>
+			{#if curlCopyFeedback}
+				<i class="bi bi-check"></i> Copied cURL!
+			{:else}
+				<i class="bi bi-terminal"></i> Copy cURL
+			{/if}
+		</button>
 		<button
 			class="btn btn-xs btn-primary normal-case"
 			onclick={copyToClipboard}

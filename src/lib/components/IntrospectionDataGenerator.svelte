@@ -25,7 +25,7 @@
 	const endpointInfoUrl = $endpointInfo?.url;
 	const getStoredSchemaData = (endpointInfoUrl: string | undefined) => {
 		if (!endpointInfoUrl) return undefined;
-		return endpointsSchemaData.find((item) => item.url === endpointInfoUrl);
+		return endpointsSchemaData.find((item: any) => item.url === endpointInfoUrl);
 	};
 	const storedSchemaData = getStoredSchemaData(endpointInfoUrl);
 	if (storedSchemaData && schemaData) {

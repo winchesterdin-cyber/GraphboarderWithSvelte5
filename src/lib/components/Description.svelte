@@ -4,8 +4,8 @@
 	interface Props {
 		setNotInUseIfNotValid?: boolean;
 		setNotInUseIfNotValidAndENUM?: boolean;
-		parentNode: any;
-		node: any;
+		parentNode?: any;
+		node?: any;
 		prefix?: string;
 		QMSInfo: any;
 	}
@@ -18,8 +18,8 @@
 		prefix = '',
 		QMSInfo
 	}: Props = $props();
-	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
-	const schemaData = QMSMainWraperContext?.schemaData;
+	let mainWraperContext = getContext(`${prefix}QMSMainWraperContext`) as any;
+	const schemaData = mainWraperContext?.schemaData;
 	const nodeRootType = getRootType(null, QMSInfo.dd_rootName, schemaData);
 	const descriptionNeedsSeparator = QMSInfo?.description && nodeRootType?.description;
 </script>

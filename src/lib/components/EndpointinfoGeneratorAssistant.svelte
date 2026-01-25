@@ -12,7 +12,7 @@
 	<table class="table-compact table">
 		<thead class=" sticky top-0">
 			<tr>
-				<th />
+				<th></th>
 				<th class="normal-case">displayName</th>
 				<th class="normal-case">rootName</th>
 

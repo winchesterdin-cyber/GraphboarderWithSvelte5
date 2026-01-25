@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Toggle from '$lib/components/fields/Toggle.svelte';
 	import { getContext } from 'svelte';
+	import type { Writable } from 'svelte/store';
 
 	interface Props {
 		prefix?: string;
@@ -9,9 +10,9 @@
 
 	let { prefix = '', hasGroup_argsNode }: Props = $props();
 
-	const dndIsOn = getContext(`${prefix}dndIsOn`);
-	const showInputField = getContext(`${prefix}showInputField`);
-	const mutationVersion = getContext(`${prefix}mutationVersion`);
+	const dndIsOn = getContext(`${prefix}dndIsOn`) as Writable<boolean>;
+	const showInputField = getContext(`${prefix}showInputField`) as Writable<boolean>;
+	const mutationVersion = getContext(`${prefix}mutationVersion`) as Writable<boolean>;
 </script>
 
 <div class="btn ml-4 flex w-min btn-ghost btn-xs {hasGroup_argsNode ? '' : 'pt-1'}">
@@ -21,7 +22,7 @@
 		showValue={false}
 		otherClases="toggle-xs"
 		rawValue={$dndIsOn}
-		on:changed={() => {
+		onChanged={() => {
 			$dndIsOn = !$dndIsOn;
 		}}
 	/>
@@ -33,7 +34,7 @@
 		showValue={false}
 		otherClases="toggle-xs"
 		rawValue={$showInputField}
-		on:changed={() => {
+		onChanged={() => {
 			$showInputField = !$showInputField;
 		}}
 	/>
@@ -45,7 +46,7 @@
 		showValue={false}
 		otherClases="toggle-xs"
 		rawValue={$mutationVersion}
-		on:changed={() => {
+		onChanged={() => {
 			$mutationVersion = !$mutationVersion;
 		}}
 	/>

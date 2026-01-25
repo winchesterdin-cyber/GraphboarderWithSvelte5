@@ -128,7 +128,7 @@
 			currentQMS_info.dd_paginationArgs
 		);
 		if (
-			rowLimitingArgNames?.some((argName) => {
+			rowLimitingArgNames?.some((argName: any) => {
 				if (!argName) return false;
 				const pageSize = $paginationState?.[argName] as number;
 				return pageSize && rows.length / pageSize >= 1; //means that all previous pages contained nr of items == page items size
@@ -150,7 +150,7 @@
 		let error: any = false;
 		let data: any = false;
 		$urqlCoreClient
-			.query(queryBody)
+			.query(queryBody, {})
 			.toPromise()
 			.then((result: any) => {
 				fetching = false;
@@ -201,7 +201,7 @@
 				if (
 					(rowLimitingNames &&
 						rowLimitingNames.length > 0 &&
-						rowLimitingNames.some((argName) => {
+						rowLimitingNames.some((argName: any) => {
 							if (!argName) return false;
 							return rowsCurrent?.length == ($paginationState?.[argName] as number);
 						})) ||
@@ -227,8 +227,8 @@
 		queryData = { fetching: true, error: false, data: false };
 	}
 
-	const hideColumn = (e: any) => {
-		tableColsData_Store.removeColumn(e.detail.column);
+	const hideColumn = (detail: { column: string }) => {
+		tableColsData_Store.removeColumn(detail.column);
 	};
 	tableColsData_Store.subscribe((data: any) => {});
 
@@ -393,8 +393,8 @@
 		{infiniteHandler}
 		colsData={$tableColsData_Store}
 		{rows}
-		onHideColumn={(detail: any) => {
-			hideColumn({ detail });
+		onHideColumn={(detail: { column: string }) => {
+			hideColumn(detail);
 		}}
 		{onRowSelectionChange}
 		{onRowClicked}

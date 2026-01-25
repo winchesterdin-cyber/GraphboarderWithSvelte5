@@ -1,11 +1,17 @@
 <script lang="ts">
 	import Type from '$lib/components/Type.svelte';
 	import Description from './Description.svelte';
-	import { writable } from 'svelte/store';
+	import { writable, type Writable } from 'svelte/store';
 	import AutoInterface from '$lib/components/fields/AutoInterface.svelte';
 	import { SHADOW_ITEM_MARKER_PROPERTY_NAME } from 'svelte-dnd-action';
 	import { getContext, setContext } from 'svelte';
-	import type { ActiveArgumentData, ActiveArgumentGroup, ContainerData, QMSWraperContext, QMSMainWraperContext } from '$lib/types/index';
+	import type {
+		ActiveArgumentData,
+		ActiveArgumentGroup,
+		ContainerData,
+		QMSWraperContext,
+		QMSMainWraperContext
+	} from '$lib/types/index';
 	import Toggle from '$lib/components/fields/Toggle.svelte';
 	import { clickOutside } from '$lib/actions/clickOutside';
 	import Modal from './Modal.svelte';
@@ -70,7 +76,9 @@
 		onChildrenStartDrag
 	}: Props = $props();
 
-	const { activeArgumentsDataGrouped_Store } = getContext(`${prefix}QMSWraperContext`) as QMSWraperContext;
+	const { activeArgumentsDataGrouped_Store } = getContext(
+		`${prefix}QMSWraperContext`
+	) as QMSWraperContext;
 	const { finalGqlArgObj_Store } = getContext(`${prefix}QMSWraperContext`) as QMSWraperContext;
 	//
 	let idColNameOfSelectedRow: string | undefined;
@@ -156,7 +164,9 @@
 			expandedVersion = true;
 		}
 	});
-	const outermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`) as QMSWraperContext;
+	const outermostQMSWraperContext = getContext(
+		`${prefix}OutermostQMSWraperContext`
+	) as QMSWraperContext;
 	const { mergedChildren_QMSWraperCtxData_Store } = outermostQMSWraperContext;
 
 	const handleChanged = (detail: Partial<ActiveArgumentData>): void => {
@@ -185,7 +195,10 @@
 
 	const updateActiveArgument = (): void => {
 		if (!CPItemContext) {
-			activeArgumentsDataGrouped_Store.update_activeArgument(activeArgumentData, group.group_name);
+			activeArgumentsDataGrouped_Store.update_activeArgument(
+				activeArgumentData,
+				group.group_name
+			);
 			finalGqlArgObj_Store.regenerate_groupsAndfinalGqlArgObj();
 		}
 		//update the activeArgumentsDataGrouped_StoreForCPItem and related
@@ -215,15 +228,17 @@
 		inUse_set(!activeArgumentData.inUse);
 	};
 	let showModal: boolean = $state(false);
-	const mutationVersion = getContext('mutationVersion');
-	const showInputField = getContext('showInputField');
+	const mutationVersion = getContext('mutationVersion') as Writable<any>;
+	const showInputField = getContext('showInputField') as Writable<any>;
 
 	let activeArgumentsContext = getContext(`${prefix}activeArgumentsContext`);
 	let MainWraperContext = getContext(`${prefix}QMSMainWraperContext`) as QMSMainWraperContext;
 	const schemaData = MainWraperContext?.schemaData;
 	// const nodeRootType = getRootType(null, activeArgumentData.dd_rootName, schemaData); // schemaData might be null here if context is missing, careful
 	let showSelectModal: boolean = $state(false);
-	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`) as QMSWraperContext;
+	const OutermostQMSWraperContext = getContext(
+		`${prefix}OutermostQMSWraperContext`
+	) as QMSWraperContext;
 
 	const { QMSFieldToQMSGetMany_Store } = OutermostQMSWraperContext;
 	let selectedQMS = $state();
@@ -245,13 +260,13 @@
 	}}
 	bind:showSelectModal
 	{onUpdateQuery}
-	bind:nodes
+		bind:nodes={nodes as any}
 	{onChanged}
 	onChildrenStartDrag={startDrag}
 	{originalNodes}
 	{type}
 	{node}
-	{parentNode}
+	parentNode={parentNode as ContainerData}
 	{parentNodeId}
 	{availableOperators}
 	{group}
@@ -325,7 +340,7 @@
 					<AddNodeToControlPanel {node} />
 				{/if}
 				{#if CPItemContext}
-					<GroupDescriptionAndControls />
+					<GroupDescriptionAndControls hasGroup_argsNode={undefined} />
 				{/if}
 			</div>
 
@@ -333,19 +348,19 @@
 				<AutoInterface
 					alwaysOn_interfacePicker
 					typeInfo={activeArgumentData}
-					onChanged={(detail) => {
+					onChanged={(detail: any) => {
 						handleChanged(detail);
 					}}
 				/>
 			</div>
-			<Description QMSInfo={activeArgumentData} />
+			<Description QMSInfo={activeArgumentData} {parentNode} {node} />
 			<div class="mt-2 w-full overflow-x-auto">
 				<Type
 					index={0}
 					type={activeArgumentData}
 					template="default"
 					depth={0}
-					on:colAddRequest={(e) => {}}
+					oncolAddRequest={(e) => {}}
 				/>
 			</div>
 		</div>
@@ -365,7 +380,7 @@
 		 {activeArgumentData?.inUse && !$mutationVersion
 		? activeArgumentData.canRunQuery
 			? 'bg-base-200/75 ring  ring-[1px] ring-primary/25 '
-			: 'bg-error/50 ring  ring-[1px] ring-primary/100'
+			: 'bg-error/0 ring  ring-[1px] ring-primary/100'
 		: 'bg-base-200/50'} 
 		{$mutationVersion ? 'min-w-[80vw] p-1 md:min-w-[50vw]' : 'pr-[1px]'}
 		"
@@ -454,7 +469,7 @@
 					<div class="pl-1">
 						<AutoInterface
 							typeInfo={activeArgumentData}
-							onChanged={(detail) => {
+							onChanged={(detail: any) => {
 								handleChanged(detail);
 							}}
 						/>

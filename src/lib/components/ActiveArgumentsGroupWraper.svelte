@@ -19,22 +19,22 @@
 
 	let {
 		group = $bindable(),
-		argsInfo = $bindable(),
-		update_activeArgumentsDataGrouped = $bindable(),
-		activeArgumentsDataGrouped = $bindable(),
+		argsInfo,
+		update_activeArgumentsDataGrouped,
+		activeArgumentsDataGrouped,
 		prefix = '',
 		onUpdateQuery
 	}: Props = $props();
 
 	let dragDisabled = true;
-	function handleSort(e) {
+	function handleSort(e: any) {
 		group.group_args = e.detail.items;
 		dragDisabled = true;
 	}
 	const hasGroup_argsNode = group.group_argsNode;
 
-	const { finalGqlArgObj_Store } = getContext(`${prefix}QMSWraperContext`);
-	const CPItemContext = getContext(`${prefix}CPItemContext`);
+	const { finalGqlArgObj_Store } = getContext(`${prefix}QMSWraperContext`) as any;
+	const CPItemContext = getContext(`${prefix}CPItemContext`) as any;
 
 	const dndIsOn = writable(false);
 	const showInputField = writable(false);
@@ -46,7 +46,7 @@
 	// );
 	const mutationVersion = writable(false);
 	setContext('mutationVersion', mutationVersion);
-	let activeArgumentsContext = getContext(`${prefix}activeArgumentsContext`);
+	let activeArgumentsContext = getContext(`${prefix}activeArgumentsContext`) as any;
 </script>
 
 {#if !CPItemContext}
@@ -56,9 +56,9 @@
 			<ActiveArgumentsGroup_addFilterAndSortingButton
 				{onUpdateQuery}
 				bind:group
-				bind:argsInfo
-				bind:update_activeArgumentsDataGrouped
-				bind:activeArgumentsDataGrouped
+				{argsInfo}
+				{update_activeArgumentsDataGrouped}
+				{activeArgumentsDataGrouped}
 				node={group.group_argsNode?.mainContainer}
 			/>
 		{/if}
@@ -72,7 +72,7 @@
 				addDefaultFields={true}
 				onUpdateQuery={() => {
 					onUpdateQuery?.();
-					group.group_args = Object.values(group.group_argsNode)?.filter((node) => {
+					group.group_args = Object.values(group.group_argsNode)?.filter((node: any) => {
 						return !node?.operator;
 					});
 					update_activeArgumentsDataGrouped(group);
@@ -88,12 +88,18 @@
 				{group}
 				nodes={group.group_argsNode}
 				onChanged={() => {
-					group.group_args = Object.values(group.group_argsNode)?.filter((node) => {
+					group.group_args = Object.values(group.group_argsNode)?.filter((node: any) => {
 						return !node?.operator;
 					});
 					update_activeArgumentsDataGrouped(group);
 					onUpdateQuery?.();
 				}}
+				parentNodeId={
+					CPItemContext
+						? CPItemContext?.CPItem.nodeId
+						: group.group_argsNode.mainContainer.id
+				}
+				availableOperators={[]}
 			/>
 		</div>
 	{:else}
@@ -103,9 +109,9 @@
 				finalGqlArgObj_Store.regenerate_groupsAndfinalGqlArgObj();
 			}}
 			bind:group
-			bind:argsInfo
-			bind:update_activeArgumentsDataGrouped
-			bind:activeArgumentsDataGrouped
+			{argsInfo}
+			{update_activeArgumentsDataGrouped}
+			{activeArgumentsDataGrouped}
 		/>
 	{/if}
 </div>

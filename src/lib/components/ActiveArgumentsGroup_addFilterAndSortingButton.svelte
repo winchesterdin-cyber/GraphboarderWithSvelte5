@@ -10,6 +10,7 @@
 		activeArgumentsDataGrouped: any;
 		prefix?: string;
 		node: any;
+		onUpdateQuery?: () => void;
 	}
 
 	let {
@@ -18,7 +19,8 @@
 		update_activeArgumentsDataGrouped,
 		activeArgumentsDataGrouped,
 		prefix = '',
-		node
+		node,
+		onUpdateQuery
 	}: Props = $props();
 
 	let showDescription = $state();
@@ -108,8 +110,8 @@
 								template="changeArguments"
 								{predefinedFirstSteps}
 								groupName={group.group_name}
-								on:argAddRequest={(e) => {
-									let newArgData = e.detail;
+								onArgAddRequest={(detail: any) => {
+									let newArgData = detail;
 									activeArgumentsDataGrouped_Store.add_activeArgument(
 										newArgData,
 										group.group_name,

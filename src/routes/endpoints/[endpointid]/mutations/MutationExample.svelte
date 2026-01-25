@@ -64,9 +64,11 @@
 	}
 	//
 	let activeArgumentsData = [];
-	const paginationTypeInfo = get_paginationTypes(endpointInfo as any, schemaData as any).find((pagType: any) => {
-		return pagType.name == QMS_info?.dd_paginationType;
-	});
+	const paginationTypeInfo = get_paginationTypes(endpointInfo as any, schemaData as any).find(
+		(pagType: any) => {
+			return pagType.name == QMS_info?.dd_paginationType;
+		}
+	);
 	let activeArgumentsDataGrouped_Store_IS_SET = $state(false);
 	$effect(() => {
 		activeArgumentsDataGrouped_Store_IS_SET =
@@ -190,9 +192,8 @@
 		queryData = { fetching: true, error: null, data: null };
 	}
 
-	const hideColumn = (e: any) => {
-		tableColsData_Store.removeColumn(e.detail.column); // Note: e.detail is typically from custom events, check usage
-		// If calling directly with { detail: { column } } structure.
+	const hideColumn = (detail: { column: string }) => {
+		tableColsData_Store.removeColumn(detail.column);
 	};
 	tableColsData_Store.subscribe((data: any) => {});
 
@@ -318,9 +319,7 @@
 				{infiniteHandler}
 				colsData={$tableColsData_Store}
 				{rows}
-				onHideColumn={(e) => {
-					hideColumn({ detail: e }); // wrapper to match hideColumn expectation of event object
-				}}
+				onHideColumn={hideColumn}
 				onRowClicked={(e) => {}}
 				{rowSelectionState}
 			/>

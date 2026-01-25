@@ -21,7 +21,7 @@
 		QMSName,
 		currentQMS_info
 	}: Props = $props();
-	const QMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`);
+	const QMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`) as any;
 	const { mergedChildren_controlPanel_Store } = QMSWraperContext;
 
 	let showControlPanel = $state(false);

@@ -42,8 +42,9 @@
 		{rowSelectionState}
 		{enableMultiRowSelectionState}
 		{prefix}
-		bind:data={rows}
-		bind:cols={colsData}
+		data={rows}
+		cols={colsData}
+		{infiniteId}
 		{onHideColumn}
 		{infiniteHandler}
 		{onRowClicked}

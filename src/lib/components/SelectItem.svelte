@@ -11,15 +11,19 @@
 		rowSelectionState: any;
 		QMSWraperContext?: any;
 		node: any;
+		onRowSelectionChange?: (detail: any) => void;
+		onRowClicked?: (detail: any) => void;
 	}
 
 	let {
 		prefix = '',
-		QMS_info,
+		QMS_info = $bindable(),
 		enableMultiRowSelectionState = true,
 		rowSelectionState,
 		QMSWraperContext = $bindable(),
-		node
+		node,
+		onRowSelectionChange,
+		onRowClicked
 	}: Props = $props();
 
 	if (QMSWraperContext === undefined) {
@@ -52,7 +56,12 @@
 			QMSType="query"
 			tableColsData_StoreInitialValue={[]}
 		>
-			<ComponentForLayout {rowSelectionState} {enableMultiRowSelectionState} />
+			<ComponentForLayout
+				{rowSelectionState}
+				{enableMultiRowSelectionState}
+				{onRowSelectionChange}
+				{onRowClicked}
+			/>
 		</QmsWraper>{/if}
 {/key}
 

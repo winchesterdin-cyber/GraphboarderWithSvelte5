@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getContext, setContext } from 'svelte';
 	import ActiveArgumentsGroupWraper from '$lib/components/ActiveArgumentsGroupWraper.svelte';
+	import type { QMSMainWraperContext } from '$lib/types';
 
 	interface Props {
 		isControlPanelChild?: any;
@@ -24,10 +25,10 @@
 
 	const activeArgumentsContext = { stepsOfFieldsThisAppliesTo, isControlPanelChild };
 	setContext(`${prefix}activeArgumentsContext`, activeArgumentsContext);
-	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
-	const endpointInfo = QMSMainWraperContext?.endpointInfo;
-	const schemaData = QMSMainWraperContext?.schemaData;
-	let QMSWraperContext = getContext(`${prefix}QMSWraperContext`);
+	let mainWraperContext = getContext(`${prefix}QMSMainWraperContext`) as QMSMainWraperContext;
+	const endpointInfo = mainWraperContext?.endpointInfo;
+	const schemaData = mainWraperContext?.schemaData;
+	let QMSWraperContext = getContext(`${prefix}QMSWraperContext`) as any;
 
 	// Set defaults if not provided
 	if (!activeArgumentsDataGrouped_Store) {
@@ -37,9 +38,9 @@
 		QMS_info = QMSWraperContext.QMS_info;
 	}
 
-	let activeArgumentsDataGrouped = [];
+	let activeArgumentsDataGrouped: any[] = [];
 
-	const update_activeArgumentsDataGrouped = (groupNewData) => {
+	const update_activeArgumentsDataGrouped = (groupNewData: any) => {
 		activeArgumentsDataGrouped_Store.update_groups(groupNewData);
 	};
 	if ($activeArgumentsDataGrouped_Store.length == 0) {
@@ -71,11 +72,11 @@
 {/if}
 
 <div class="">
-	{#each $activeArgumentsDataGrouped_Store as group}
+	{#each $activeArgumentsDataGrouped_Store as _, i}
 		<ActiveArgumentsGroupWraper
 			{onUpdateQuery}
 			{update_activeArgumentsDataGrouped}
-			{group}
+			bind:group={$activeArgumentsDataGrouped_Store[i]}
 			argsInfo={QMS_info?.args}
 			{activeArgumentsDataGrouped}
 		/>

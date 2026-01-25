@@ -36,7 +36,7 @@
 		prefix?: string;
 		addDefaultFields?: boolean;
 		showSelectModal?: boolean;
-		onChanged?: () => void;
+		onChanged?: (detail?: any) => void;
 		onUpdateQuery?: () => void;
 		onChildrenStartDrag?: (e?: any) => void;
 		onDeleteSubNode?: (detail: { id: string }) => void;
@@ -172,7 +172,7 @@
 		onChanged?.();
 	};
 	//
-	let labelEl: HTMLElement;
+	let labelEl = $state<HTMLElement>();
 	let shadowEl = $state<HTMLElement>();
 	let shadowHeight = $state(20);
 	let shadowWidth = $state(20);
@@ -208,13 +208,12 @@
 	$effect(() => {
 		if ((node as any)?.addDefaultFields || ((node as ContainerData)?.isMain && addDefaultFields)) {
 			nodeAddDefaultFields(
-				node,
+				node as ContainerData,
 				prefix,
 				group,
 				activeArgumentsDataGrouped_Store,
 				schemaData,
-				endpointInfo,
-				stepsOfFields
+				endpointInfo
 			);
 		}
 	});
@@ -247,10 +246,12 @@
 	//------------
 	let inputColumnsLocationQMS_Info: any;
 	//!! todo:before getting inputColumnsLocation value,you should check if it is a query or a mutation,and handle it accordingly
-	let inputColumnsLocation = $endpointInfo.inputColumnsPossibleLocationsInArg.find((path: string[]) => {
-		inputColumnsLocationQMS_Info = getDeepField(node as any, path, schemaData, 'inputFields');
-		return inputColumnsLocationQMS_Info;
-	});
+	let inputColumnsLocation = $endpointInfo?.inputColumnsPossibleLocationsInArg?.find(
+		(path: string[]) => {
+			inputColumnsLocationQMS_Info = getDeepField(node as any, path, schemaData, 'inputFields');
+			return inputColumnsLocationQMS_Info;
+		}
+	);
 	//should work
 	//------------
 
@@ -270,6 +271,18 @@
 	const { QMSFieldToQMSGetMany_Store } = OutermostQMSWraperContext;
 	let getManyQMS = $state();
 	let showSelectQMSModal = $state(false);
+
+	$effect(() => {
+		if (showSelectModal) {
+			$QMSRows = discoverMatchingQMS(node, group, schemaData, fuse);
+
+			// Auto-select if only one match
+			if ($QMSRows.length == 1) {
+				$selectedQMS = $QMSRows[0];
+			}
+		}
+	});
+
 	$effect(() => {
 		stepsOfFieldsFull = stepsOfNodesToStepsOfFields(stepsOfNodes);
 		stepsOfFields = filterElFromArr(stepsOfFieldsFull, ['list', 'bonded']);
@@ -357,14 +370,6 @@
 
 {#if showSelectModal}
 	<Modal
-		onMounted={() => {
-			$QMSRows = discoverMatchingQMS(node, group, schemaData, fuse);
-
-			// Auto-select if only one match
-			if ($QMSRows.length == 1) {
-				$selectedQMS = $QMSRows[0];
-			}
-		}}
 		showApplyBtn={true}
 		onApply={() => {
 			$rowSelectionState = getRowSelectionState(selectedRowsModel);
@@ -398,16 +403,18 @@
 				<SelectItem
 					{node}
 					bind:QMSWraperContext={QMSWraperContextForSelectedQMS}
-					bind:rowSelectionState={$rowSelectionState}
+					rowSelectionState={$rowSelectionState}
 					enableMultiRowSelectionState={inputFieldsContainer?.dd_kindList}
-					on:rowSelectionChange={(e) => {
-						selectedRowsModel = e.detail;
-						let selectedRowsOriginal = e.detail.rows.map((row: any) => row.original);
+					onRowSelectionChange={(detail: any) => {
+						selectedRowsModel = detail;
+						let selectedRowsOriginal = detail.rows.map((row: any) => row.original);
 
 						const returningColumnsLocation =
-							$endpointInfo.returningColumnsPossibleLocationsInQueriesPerRow.find((item: any) => {
-								return hasDeepProperty(selectedRowsOriginal[0], item);
-							});
+							$endpointInfo?.returningColumnsPossibleLocationsInQueriesPerRow?.find(
+								(item: any) => {
+									return hasDeepProperty(selectedRowsOriginal[0], item);
+								}
+							);
 						//string_transformer
 
 						$selectedRowsColValues = selectedRowsOriginal.map((row: any) => {
@@ -417,7 +424,7 @@
 						});
 						//!!every element of 'selectedRowsColValues' must be cheched like so: every element must have all values checked ,if string pass trough string transformer
 					}}
-					on:rowClicked={(e) => {}}
+					onRowClicked={(e) => {}}
 					bind:QMS_info={$selectedQMS}
 				/>
 

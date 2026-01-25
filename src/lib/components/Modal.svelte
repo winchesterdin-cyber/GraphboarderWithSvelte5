@@ -5,9 +5,17 @@
 		modalIdentifier?: string;
 		showApplyBtn?: boolean;
 		onCancel?: (detail: any) => void;
+		onApply?: (detail: any) => void;
 	}
 
-	let { show = $bindable(true), children, modalIdentifier, onCancel }: Props = $props();
+	let {
+		show = $bindable(true),
+		children,
+		modalIdentifier,
+		showApplyBtn = true,
+		onCancel,
+		onApply
+	}: Props = $props();
 
 	let dialog: HTMLDialogElement;
 
@@ -26,10 +34,9 @@
 		}
 	}
 
-	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape') {
-			// dialog handles escape automatically for closing, but we need to sync state
-			// actually, 'cancel' event is fired on escape.
+	function apply() {
+		if (onApply) {
+			onApply({ modalIdentifier });
 		}
 	}
 </script>
@@ -46,11 +53,19 @@
 >
 	<div class="modal-box">
 		{#if onCancel}
-			<button class="btn absolute top-2 right-2 btn-circle btn-ghost btn-sm" onclick={close}
-				>✕</button
+			<button
+				class="btn absolute top-2 right-2 btn-circle btn-ghost btn-sm"
+				onclick={close}
+				aria-label="Close">✕</button
 			>
 		{/if}
 		{@render children?.()}
+
+		{#if (showApplyBtn && onApply) || onApply}
+			<div class="modal-action">
+				<button class="btn btn-primary" onclick={apply}>Apply</button>
+			</div>
+		{/if}
 	</div>
 	<form method="dialog" class="modal-backdrop">
 		<button onclick={close}>close</button>

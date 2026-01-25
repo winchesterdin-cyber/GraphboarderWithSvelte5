@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
 	import { createSvelteTable, flexRender, getCoreRowModel } from '@tanstack/svelte-table';
-	import type { ColumnDef, TableOptions } from '@tanstack/table-core/src/types';
+	import type { ColumnDef, TableOptions } from '@tanstack/svelte-table';
 	import { formatData, getPreciseType, getTableCellData } from '$lib/utils/usefulFunctions';
 	import ColumnInfo from './ColumnInfo.svelte';
 	import { getContext } from 'svelte';
@@ -13,8 +13,8 @@
 		enableRowSelectionState?: boolean;
 		infiniteHandler: any;
 		infiniteId: any;
-		data: any;
-		cols?: any;
+		data: any[];
+		cols?: any[];
 		rowSelectionState?: any;
 		onRowSelectionChange?: (detail: any) => void;
 		onHideColumn?: (detail: { column: string }) => void;
@@ -39,24 +39,24 @@
 		rowSelectionState = {};
 	}
 	let loadMore = $state(false);
-	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
-	let QMSWraperContext = getContext(`${prefix}QMSWraperContext`);
+	// let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`); // Unused
+	let QMSWraperContext = getContext(`${prefix}QMSWraperContext`) as any;
 	let idColName = QMSWraperContext?.idColName;
-	const { paginationOptions } = getContext(`${prefix}QMSWraperContext`);
+	const { paginationOptions } = getContext(`${prefix}QMSWraperContext`) as any;
 
-	const getColumnVisibility = (cols) => {
-		let columnVisibility = {};
+	const getColumnVisibility = (cols: any[]) => {
+		let columnVisibility: Record<string, boolean> = {};
 		cols.forEach((col) => {
 			col.hidden ? (columnVisibility[col.title] = false) : (columnVisibility[col.title] = true);
 		});
 		return columnVisibility;
 	};
 	let columnVisibility = getColumnVisibility(cols);
-	const getColumns = (cols) => {
+	const getColumns = (cols: any[]) => {
 		let columns = cols.map((col) => {
 			return {
 				...col,
-				accessorFn: (row) => getTableCellData(row, col),
+				accessorFn: (row: any, index: number) => getTableCellData(row, col, index),
 				header: col.title,
 				footer: col.title,
 				enableHiding: true
@@ -65,7 +65,7 @@
 		return columns;
 	};
 
-	const setRowSelection = (updater) => {
+	const setRowSelection = (updater: any) => {
 		if (updater instanceof Function) {
 			rowSelectionState = updater(rowSelectionState);
 		} else {
@@ -82,7 +82,7 @@
 		onRowSelectionChange?.({ ...$table.getSelectedRowModel() });
 	};
 
-	const options = writable<TableOptions<Person>>({
+	const options = writable<TableOptions<any>>({
 		data: data,
 		columns: getColumns(cols),
 		getCoreRowModel: getCoreRowModel(),
@@ -97,13 +97,12 @@
 
 	const table = createSvelteTable(options);
 
+	// Sync data and columns when props change
 	$effect(() => {
-		const columns = getColumns(cols);
-
 		options.update((options) => ({
 			...options,
 			data: data,
-			columns: columns
+			columns: getColumns(cols)
 		}));
 	});
 
@@ -120,11 +119,55 @@
 		document.body.removeChild(a);
 		URL.revokeObjectURL(url);
 	};
+
+	const downloadCSV = () => {
+		if (!data || data.length === 0) return;
+
+		// Extract headers
+		const headers = cols.map(col => `"${col.title.replace(/"/g, '""')}"`);
+
+		// Create CSV content
+		const csvRows = [headers.join(',')];
+
+		for (const row of data) {
+			const values = cols.map(col => {
+				const cellData = getTableCellData(row, col, 0); // index 0 as approximation if not array
+				// Handle different data types
+				let stringValue = '';
+				if (cellData === null || cellData === undefined) {
+					stringValue = '';
+				} else if (typeof cellData === 'object') {
+					stringValue = JSON.stringify(cellData);
+				} else {
+					stringValue = String(cellData);
+				}
+
+				// Escape quotes by doubling them
+				const escaped = stringValue.replace(/"/g, '""');
+				return `"${escaped}"`;
+			});
+			csvRows.push(values.join(','));
+		}
+
+		const csvString = csvRows.join('\n');
+		const blob = new Blob([csvString], { type: 'text/csv' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `export-${new Date().toISOString().slice(0, 10)}.csv`;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	};
 </script>
 
 <div class=" h-[80vh] overflow-y-auto overscroll-contain rounded-box pb-32">
 	{#if data && data.length > 0}
-		<div class="mb-2 flex justify-end px-2">
+		<div class="mb-2 flex justify-end px-2 gap-2">
+			<button class="btn btn-ghost btn-sm gap-2" onclick={downloadCSV} aria-label="Export CSV">
+				<i class="bi bi-filetype-csv"></i> Export CSV
+			</button>
 			<button class="btn btn-ghost btn-sm gap-2" onclick={downloadJSON} aria-label="Export JSON">
 				<i class="bi bi-filetype-json"></i> Export JSON
 			</button>
@@ -175,14 +218,16 @@
 											<div
 												class="w-full max-w-xs cursor-pointer overflow-x-auto pr-2 hover:text-primary md:max-w-sm"
 											>
-												<ColumnInfo stepsOfFields={header.column.columnDef.stepsOfFields} />
+												<ColumnInfo
+													stepsOfFields={(header.column.columnDef as any).stepsOfFields}
+												/>
 												<!-- {colsData[index].stepsOfFields.join(' > ')} -->
 											</div>
 											<button
 												type="button"
 												class="w-full cursor-pointer pr-2 text-left hover:text-primary"
 												onclick={() => {
-													onHideColumn?.({ column: header.column.columnDef.header });
+													onHideColumn?.({ column: header.column.columnDef.header as string });
 												}}
 											>
 												hide field
@@ -233,14 +278,15 @@
 						</th>
 					{/if}
 
-					<td>{parseInt(row.index) + 1}</td>
+					<td>{parseInt(row.index.toString()) + 1}</td>
 
 					{#each row.getVisibleCells() as cell}
-						<td class="break-no" title={cell.renderValue()}>
+						<td class="break-no" title={cell.renderValue() as string}>
 							<!-- {cell.renderValue()} -->
 							{formatData(cell.renderValue(), 40, true)}
 							{#if getPreciseType(cell.renderValue()) == 'array'}
-								<sup>{cell.renderValue().length}</sup>
+								{@const val = cell.renderValue() as any[]}
+								<sup>{val.length}</sup>
 							{/if}
 							<!-- <svelte:component this={flexRender(cell.column.columnDef.cell, cell.getContext())} /> -->
 						</td>
@@ -265,7 +311,7 @@
 		</div>
 	{/if}
 	{#if $paginationOptions?.infiniteScroll && data?.length > 0 && loadMore}
-		<InfiniteLoading oninfinite={infiniteHandler} identifier={infiniteId} distance={100} />
+		<InfiniteLoading on:infinite={infiniteHandler} identifier={infiniteId} distance={100} />
 	{/if}
 	<div class="h-4"></div>
 </div>

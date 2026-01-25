@@ -8,11 +8,11 @@
 		getDeepField,
 		getPreciseType,
 		getQMSWraperCtxDataGivenControlPanelItem,
-		getRootType,
+		getRootType
 	} from './../utils/usefulFunctions';
 	//!!! chnage bonded to item
 	import { flip } from 'svelte/animate';
-	import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID } from 'svelte-dnd-action';
+	import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, type DndEvent } from 'svelte-dnd-action';
 	import { getContext, setContext } from 'svelte';
 	import ActiveArgument from '$lib/components/ActiveArgument.svelte';
 	import ActiveArgumentsGroup_addFilterAndSortingButtonContent from '$lib/components/ActiveArgumentsGroup_addFilterAndSortingButtonContent.svelte';
@@ -39,7 +39,12 @@
 	import GroupDescriptionAndControls from './GroupDescriptionAndControls.svelte';
 	import SelectedRowsDisplay from './SelectedRowsDisplay.svelte';
 	import { addToast } from '$lib/stores/toastStore';
-	import type { ContainerData, ActiveArgumentData, QMSWraperContext, QMSMainWraperContext } from '$lib/types';
+	import type {
+		ContainerData,
+		ActiveArgumentData,
+		QMSWraperContext,
+		QMSMainWraperContext
+	} from '$lib/types';
 
 	// Props interface - using specific types where possible, falling back to Record<string, any> or unknown for loose structures
 	interface Props {
@@ -81,7 +86,9 @@
 	let stepsOfFieldsFull = $state<string[]>([]);
 	let testName_stepsOFFieldsWasUpdated = $state(false);
 
-	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`) as QMSWraperContext;
+	const OutermostQMSWraperContext = getContext(
+		`${prefix}OutermostQMSWraperContext`
+	) as QMSWraperContext;
 	const { QMSFieldToQMSGetMany_Store } = OutermostQMSWraperContext;
 	let getManyQMS = $state<any>();
 	///
@@ -120,7 +127,9 @@
 		pathIsInCP = nodeContext?.pathIsInCP;
 	}
 
-	const CPItemContext = getContext(`${prefix}CPItemContext`) as { CPItem: { nodeId: string } } | undefined;
+	const CPItemContext = getContext(`${prefix}CPItemContext`) as
+		| { CPItem: { nodeId: string } }
+		| undefined;
 	let nodeIsInCP = $derived(CPItemContext?.CPItem.nodeId == node.id);
 
 	if (CPItemContext?.CPItem.nodeId == node.id) {
@@ -173,12 +182,13 @@
 	let dragDisabled = $state(true);
 	const flipDurationMs = 500;
 
-	function handleDndConsider(e: CustomEvent<DndEvent<ContainerItem>>) {
+	function handleDndConsider(e: CustomEvent<DndEvent<any>>) {
+		// e.detail.items is generic Item[] but contains our ContainerItem structure
 		const result = handleDndConsiderUtil(e.detail.items);
 		(node as ContainerData).items = result.items;
 		dragDisabled = result.dragDisabled;
 	}
-	function handleDndFinalize(e: CustomEvent<DndEvent<ContainerItem>>) {
+	function handleDndFinalize(e: CustomEvent<DndEvent<any>>) {
 		const result = handleDndFinalizeUtil(e.detail.items, () => {
 			nodes = { ...nodes };
 			handleChanged();
@@ -188,12 +198,16 @@
 		dragDisabled = result.dragDisabled;
 	}
 
-	const deleteItem = (e: CustomEvent<{ id: string }>) => {
-		(node as ContainerData).items = handleDeleteItem((node as ContainerData).items, e.detail.id, () => {
-			nodes = { ...nodes };
-			handleChanged();
-			onChanged?.();
-		});
+	const deleteItem = (e: { detail: { id: string } }) => {
+		(node as ContainerData).items = handleDeleteItem(
+			(node as ContainerData).items,
+			e.detail.id,
+			() => {
+				nodes = { ...nodes };
+				handleChanged();
+				onChanged?.();
+			}
+		);
 	};
 	//
 	let labelEl = $state<HTMLElement>();
@@ -211,7 +225,11 @@
 	function handleKeyDown(e: KeyboardEvent) {
 		dragDisabled = handleDragKeyDown(e, dragDisabled);
 	}
-	const transformDraggedElement = (draggedEl: HTMLElement | undefined, data: any, index: number) => {
+	const transformDraggedElement = (
+		draggedEl: HTMLElement | undefined,
+		data: any,
+		index: number | undefined
+	) => {
 		transformDraggedElementUtil(draggedEl);
 	};
 	//
@@ -228,13 +246,12 @@
 	$effect(() => {
 		if ((node as any)?.addDefaultFields || ((node as ContainerData)?.isMain && addDefaultFields)) {
 			nodeAddDefaultFields(
-				node,
+				node as ContainerData,
 				prefix,
 				group,
 				activeArgumentsDataGrouped_Store,
 				schemaData,
-				endpointInfo,
-				stepsOfFields
+				endpointInfo
 			);
 		}
 	});
@@ -245,12 +262,14 @@
 	let selectedRowsColValues = $state([]);
 
 	//------------
-	let inputColumnsLocationQMS_Info = $state();
+	let inputColumnsLocationQMS_Info = $state<any>();
 	//!! todo:before getting inputColumnsLocation value,you should check if it is a query or a mutation,and handle it accordingly
-	let inputColumnsLocation = $endpointInfo.inputColumnsPossibleLocationsInArg.find((path: string[]) => {
-		inputColumnsLocationQMS_Info = getDeepField(node as any, path, schemaData, 'inputFields');
-		return inputColumnsLocationQMS_Info;
-	});
+	let inputColumnsLocation = $endpointInfo?.inputColumnsPossibleLocationsInArg?.find(
+		(path: string[]) => {
+			inputColumnsLocationQMS_Info = getDeepField(node as any, path, schemaData, 'inputFields');
+			return inputColumnsLocationQMS_Info;
+		}
+	);
 	//should work
 	let idColName = $state();
 
@@ -273,7 +292,13 @@
 	$effect(() => {
 		stepsOfFieldsFull = stepsOfNodesToStepsOfFields(stepsOfNodes);
 		stepsOfFields = filterElFromArr(stepsOfFieldsFull, ['list', 'bonded']);
-		updateNodeSteps(node, stepsOfFieldsFull, stepsOfFields, stepsOfNodes, filterElFromArr);
+		updateNodeSteps(
+			node,
+			stepsOfFieldsFull,
+			stepsOfFields,
+			stepsOfNodes as any[],
+			filterElFromArr
+		);
 	});
 	$effect(() => {
 		if (labelEl) {
@@ -284,7 +309,12 @@
 	});
 	$effect(() => {
 		if (shadowHeight && shadowEl) {
-			labelElClone = updateShadowElement(shadowEl, labelEl, shadowHeight, shadowWidth);
+			labelElClone = updateShadowElement(
+				shadowEl,
+				labelEl as HTMLElement | null,
+				shadowHeight,
+				shadowWidth
+			);
 		}
 	});
 
@@ -324,13 +354,12 @@
 						class="btn mb-6 flex-1 normal-case btn-xs btn-info"
 						onclick={() => {
 							nodeAddDefaultFields(
-								node,
+								node as ContainerData,
 								prefix,
 								group,
 								activeArgumentsDataGrouped_Store,
 								schemaData,
-								endpointInfo,
-								stepsOfFields
+								endpointInfo
 							);
 						}}
 					>
@@ -369,13 +398,12 @@
 							class="btn mb-6 flex-1 normal-case btn-xs btn-info"
 							onclick={() => {
 								nodeAddDefaultFields(
-									node,
+									node as ContainerData,
 									prefix,
 									group,
 									activeArgumentsDataGrouped_Store,
 									schemaData,
-									endpointInfo,
-									stepsOfFields
+									endpointInfo
 								);
 							}}
 						>
@@ -437,13 +465,11 @@
 				<div>
 					<ActiveArgumentsGroup_addFilterAndSortingButtonContent
 						parent_inputFields={parentNode?.inputFields}
-						parent_stepsOfFields={stepsOfFields}
-						parentNodeId={node.id}
 						{onUpdateQuery}
 						bind:group
-						bind:argsInfo
-						{nodes}
+						{argsInfo}
 						{node}
+						activeArgumentsDataGrouped={[]}
 					/>
 				</div>
 			</div>
@@ -451,11 +477,11 @@
 
 	<SelectModal
 		onDeleteSubNode={(detail: any) => {
-			deleteItem({ detail } as CustomEvent);
+			deleteItem({ detail });
 			//
 		}}
-		bind:selectedQMS={getManyQMS}
-		bind:selectedRowsColValues
+		bindSelectedQMS={getManyQMS}
+		bindSelectedRowsColValues={selectedRowsColValues}
 		bind:showSelectModal
 		{originalNodes}
 		{onUpdateQuery}
@@ -535,7 +561,7 @@
 						{/if}
 					</button>
 					{#if nodeIsInCP && (node as ContainerData)?.operator}
-						<GroupDescriptionAndControls />
+						<GroupDescriptionAndControls hasGroup_argsNode={(node as any).group_argsNode} />
 					{/if}
 				{/if}
 			</div>
@@ -608,7 +634,7 @@
 					</button>
 
 					{#if nodeIsInCP && (node as ContainerData)?.operator}
-						<GroupDescriptionAndControls />
+						<GroupDescriptionAndControls hasGroup_argsNode={(node as any).group_argsNode} />
 					{/if}
 				</div>
 				<!-- {#if inputColumnsLocation && inputColumnsLocationQMS_Info.dd_displayName == node.dd_displayName} -->
@@ -661,14 +687,15 @@
 			<div class="w-full rounded-box pr-2">
 				<div class=" transition-color ringxxx ring-1xxx rounded-box duration-500">
 					<ActiveArgument
-						bind:selectedRowsColValues
-						bind:showSelectModal
 						{onUpdateQuery}
-						bind:nodes
+						bind:nodes={nodes as any}
 						{onChanged}
+						startDrag={startDrag}
 						onChildrenStartDrag={startDrag}
 						{parentNode}
 						{node}
+						parentNodeId={node.id}
+						{availableOperators}
 						onContextmenuUsed={() => {
 							if (!(node as ContainerData)?.isMain) {
 								node.not = !node.not;
@@ -676,10 +703,13 @@
 								onChanged?.();
 							}
 						}}
-						isNot={node.not}
+						isNot={node.not || false}
 						onInUseChanged={() => {}}
-						activeArgumentData={node}
+						activeArgumentData={node as ActiveArgumentData}
 						{group}
+						activeArgumentsDataGrouped={[]}
+						originalNodes={[]}
+						{type}
 					/>
 				</div>
 			</div>
@@ -726,7 +756,7 @@
 											{type}
 											bind:nodes
 											node={nodes[item.id]}
-											parentNode={node}
+											parentNode={node as ContainerData}
 											parentNodeId={node.id}
 											{onChanged}
 											{availableOperators}

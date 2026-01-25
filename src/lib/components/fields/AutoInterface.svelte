@@ -4,8 +4,15 @@
 	import Interface from '$lib/components/fields/Interface.svelte';
 	import { getContext } from 'svelte';
 	import { getPreciseType } from '$lib/utils/usefulFunctions';
-	let { typeInfo, alwaysOn_interfacePicker } = $props();
-	const choosenDisplayInterface = getContext('choosenDisplayInterface');
+
+	interface Props {
+		typeInfo: any;
+		alwaysOn_interfacePicker?: boolean;
+		onChanged?: (detail: any) => void;
+	}
+
+	let { typeInfo, alwaysOn_interfacePicker, onChanged }: Props = $props();
+	const choosenDisplayInterface = getContext('choosenDisplayInterface') as any;
 	const expectsInterfaceList = typeInfo.dd_kindList && $choosenDisplayInterface != 'ENUM';
 	let rawValue = $derived(
 		expectsInterfaceList && getPreciseType(typeInfo?.chd_rawValue) != 'array'
@@ -16,7 +23,19 @@
 </script>
 
 {#if expectsInterfaceList}
-	<InterfaceList {alwaysOn_interfacePicker} {typeInfo} {rawValue} {dispatchValue} on:changed />
+	<InterfaceList
+		{alwaysOn_interfacePicker}
+		{typeInfo}
+		{rawValue}
+		{dispatchValue}
+		on:changed={(e) => onChanged?.(e.detail)}
+	/>
 {:else}
-	<Interface {alwaysOn_interfacePicker} {typeInfo} {rawValue} {dispatchValue} on:changed />
+	<Interface
+		{alwaysOn_interfacePicker}
+		{typeInfo}
+		{rawValue}
+		{dispatchValue}
+		on:changed={(e) => onChanged?.(e.detail)}
+	/>
 {/if}
