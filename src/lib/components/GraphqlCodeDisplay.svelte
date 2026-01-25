@@ -45,6 +45,15 @@
 	let astAsString = $state('');
 	let ast: any = $state();
 	let astPrinted = $state('');
+	let copyFeedback = $state(false);
+
+	const copyToClipboard = () => {
+		navigator.clipboard.writeText(value);
+		copyFeedback = true;
+		setTimeout(() => {
+			copyFeedback = false;
+		}, 2000);
+	};
 
 	const syncQueryToUI = (newAst: any) => {
 		try {
@@ -154,12 +163,25 @@
 			{/if}
 		{/if}
 	</div>
-	<button
-		class="mx-atuo btn absolute top-3 right-4 normal-case btn-xs btn-accent"
-		onclick={() => {
-			showNonPrettifiedQMSBody = !showNonPrettifiedQMSBody;
-		}}
-	>
-		{showNonPrettifiedQMSBody ? ' show prettified ' : ' show non-prettified '}</button
-	>
+	<div class="absolute top-3 right-4 flex gap-2">
+		<button
+			class="btn btn-xs btn-primary normal-case"
+			onclick={copyToClipboard}
+			aria-label="Copy Query"
+		>
+			{#if copyFeedback}
+				<i class="bi bi-check"></i> Copied!
+			{:else}
+				<i class="bi bi-clipboard"></i> Copy
+			{/if}
+		</button>
+		<button
+			class="mx-atuo btn normal-case btn-xs btn-accent"
+			onclick={() => {
+				showNonPrettifiedQMSBody = !showNonPrettifiedQMSBody;
+			}}
+		>
+			{showNonPrettifiedQMSBody ? ' show prettified ' : ' show non-prettified '}</button
+		>
+	</div>
 </div>

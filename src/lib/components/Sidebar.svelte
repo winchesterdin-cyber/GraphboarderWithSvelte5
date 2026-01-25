@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { clickOutside } from '$lib/actions/clickOutside';
 	import TabContainer from '$lib/components/TabContainer.svelte';
+	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 	import { getContext } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
 	import type { QMSMainWraperContext } from '$lib/types';
@@ -33,8 +34,11 @@
 		: ' invisible'} fixed left-0 z-50 flex md:visible md:static md:z-0"
 	use:clickOutside
 >
-	<div class="invisible md:visible">
+	<div class="invisible flex h-full flex-col md:visible">
 		<TabContainer {endpointInfo} />
+		<div class="absolute bottom-2 left-2 z-50 md:left-4">
+			<ThemeToggle />
+		</div>
 	</div>
 </div>
 {#if forceVisibleSidebar}

@@ -25,6 +25,8 @@
 	import 'highlight.js/styles/base16/solarized-dark.css';
 	import MainWraper from './MainWraper.svelte';
 	import Sidebar from './Sidebar.svelte';
+	import { recentQueries } from '$lib/stores/recentQueriesStore';
+	import { page } from '$app/stores';
 
 	import type {
 		QMSWraperContext,
@@ -253,6 +255,20 @@
 	});
 
 	let endpointConfiguration = $state<any>();
+
+	// Add to recent queries when query is successfully loaded/initialized
+	$effect(() => {
+		if (currentQMS_info && endpointInfo) {
+			const endpointId = $page.params.endpointid;
+			if (endpointId) {
+				recentQueries.add({
+					name: queryName,
+					type: 'query', // Assuming this component handles queries primarily
+					endpointId: endpointId
+				});
+			}
+		}
+	});
 
 	// Extract endpoint configuration if present in data
 	$effect(() => {

@@ -3,6 +3,7 @@
 	import TabItem from '$lib/components/TabItem.svelte';
 	import { getQMSLinks } from '$lib/utils/usefulFunctions';
 	import { getContext, onMount } from 'svelte';
+	import { recentQueries } from '$lib/stores/recentQueriesStore';
 	import type { QMSMainWraperContext } from '$lib/types';
 
 	interface LinkItem {
@@ -51,6 +52,20 @@
 			isSelected: false,
 			hasFill: false,
 			items: getQMSLinks('query', `/endpoints/${endpointid}/queries`, endpointInfo, schemaData)
+		},
+		{
+			title: 'Recent',
+			url: `/endpoints/${endpointid}/recent`,
+			urlIsRoute: false,
+			icon: 'bi bi-clock-history',
+			isSelected: false,
+			hasFill: false,
+			items: $recentQueries
+				.filter((q) => q.endpointId === endpointid)
+				.map((q) => ({
+					title: q.name,
+					url: `/endpoints/${endpointid}/${q.type == 'query' ? 'queries' : 'mutations'}/${q.name}`
+				}))
 		},
 		{
 			title: 'Mutations',
