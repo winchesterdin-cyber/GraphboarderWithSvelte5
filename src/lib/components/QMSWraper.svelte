@@ -32,6 +32,7 @@
 		EndpointInfoStore,
 		PaginationTypeInfo,
 		QMSWraperContext as QMSWraperContextType,
+		QMSMainWraperContext as QMSMainWraperContextType,
 		ActiveArgumentsDataGroupedStore
 	} from '$lib/types/index';
 	import { Create_mergedChildren_finalGqlArgObj_Store } from '$lib/stores/QMSHandling/mergedChildren_finalGqlArgObj_Store';
@@ -90,7 +91,7 @@
 	}
 
 	// Now we can use the props
-	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
+	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`) as QMSMainWraperContextType;
 	const endpointInfo: EndpointInfoStore = QMSMainWraperContext?.endpointInfo;
 	const schemaData: SchemaData = QMSMainWraperContext?.schemaData;
 
@@ -110,27 +111,36 @@
 	if (!QMS_info) {
 		QMS_info = schemaData.get_QMS_Field(QMSName, QMSType, schemaData);
 	}
+
+	// If QMS_info is still not defined, we can't proceed with dependent logic
+	// But we must initialize variables to avoid TS errors in the template
+	// Realistically, QMS_info should be present if QMSName is valid.
+	if (!QMS_info) {
+		console.warn(`QMSWraper: QMS_info could not be resolved for ${QMSName}`);
+	}
+
 	const dd_paginationType: string | undefined = QMS_info?.dd_paginationType;
 	const paginationTypes = get_paginationTypes(endpointInfo, schemaData);
 	let paginationTypeInfo = getPaginationTypeInfo(dd_paginationType, paginationTypes);
 	const paginationOptions = Create_paginationOptions();
+
 	const paginationState = Create_paginationState(
-		undefined,
-		QMS_info.dd_paginationArgs,
-		QMS_info.dd_paginationType,
+		null,
+		QMS_info?.dd_paginationArgs || [],
+		QMS_info?.dd_paginationType || '',
 		endpointInfo,
 		schemaData
 	);
 	const paginationState_derived = Create_paginationState_derived(
 		paginationState,
-		QMS_info.dd_paginationArgs,
-		QMS_info.dd_paginationType,
+		QMS_info?.dd_paginationArgs || [],
+		QMS_info?.dd_paginationType || '',
 		endpointInfo,
 		schemaData
 	);
 
-	const rowsLocation = endpointInfo.get_rowsLocation(QMS_info, schemaData);
-	const nodeFieldsQMS_info = get_nodeFieldsQMS_info(QMS_info, rowsLocation, schemaData);
+	const rowsLocation = QMS_info ? endpointInfo.get_rowsLocation(QMS_info, schemaData) : [];
+	const nodeFieldsQMS_info = QMS_info ? get_nodeFieldsQMS_info(QMS_info, rowsLocation, schemaData) : undefined;
 	// let scalarColsData = get_scalarColsData(
 	// 	nodeFieldsQMS_info,
 	// 	[QMS_info.dd_displayName, ...rowsLocation],
@@ -144,7 +154,7 @@
 
 	const returningColumnsResult = findReturningColumnsLocation(
 		nodeFieldsQMS_info,
-		possibleLocations,
+		possibleLocations || [],
 		schemaData,
 		'fields'
 	);
@@ -154,13 +164,13 @@
 
 	let nodeFieldsQMS_info_Root = schemaData.get_rootType(
 		null,
-		nodeFieldsQMS_info?.dd_rootName,
+		nodeFieldsQMS_info?.dd_rootName || '',
 		schemaData
 	);
 
 	let prefixStepsOfFields = buildPrefixStepsOfFields(
 		QMSType,
-		QMS_info.dd_displayName,
+		QMS_info?.dd_displayName || '',
 		rowsLocation,
 		returningColumnsLocation
 	);
@@ -230,7 +240,7 @@
 		QMSType
 	);
 	let QMS_bodyPart_StoreDerived_rowsCount = null;
-	const rowCountLocation = endpointInfo.get_rowCountLocation(QMS_info, schemaData);
+	const rowCountLocation = QMS_info ? endpointInfo.get_rowCountLocation(QMS_info, schemaData) : undefined;
 	if (rowCountLocation) {
 		const tableColsData_Store_rowsCount = writable([
 			{ stepsOfFields: rowCountLocation, title: 'count' }
@@ -251,10 +261,10 @@
 	//
 	//
 	//set to QMSWraperContext
-	const tableName = endpointInfo.get_tableName(QMS_info, schemaData);
+	const tableName = QMS_info ? endpointInfo.get_tableName(QMS_info, schemaData) : '';
 	const thisContext = endpointInfo.get_thisContext();
 	const objective = 'getOne';
-	const qmsNameForObjective = endpointInfo.get_qmsNameForObjective(QMS_info, schemaData, objective);
+	const qmsNameForObjective = QMS_info ? endpointInfo.get_qmsNameForObjective(QMS_info, schemaData, objective) : '';
 
 	let idColName = getIdColumnName(
 		returningColumnsLocationQMS_Info,
@@ -301,7 +311,7 @@
 </script>
 
 {#if isOutermostQMSWraper}
-	{#each $mergedChildren_QMSWraperCtxData_Store as QMSWraperCtxDataCurrent (QMSWraperCtxDataCurrent.stepsOfFields.join())}
+	{#each ($mergedChildren_QMSWraperCtxData_Store as any[]) as QMSWraperCtxDataCurrent (QMSWraperCtxDataCurrent?.stepsOfFields?.join() || Math.random())}
 		<QMSWraperCtxDataCurrentComputations {QMSWraperCtxDataCurrent} />
 	{/each}
 {/if}

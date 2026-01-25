@@ -10,8 +10,10 @@
 
 	let { prefix = '', QMSWraperCtxDataCurrent }: Props = $props();
 	/////////////////
+	import type { QMSWraperContext } from '$lib/types/index';
+
 	const { finalGqlArgObj_Store, stepsOfFields, paginationState_derived } = QMSWraperCtxDataCurrent;
-	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`);
+	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`) as QMSWraperContext;
 	const { mergedChildren_finalGqlArgObj_Store } = OutermostQMSWraperContext;
 	/////////////////
 	let QMSarguments = $state();
@@ -24,8 +26,11 @@
 
 	run(() => {
 		if (QMSarguments || $paginationState_derived) {
-			mergedChildren_finalGqlArgObj_Store.update((value) => {
-				return setValueAtPath(value, [...stepsOfFields, 'QMSarguments'], QMSarguments);
+			mergedChildren_finalGqlArgObj_Store.update((value: Record<string, unknown>) => {
+				return setValueAtPath(value, [...stepsOfFields, 'QMSarguments'], QMSarguments) as Record<
+					string,
+					unknown
+				>;
 			});
 		}
 	});
