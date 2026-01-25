@@ -15,30 +15,16 @@ const toReversed = <T>(arr: T[]): T[] => {
 	return [...arr].reverse();
 };
 
+/**
+ * Extracts all GraphQL kinds from a nested type definition.
+ * Traverses `type` and `ofType` properties.
+ * @param type The type object to traverse.
+ * @returns Array of GraphQLKind strings.
+ */
 export const get_KindsArray = (type: Partial<FieldWithDerivedData>): GraphQLKind[] => {
 	let kinds: GraphQLKind[] = [];
 
-	let currentType: any = type;
-	// Traverse nested type/ofType structure to collect all kinds
-	// This replaces the hardcoded if checks with a loop if possible,
-	// but sticking to the structure provided in the original code for safety,
-	// just made recursive or cleaner.
-
-	// Original logic was manual unrolling. Let's stick to manual unrolling to match exact behavior
-	// but ensure we cover enough depth.
-	// The original code went up to type.type.ofType.ofType.ofType.kind
-	// Let's implement a recursive helper to capture all kinds.
-
-	const collectKinds = (t: any) => {
-		if (t?.kind) kinds.push(t.kind);
-		if (t?.type) collectKinds(t.type);
-		if (t?.ofType) collectKinds(t.ofType);
-	};
-
-	// However, the original code had a specific order and selection.
-	// e.g. type.kind, type.type.kind, type.ofType.kind...
-	// Let's replicate the original explicit checks but formatted cleaner.
-
+	// Manual traversal to match original behavior logic
 	if (type?.kind) kinds.push(type.kind);
 	if (type?.type?.kind) kinds.push(type.type.kind);
 	if (type?.ofType?.kind) kinds.push(type.ofType.kind);
@@ -46,17 +32,17 @@ export const get_KindsArray = (type: Partial<FieldWithDerivedData>): GraphQLKind
 	if (type?.type?.ofType?.ofType?.kind) kinds.push(type.type.ofType.ofType.kind);
 	if (type?.type?.ofType?.ofType?.ofType?.kind) kinds.push(type.type.ofType.ofType.ofType.kind);
 
-	// Additional depth from original code
 	if (type?.ofType?.ofType?.kind) kinds.push(type.ofType.ofType.kind);
 	if (type?.ofType?.ofType?.ofType?.kind) kinds.push(type.ofType.ofType.ofType.kind);
-	if (type?.type?.ofType?.ofType?.ofType?.kind) {
-		// This check was repeated in original code, likely redundant but harmless
-		// kinds.push(type.type.ofType.ofType.ofType.kind);
-	}
 
 	return kinds;
 };
 
+/**
+ * Extracts all type names from a nested type definition.
+ * @param type The type object.
+ * @returns Array of type names.
+ */
 export const get_NamesArray = (type: Partial<FieldWithDerivedData>): string[] => {
 	let names: string[] = [];
 	if (type?.name) names.push(type.name);
@@ -68,14 +54,31 @@ export const get_NamesArray = (type: Partial<FieldWithDerivedData>): string[] =>
 	return names;
 };
 
+/**
+ * Gets the root type name (usually the last in the names array).
+ * @param namesArray Array of names.
+ * @returns The root name.
+ */
 export const get_rootName = (namesArray: string[]): string => {
 	return namesArray[namesArray.length - 1];
 };
 
+/**
+ * Gets the display name (usually the first in the names array).
+ * @param namesArray Array of names.
+ * @returns The display name.
+ */
 export const get_displayName = (namesArray: string[]): string => {
 	return namesArray[0];
 };
 
+/**
+ * Finds a RootType definition in the schema data by name.
+ * @param rootTypes Array of root types (optional, fetches from schemaData if null).
+ * @param RootType_Name The name to search for.
+ * @param schemaData The schema data store.
+ * @returns The found RootType or undefined.
+ */
 export const getRootType = (
 	rootTypes: RootType[] | null,
 	RootType_Name: string | undefined,
@@ -88,6 +91,13 @@ export const getRootType = (
 	return rootTypes.find((type) => type.name === RootType_Name);
 };
 
+/**
+ * Groups fields of a type into scalar, non-scalar, and enum fields.
+ * @param node The type node (field or root type).
+ * @param dd_displayNameToExclude Names to exclude.
+ * @param schemaData Schema data store.
+ * @returns Object containing grouped fields.
+ */
 export const getFields_Grouped = (
 	node: Partial<FieldWithDerivedData> | RootType,
 	dd_displayNameToExclude: string[] = [],
@@ -139,6 +149,12 @@ export const getFields_Grouped = (
 	};
 };
 
+/**
+ * Determines the display interface for a type based on endpoint configuration.
+ * @param typeInfo Type information.
+ * @param endpointInfo Endpoint configuration store.
+ * @returns Display interface string or null.
+ */
 export const get_displayInterface = (
 	typeInfo: Partial<FieldWithDerivedData>,
 	endpointInfo: EndpointInfoStore
@@ -150,6 +166,11 @@ export const get_displayInterface = (
 	return null;
 };
 
+/**
+ * Marks fields as pagination arguments if they match configured names.
+ * @param args List of arguments.
+ * @param endpointInfo Endpoint configuration store.
+ */
 export const mark_paginationArgs = (
 	args: FieldWithDerivedData[],
 	endpointInfo: EndpointInfoStore
@@ -169,6 +190,13 @@ export const mark_paginationArgs = (
 	});
 };
 
+/**
+ * Identifies the pagination type (e.g., limit/offset, cursor) based on arguments.
+ * @param paginationArgs List of pagination arguments.
+ * @param endpointInfo Endpoint configuration store.
+ * @param schemaData Schema data store.
+ * @returns The name of the pagination strategy.
+ */
 export const get_paginationType = (
 	paginationArgs: FieldWithDerivedData[],
 	endpointInfo: EndpointInfoStore,
@@ -190,6 +218,16 @@ const prepareStrForFuseComparison = (str: string): string => {
 		.toLowerCase();
 };
 
+/**
+ * Enhances a field with derived data (dd_) used for UI logic.
+ * Calculates kinds, root names, display interfaces, and expandability.
+ * @param type The raw field/type object.
+ * @param rootTypes Available root types.
+ * @param isQMSField Whether it's a top-level Query/Mutation/Subscription field.
+ * @param endpointInfo Endpoint configuration.
+ * @param schemaData Schema data.
+ * @returns FieldWithDerivedData object.
+ */
 export const generate_derivedData = (
 	type: Partial<FieldWithDerivedData>,
 	rootTypes: RootType[] | null,
@@ -292,6 +330,14 @@ export const generate_derivedData = (
 	return derivedData;
 };
 
+/**
+ * Traverses a property path to find a deeply nested field.
+ * @param obj Starting object (field).
+ * @param propertyPath Path to follow.
+ * @param schemaData Schema data.
+ * @param fieldsType Type of fields to look in (fields/inputFields).
+ * @returns The found field or null.
+ */
 export const getDeepField = (
 	obj: Partial<FieldWithDerivedData>,
 	propertyPath: string[],
@@ -316,6 +362,13 @@ export const getDeepField = (
 	return currentObj as FieldWithDerivedData;
 };
 
+/**
+ * Follows a path of row locations to find the target QMS info.
+ * @param QMS_info Starting info.
+ * @param rowsLocation Path.
+ * @param schemaData Schema data.
+ * @returns Target field info.
+ */
 export const get_nodeFieldsQMS_info = (
 	QMS_info: FieldWithDerivedData,
 	rowsLocation: string[],
@@ -350,6 +403,13 @@ export const get_nodeFieldsQMS_info = (
 };
 
 // Re-implemented to avoid circular dependency
+/**
+ * Generates column data for scalar fields of a given QMS info.
+ * @param currentQMS_info Current field info.
+ * @param prefixStepsOfFields Prefix for steps.
+ * @param schemaData Schema data.
+ * @returns Array of column data objects.
+ */
 export const get_scalarColsData = (
 	currentQMS_info: FieldWithDerivedData | null,
 	prefixStepsOfFields: string[] = [],
