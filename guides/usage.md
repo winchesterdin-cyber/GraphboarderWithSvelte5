@@ -4,7 +4,7 @@ This guide explains how to use the Graphboarder application to explore GraphQL e
 
 ## 1. Selecting an Endpoint
 
-On the home page, you will see the **Endpoint Picker**. This displays a list of available GraphQL endpoints.
+From the home page, click **"Get Started"** to navigate to the **Endpoint Picker** (at `/endpoints`). This displays a list of available GraphQL endpoints.
 
 - **Select**: Click on an endpoint card to connect to it. Cards indicate if an endpoint is **"Maintained"** (built-in and verified) or **"User Defined"**.
 - **Search**: Use the search bar to filter endpoints by name.
@@ -51,13 +51,24 @@ As you build the query, the results are fetched and displayed automatically.
     - **CSV**: Click the **"Copy CSV"** button (clipboard icon) to copy the current table view to your clipboard.
 - **Maintenance**:
     - **Edit Table Name**: Click the **"Edit"** button (pencil icon) to open a modal where you can alias table names for better readability in the UI.
+- **Export Data**:
+    - **Export JSON**: Click the **"Export JSON"** button to download the current table data as a `.json` file.
 
 ## 5. View Generated GraphQL
 
 - Click the **"QMS body"** button to toggle the view of the actual GraphQL query being sent to the server.
-- You can copy this query for use in other tools.
+- **Copy Query**: Click the **"Copy"** button to copy the query string to your clipboard.
+- **Prettify**: Use the "Show Prettified" toggle to switch between raw and formatted views.
 
-## 6. Mutations
+## 6. History & Recent Queries
+
+- **Recent**: The sidebar includes a "Recent" tab that tracks your recently visited queries and mutations for quick access.
+
+## 7. Appearance
+
+- **Theme Toggle**: Use the sun/moon icon at the bottom of the sidebar to switch between Light and Dark themes.
+
+## 8. Mutations
 
 For mutations (creating/updating data):
 
@@ -66,6 +77,7 @@ For mutations (creating/updating data):
 3.  Click **Submit** to execute the mutation.
 4.  View the result (success/error) and returned data.
 
-## 7. Debugging
+## 7. Troubleshooting & Debugging
 
-- Open your browser's developer console to view debug logs (`console.debug`) for actions like data fetching, endpoint updates, and pagination logic.
+- **Loading States**: If the application takes time to load an endpoint configuration, a loading spinner will appear. If it fails to load, an error message with a "Retry" button will be displayed.
+- **Console Logs**: For advanced debugging, open your browser's developer console (F12). The application logs detailed information about data fetching, pagination logic, and configuration parsing using `console.debug`.

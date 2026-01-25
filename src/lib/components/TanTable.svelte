@@ -106,9 +106,30 @@
 			columns: columns
 		}));
 	});
+
+	const downloadJSON = () => {
+		if (!data || data.length === 0) return;
+		const jsonString = JSON.stringify(data, null, 2);
+		const blob = new Blob([jsonString], { type: 'application/json' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `export-${new Date().toISOString().slice(0, 10)}.json`;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	};
 </script>
 
 <div class=" h-[80vh] overflow-y-auto overscroll-contain rounded-box pb-32">
+	{#if data && data.length > 0}
+		<div class="mb-2 flex justify-end px-2">
+			<button class="btn btn-ghost btn-sm gap-2" onclick={downloadJSON} aria-label="Export JSON">
+				<i class="bi bi-filetype-json"></i> Export JSON
+			</button>
+		</div>
+	{/if}
 	<table class="table-compact table static w-full rounded-none table-zebra">
 		<thead class="sticky top-0 z-20 bg-base-300">
 			{#each $table.getHeaderGroups() as headerGroup}

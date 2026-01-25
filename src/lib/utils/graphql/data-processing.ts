@@ -1,6 +1,11 @@
 import { get } from 'svelte/store';
 import type { TableColumnData, ActiveArgumentData, EndpointInfoStore } from '$lib/types';
 
+/**
+ * Comparator function for sorting based on multiple columns.
+ * @param array An array of [valA, valB] pairs.
+ * @returns -1 if A < B, 1 if A > B, 0 if equal.
+ */
 export const sortingFunctionMutipleColumnsGivenArray = (array: [unknown, unknown][]): number => {
 	let maxIndex = array.length - 1;
 	const check = (currentIndex: number): number => {
@@ -19,6 +24,12 @@ export const sortingFunctionMutipleColumnsGivenArray = (array: [unknown, unknown
 	return check(0);
 };
 
+/**
+ * Sorts endpoints by ID and optionally filters out non-maintained ones.
+ * @param endpoints Array of endpoint objects.
+ * @param filterOutIfNotMaintained Boolean to filter out non-maintained endpoints.
+ * @returns Sorted (and filtered) array of endpoints.
+ */
 export const getSortedAndOrderedEndpoints = <
 	T extends { id: string | number; isMaintained?: boolean }
 >(
@@ -42,6 +53,12 @@ export const getSortedAndOrderedEndpoints = <
 	});
 };
 
+/**
+ * Creates a copy of an endpoint with a new ID and description.
+ * @param endpointToDuplicate The endpoint object to copy.
+ * @param existingEndpoints The current list of endpoints (unused in return but likely for context).
+ * @returns A new array of endpoints including the duplicate (wait, implementation returns array).
+ */
 export const duplicateEndpoint = (endpointToDuplicate: any, existingEndpoints: any) => {
 	const newEndpoint = {
 		...endpointToDuplicate,
@@ -51,6 +68,12 @@ export const duplicateEndpoint = (endpointToDuplicate: any, existingEndpoints: a
 	return [...existingEndpoints, newEndpoint];
 };
 
+/**
+ * Resolves the steps of fields required to fetch data for a specific column.
+ * @param colInfo Column metadata.
+ * @param stepsOfFieldsInput Optional override for steps.
+ * @returns Array of field names representing the path to data.
+ */
 export const getStepsOfFieldsForDataGetter = (
 	colInfo: TableColumnData | undefined,
 	stepsOfFieldsInput?: string[]
@@ -72,6 +95,14 @@ export const getStepsOfFieldsForDataGetter = (
 	return [];
 };
 
+/**
+ * Traverses a result object using a path of field names to extract a specific value.
+ * Handles nested arrays by mapping over them.
+ * @param colInfo Column metadata (optional).
+ * @param row_resultData The data object to traverse.
+ * @param stepsOfFieldsInput Path to the data.
+ * @returns The extracted value, or null/undefined.
+ */
 export const getDataGivenStepsOfFields = (
 	colInfo: TableColumnData | undefined,
 	row_resultData: unknown,
@@ -126,6 +157,13 @@ export const getDataGivenStepsOfFields = (
 	return colResultData;
 };
 
+/**
+ * Helper to get cell data for a table.
+ * @param rowData The full row object.
+ * @param colData The column definition.
+ * @param index Index of the row (or column? usage implies row index access if rowData is array-like).
+ * @returns The cell value.
+ */
 export const getTableCellData = (
 	rowData: unknown,
 	colData: TableColumnData,
@@ -144,6 +182,12 @@ export const getTableCellData = (
 	return data;
 };
 
+/**
+ * Checks if an active argument is valid to run in a query.
+ * Validates against list/non-null constraints.
+ * @param arg The active argument data.
+ * @returns True if valid, false otherwise.
+ */
 export const argumentCanRunQuery = (arg: ActiveArgumentData): boolean => {
 	const {
 		inUse,
@@ -172,6 +216,13 @@ export const argumentCanRunQuery = (arg: ActiveArgumentData): boolean => {
 	return true;
 };
 
+/**
+ * Generates a new active argument data object.
+ * @param stepsOfFields Path to the argument field.
+ * @param type Type information.
+ * @param extraData Additional properties.
+ * @returns A new ActiveArgumentData object.
+ */
 export const generateNewArgData = (
 	stepsOfFields: string[],
 	type: Partial<any>, // Partial<FieldWithDerivedData>
@@ -187,6 +238,12 @@ export const generateNewArgData = (
 	return infoToCast;
 };
 
+/**
+ * Retrieves the QMS context data for a specific control panel item.
+ * @param CPItem Control Panel Item.
+ * @param OutermostQMSWraperContext The main wrapper context.
+ * @returns The specific context data.
+ */
 export const getQMSWraperCtxDataGivenControlPanelItem = (
 	CPItem: { stepsOfFieldsThisAppliesTo: string[] },
 	OutermostQMSWraperContext: { mergedChildren_QMSWraperCtxData_Store: any }

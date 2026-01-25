@@ -3,6 +3,24 @@
 	import TabItem from '$lib/components/TabItem.svelte';
 	import { getQMSLinks } from '$lib/utils/usefulFunctions';
 	import { getContext, onMount } from 'svelte';
+	import { recentQueries } from '$lib/stores/recentQueriesStore';
+	import type { QMSMainWraperContext } from '$lib/types';
+
+	interface LinkItem {
+		title: string;
+		url: string;
+	}
+
+	interface Link {
+		title: string;
+		url: string;
+		urlIsRoute: boolean;
+		icon: string;
+		isSelected: boolean;
+		hasFill: boolean;
+		items: LinkItem[];
+		target?: string;
+	}
 
 	interface Props {
 		endpointInfo: any;
@@ -12,10 +30,11 @@
 
 	let { endpointInfo, onHideSidebar, prefix = '' }: Props = $props();
 
-	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
-	const schemaData = QMSMainWraperContext?.schemaData;
-	let endpointid = $page.params.endpointid;
-	let links = [
+	let QMSContext = getContext<QMSMainWraperContext>(`${prefix}QMSMainWraperContext`);
+	const schemaData = QMSContext?.schemaData;
+	let endpointid = $derived($page.params.endpointid);
+
+	let links = $derived<Link[]>([
 		{
 			title: 'Home',
 			url: '/',
@@ -25,16 +44,6 @@
 			hasFill: true,
 			items: []
 		},
-		// {
-		// 	title: 'Endpoints',
-		// 	url: `/endpoints/`,
-		// 	//target: '_blank',
-		// 	urlIsRoute: false,
-		// 	icon: 'bi bi-list',
-		// 	isSelected: false,
-		// 	hasFill: false,
-		// 	items: []
-		// },
 		{
 			title: 'Queries',
 			url: `/endpoints/${endpointid}/queries`,
@@ -43,6 +52,20 @@
 			isSelected: false,
 			hasFill: false,
 			items: getQMSLinks('query', `/endpoints/${endpointid}/queries`, endpointInfo, schemaData)
+		},
+		{
+			title: 'Recent',
+			url: `/endpoints/${endpointid}/recent`,
+			urlIsRoute: false,
+			icon: 'bi bi-clock-history',
+			isSelected: false,
+			hasFill: false,
+			items: $recentQueries
+				.filter((q) => q.endpointId === endpointid)
+				.map((q) => ({
+					title: q.name,
+					url: `/endpoints/${endpointid}/${q.type == 'query' ? 'queries' : 'mutations'}/${q.name}`
+				}))
 		},
 		{
 			title: 'Mutations',
@@ -62,16 +85,17 @@
 			hasFill: true,
 			items: []
 		}
-	];
+	]);
 
-	let itemsToShow = $state([]);
+	let itemsToShow = $state<LinkItem[]>([]);
 
 	const get_itemsToShow = () => {
-		return (itemsToShow =
-			links.filter((link) => {
-				return $page.url.pathname == link.url || $page.url.pathname.startsWith(`${link.url}/`);
-			})[0]?.items ?? []);
+		const currentLink = links.find((link) => {
+			return $page.url.pathname == link.url || $page.url.pathname.startsWith(`${link.url}/`);
+		});
+		itemsToShow = currentLink?.items ?? [];
 	};
+
 	onMount(() => {
 		get_itemsToShow();
 	});

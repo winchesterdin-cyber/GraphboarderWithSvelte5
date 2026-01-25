@@ -7,22 +7,42 @@
 	import { browser } from '$app/environment';
 	import { Create_urqlCoreClient } from '$lib/utils/urqlCoreClient';
 	import { setContextClient, Client, fetchExchange } from '@urql/svelte';
+	import type { EndpointConfiguration } from '$lib/types';
+
 	interface Props {
 		prefix?: string;
-		endpointInfoProvided?: any;
+		endpointInfoProvided?: EndpointConfiguration | null;
 		children?: import('svelte').Snippet;
 	}
 
 	let { prefix = '', endpointInfoProvided = null, children }: Props = $props();
 
+	// Create stores (assuming factories return typed stores, if not, casting might be needed there, but here we treat them as provided)
 	const endpointInfo = create_endpointInfo_Store(endpointInfoProvided);
 	const schemaData = create_schemaData();
 
-	console.debug('Initializing URQL Client for:', $endpointInfo.url);
+	// Subscribe to store value for usage
+	// Using $endpointInfo since it's a store
+	console.debug('Initializing URQL Client for:', ($endpointInfo as any)?.url);
+
+	let getHeaders = () => {
+		if (($endpointInfo as any)?.headers) {
+			return ($endpointInfo as any).headers;
+		}
+		if (browser) {
+			const headersStr = localStorage.getItem('headers');
+			const headers = headersStr ? JSON.parse(headersStr) : {};
+			console.debug('Loaded headers from localStorage:', headers);
+			return headers;
+		} else {
+			return {};
+		}
+	};
+
 	let client = new Client({
-		url: $endpointInfo.url,
+		url: ($endpointInfo as any)?.url || '',
 		fetchOptions: () => {
-			console.debug('Fetching with headers for:', $endpointInfo.url);
+			console.debug('Fetching with headers for:', ($endpointInfo as any)?.url);
 			return {
 				headers: getHeaders()
 			};
@@ -30,18 +50,6 @@
 		exchanges: [fetchExchange]
 	});
 
-	let getHeaders = () => {
-		if ($endpointInfo?.headers) {
-			return $endpointInfo?.headers;
-		}
-		if (browser) {
-			const headers = JSON.parse(localStorage.getItem('headers'));
-			console.debug('Loaded headers from localStorage:', headers);
-			return headers;
-		} else {
-			return {};
-		}
-	};
 	const urqlCoreClient = Create_urqlCoreClient();
 	urqlCoreClient.set(client);
 

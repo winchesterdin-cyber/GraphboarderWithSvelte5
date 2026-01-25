@@ -8,7 +8,7 @@
 	import { showTabs } from '$lib/stores/showTabs';
 	interface Props {
 		backPath?: any;
-		CustomId?: any;
+		CustomId?: string;
 		MenuItem?: any;
 		RememberScroll?: boolean;
 		title?: any;
@@ -44,15 +44,16 @@
 	/// scroll logic start b
 	const storeScroll = () => {
 		let mainEl = document.getElementById(CustomId);
-
-		localStorage.setItem(CustomId, mainEl.scrollTop.toString());
+		if (mainEl) {
+			localStorage.setItem(CustomId, mainEl.scrollTop.toString());
+		}
 	};
 	const revertLastScroll = () => {
 		let mainEl = document.getElementById(CustomId);
 
 		let lastScroll = localStorage.getItem(CustomId);
-		if (lastScroll) {
-			mainEl.scrollTop = lastScroll;
+		if (lastScroll && mainEl) {
+			mainEl.scrollTop = parseInt(lastScroll, 10);
 		}
 	};
 
@@ -78,7 +79,7 @@
 			if (mainEl) {
 				let lastScroll = localStorage.getItem(CustomId);
 				if (lastScroll) {
-					mainEl.scrollTop = lastScroll;
+					mainEl.scrollTop = parseInt(lastScroll, 10);
 				}
 			}
 		}
@@ -98,14 +99,14 @@
 	</main>
 {:else}
 	<main
-		in:scale|global={{ x: 200, duration: 300, opacity: 1, start: 0.97 }}
-		out:scale|global={{ x: 300, duration: 300, opacity: 0, start: 0.97 }}
+		in:scale|global={{ duration: 300, opacity: 1, start: 0.97 }}
+		out:scale|global={{ duration: 300, opacity: 0, start: 0.97 }}
 		id={CustomId}
 		class="  fixed top-0 z-40 h-full w-full overflow-y-scroll bg-base-100 pb-96"
 	>
 		<div class="navbar sticky top-0 z-50 mb-2 w-full bg-base-100 text-base-content shadow-md">
 			<div class="flex-none">
-				<button class="btn btn-square btn-ghost" onclick={backButtonClick}>
+				<button class="btn btn-square btn-ghost" onclick={backButtonClick} aria-label="Go Back">
 					{#if hasPreviousPage}
 						<i class="bi bi-chevron-left text-3xl font-black text-success"></i>
 					{:else if backPath}
