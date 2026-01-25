@@ -97,13 +97,12 @@
 
 	const table = createSvelteTable(options);
 
+	// Sync data and columns when props change
 	$effect(() => {
-		const columns = getColumns(cols);
-
 		options.update((options) => ({
 			...options,
 			data: data,
-			columns: columns
+			columns: getColumns(cols)
 		}));
 	});
 
@@ -125,7 +124,7 @@
 		if (!data || data.length === 0) return;
 
 		// Extract headers
-		const headers = cols.map(col => col.title);
+		const headers = cols.map(col => `"${col.title.replace(/"/g, '""')}"`);
 
 		// Create CSV content
 		const csvRows = [headers.join(',')];
@@ -133,9 +132,19 @@
 		for (const row of data) {
 			const values = cols.map(col => {
 				const cellData = getTableCellData(row, col, 0); // index 0 as approximation if not array
-				const stringValue = JSON.stringify(cellData);
-				// Escape double quotes by doubling them
-				return stringValue; // JSON.stringify handles quoting and escaping appropriately for CSV usually
+				// Handle different data types
+				let stringValue = '';
+				if (cellData === null || cellData === undefined) {
+					stringValue = '';
+				} else if (typeof cellData === 'object') {
+					stringValue = JSON.stringify(cellData);
+				} else {
+					stringValue = String(cellData);
+				}
+
+				// Escape quotes by doubling them
+				const escaped = stringValue.replace(/"/g, '""');
+				return `"${escaped}"`;
 			});
 			csvRows.push(values.join(','));
 		}

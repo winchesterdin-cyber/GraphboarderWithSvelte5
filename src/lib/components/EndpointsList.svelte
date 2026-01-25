@@ -5,7 +5,8 @@
 	import {
 		getDataGivenStepsOfFields,
 		getFields_Grouped,
-		getRootType
+		getRootType,
+		getPreciseType
 	} from '$lib/utils/usefulFunctions';
 	import { onDestroy, onMount, getContext } from 'svelte';
 	import { goto } from '$app/navigation';
@@ -19,6 +20,7 @@
 	import { browser } from '$app/environment';
 	import GraphqlCodeDisplay from './GraphqlCodeDisplay.svelte';
 	import type { QMSWraperContext, QMSMainWraperContext } from '$lib/types';
+	import JSON5 from 'json5';
 
 	/**
 	 * Props for EndpointsList
@@ -73,6 +75,11 @@
 	let completeF: any;
 	let infiniteId = $state(Math.random());
 
+	// Metrics
+	let executionTime = $state<number | null>(null);
+	let responseSize = $state<number | null>(null);
+	let viewMode = $state<'table' | 'json'>('table');
+
 	if (scalarFields.length > 0) {
 		queryData.fetching = true;
 	}
@@ -104,6 +111,7 @@
 		let data = false;
 
 		console.debug('Running query:', queryBody);
+		const startTime = performance.now();
 
 		if (!urqlCoreClient || !currentQMS_info) {
 			console.warn('Missing client or QMS info');
@@ -114,6 +122,9 @@
 			.query(queryBody, {})
 			.toPromise()
 			.then((result: any) => {
+				const endTime = performance.now();
+				executionTime = Math.round(endTime - startTime);
+
 				fetching = false;
 
 				if (result.error) {
@@ -123,6 +134,8 @@
 				if (result.data) {
 					console.debug('Query data received');
 					data = result.data;
+					const jsonString = JSON.stringify(result.data);
+					responseSize = new Blob([jsonString]).size;
 				}
 				queryData = { fetching, error, data };
 				let stepsOfFieldsInput = [
@@ -208,7 +221,7 @@
 {@render children?.()}
 
 <!-- main -->
-<div class="z-50 mx-2 flex space-x-2">
+<div class="z-50 mx-2 flex flex-wrap items-center space-x-2 gap-y-2">
 	<AddColumn
 		bind:column_stepsOfFields
 		{dd_relatedRoot}
@@ -235,12 +248,36 @@
 			</Modal>
 		{/if}
 	</div>
+	<div class="join">
+		<button
+			class="btn join-item btn-xs {viewMode === 'table' ? 'btn-active' : ''}"
+			onclick={() => (viewMode = 'table')}>Table</button
+		>
+		<button
+			class="btn join-item btn-xs {viewMode === 'json' ? 'btn-active' : ''}"
+			onclick={() => (viewMode = 'json')}>JSON</button
+		>
+	</div>
+
 	<button
 		class=" btn grow normal-case btn-xs"
 		onclick={() => {
 			showQMSBody = !showQMSBody;
 		}}>QMS body</button
 	>
+	{#if executionTime !== null}
+		<div class="badge badge-ghost gap-2">
+			<i class="bi bi-stopwatch"></i>
+			{executionTime}ms
+		</div>
+	{/if}
+	{#if responseSize !== null}
+		<div class="badge badge-ghost gap-2">
+			<i class="bi bi-hdd-network"></i>
+			{formatBytes(responseSize)}
+		</div>
+	{/if}
+
 	{#if QMS_bodyPart_StoreDerived_rowsCount && currentQMS_info}
 		<div class="badge flex space-x-2 badge-primary">
 			{rows.length}/
@@ -297,17 +334,41 @@
 {/if}
 
 <div class="md:px-2">
-	<Table
-		{infiniteId}
-		{infiniteHandler}
-		colsData={$tableColsData_Store}
-		{rows}
-		onHideColumn={hideColumn}
-		onRowClicked={(detail) => {
-			if (browser) {
-				window.open(`${$page.url.origin}/endpoints/${detail.id}`, '_blank');
-			}
-		}}
-	/>
+	{#if viewMode === 'table'}
+		<Table
+			{infiniteId}
+			{infiniteHandler}
+			colsData={$tableColsData_Store}
+			{rows}
+			onHideColumn={hideColumn}
+			onRowClicked={(detail) => {
+				if (browser) {
+					window.open(`${$page.url.origin}/endpoints/${detail.id}`, '_blank');
+				}
+			}}
+		/>
+	{:else if queryData.data}
+		<div class="mt-2">
+			<GraphqlCodeDisplay
+				value={JSON.stringify(queryData.data, null, 2)}
+				enableSyncToUI={false}
+				showNonPrettifiedQMSBody={true}
+			/>
+		</div>
+	{/if}
 </div>
 <div></div>
+
+<script module>
+	function formatBytes(bytes: number, decimals = 2) {
+		if (!+bytes) return '0 Bytes';
+
+		const k = 1024;
+		const dm = decimals < 0 ? 0 : decimals;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+		return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+	}
+</script>

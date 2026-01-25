@@ -41,7 +41,12 @@ You can build queries visually without writing GraphQL code.
 
 As you build the query, the results are fetched and displayed automatically.
 
-- **Table View**: Data is presented in a responsive table.
+- **View Modes**:
+    - **Table**: The default view presenting data in a responsive table.
+    - **JSON**: Toggle to "JSON" view to see the raw response from the server.
+- **Metrics**:
+    - **Time**: Displays the execution time of the request in milliseconds (ms).
+    - **Size**: Displays the size of the response payload.
 - **Pagination**: If the API supports pagination, use the controls to navigate pages or load more rows (infinite scroll).
 - **Sorting/Filtering**: Click column headers to sort or use filters if supported by the API arguments.
 - **Columns**:

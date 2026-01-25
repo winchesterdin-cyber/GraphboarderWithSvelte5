@@ -91,8 +91,8 @@
 			headerString += ` -H "${key}: ${val}"`;
 		}
 
-		// Escape the query for JSON
-		const queryJson = JSON.stringify({ query: value });
+		// Properly escape single quotes for shell
+		const queryJson = JSON.stringify({ query: value }).replace(/'/g, "'\\''");
 
 		return `curl -X POST "${url}" -H "Content-Type: application/json"${headerString} -d '${queryJson}'`;
 	};
