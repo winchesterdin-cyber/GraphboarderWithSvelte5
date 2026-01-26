@@ -28,7 +28,7 @@
 		{typeInfo}
 		{rawValue}
 		{dispatchValue}
-		on:changed={(e) => onChanged?.(e.detail)}
+		onChanged={(detail) => onChanged?.(detail)}
 	/>
 {:else}
 	<Interface
@@ -36,6 +36,6 @@
 		{typeInfo}
 		{rawValue}
 		{dispatchValue}
-		on:changed={(e) => onChanged?.(e.detail)}
+		onChanged={(detail) => onChanged?.(detail)}
 	/>
 {/if}

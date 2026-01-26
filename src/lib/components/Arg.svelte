@@ -6,6 +6,7 @@
 	import ArgInfoDisplay from '$lib/components/ArgInfoDisplay.svelte';
 	import { circIn, expoIn, expoOut } from 'svelte/easing';
 	import { getContext } from 'svelte';
+	import type { QMSMainWraperContext as QMSMainWraperContextType } from '$lib/types';
 
 	interface Props {
 		index: any;
@@ -35,7 +36,7 @@
 		stepsOfFields = [];
 	}
 
-	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
+	let QMSMainWraperContext = getContext<QMSMainWraperContextType>(`${prefix}QMSMainWraperContext`);
 	const schemaData = QMSMainWraperContext?.schemaData;
 
 	if (stepsOfFields.length == 0 && predefinedFirstSteps) {
@@ -46,7 +47,7 @@
 	let { dd_kindsArray, dd_rootName, dd_displayName } = type;
 
 	let showExpand = $state(false);
-	let expandData = $state({});
+	let expandData = $state<any>({});
 	let canExpand = false;
 	if (!dd_kindsArray.includes('SCALAR') && dd_kindsArray.length > 0) {
 		canExpand = true;

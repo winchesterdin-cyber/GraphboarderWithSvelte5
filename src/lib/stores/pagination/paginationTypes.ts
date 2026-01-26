@@ -186,15 +186,15 @@ export const get_paginationTypes = (
 				const endpointInfoVal = get(endpointInfo);
 				const pageInfoFieldsLocation = endpointInfoVal.pageInfoFieldsLocation;
 				let currentQMS_info = schemaData.get_QMS_Field(QMS_name, QMS_type, schemaData);
-				const rowsLocation = endpointInfo.get_rowsLocation(currentQMS_info, schemaData);
+				const rowsLocation = endpointInfo.get_rowsLocation(currentQMS_info as any, schemaData);
 
 				const relayPageInfoFieldsNames = endpointInfo.get_relayPageInfoFieldsNames(
-					currentQMS_info,
+					currentQMS_info as any,
 					pageInfoFieldsLocation,
 					schemaData
 				);
 				const relayCursorFieldName = endpointInfo.get_relayCursorFieldName(
-					currentQMS_info,
+					currentQMS_info as any,
 					rowsLocation,
 					schemaData
 				);
@@ -279,17 +279,17 @@ export const get_paginationTypes = (
 				const endpointInfoVal = get(endpointInfo);
 				let currentQMS_info = schemaData.get_QMS_Field(QMS_name, QMS_type, schemaData);
 				const pageInfoFieldsLocation = endpointInfoVal.pageInfoFieldsLocation;
-				const rowsLocation = endpointInfoVal.rowsLocationPossibilities.find((rowsLocation) => {
-					return rowsLocation.check(currentQMS_info);
-				}).rowsLocation;
+				const rowsLocation = (endpointInfoVal.rowsLocationPossibilities.find((rowsLocation) => {
+					return rowsLocation.check(currentQMS_info as any, schemaData);
+				}) as any)?.rowsLocation;
 
 				const relayPageInfoFieldsNames = endpointInfo.get_relayPageInfoFieldsNames(
-					currentQMS_info,
+					currentQMS_info as any,
 					pageInfoFieldsLocation,
 					schemaData
 				);
 				const relayCursorFieldName = endpointInfo.get_relayCursorFieldName(
-					currentQMS_info,
+					currentQMS_info as any,
 					rowsLocation,
 					schemaData
 				);
@@ -311,20 +311,21 @@ export const get_paginationTypes = (
 						returnedDataBatch_last,
 						stepsOfFieldsToEndCursor
 					);
-					if (endCursorValue) {
+					if (endCursorValue && afterName) {
 						_state[afterName] = `'${endCursorValue}'`;
 					}
 				} else if (namings?.cursor) {
 					let rows = getDataGivenStepsOfFields(undefined, returnedDataBatch_last, [
-						currentQMS_info.dd_displayName,
+						currentQMS_info!.dd_displayName,
 						...rowsLocation
 					]);
-					let lastRow = rows[rows.length - 1];
-					_state[afterName] = `'${getDataGivenStepsOfFields(
-						undefined,
-						lastRow,
-						stepsOfFieldsToCursor
-					)}'`;
+					let lastRow = (rows as any)[(rows as any).length - 1];
+					if (afterName)
+						_state[afterName] = `'${getDataGivenStepsOfFields(
+							undefined,
+							lastRow,
+							stepsOfFieldsToCursor
+						)}'`;
 				}
 				return _state;
 			},
@@ -342,8 +343,10 @@ export const get_paginationTypes = (
 				const beforeName = paginationArgs.find((arg) => {
 					return arg.dd_standsFor == 'before';
 				})?.dd_displayName;
+				const storeVal = get(_paginationState_Store);
 				return (
-					!get(_paginationState_Store)?.[afterName] && !get(_paginationState_Store)?.[beforeName]
+					(afterName ? !storeVal?.[afterName] : true) &&
+					(beforeName ? !storeVal?.[beforeName] : true)
 				);
 			},
 			check: (standsForArray: string[]) => {
@@ -366,9 +369,11 @@ export const get_paginationTypes = (
 				const pageName = paginationArgs.find((arg) => {
 					return arg.dd_standsFor == 'page';
 				})?.dd_displayName;
-				return {
-					[pageName]: 1
-				};
+				if (pageName)
+					return {
+						[pageName]: 1
+					};
+				return {};
 			},
 			get_dependencyColsData: (QMS_name: string) => {
 				return [];
@@ -381,7 +386,7 @@ export const get_paginationTypes = (
 					return arg.dd_standsFor == 'page';
 				})?.dd_displayName;
 				let _state = JSON.parse(JSON.stringify(state));
-				_state = { ..._state, [pageName]: 1 };
+				if (pageName) _state[pageName] = 1;
 				return _state;
 			},
 			get_nextPageState: (
@@ -392,7 +397,7 @@ export const get_paginationTypes = (
 					return arg.dd_standsFor == 'page';
 				})?.dd_displayName;
 				const _state = JSON.parse(JSON.stringify(state));
-				_state[pageName]++;
+				if (pageName) _state[pageName]++;
 				return _state;
 			},
 			get_prevPageState: (
@@ -403,7 +408,7 @@ export const get_paginationTypes = (
 					return arg.dd_standsFor == 'page';
 				})?.dd_displayName;
 				const _state = JSON.parse(JSON.stringify(state));
-				_state[pageName]--;
+				if (pageName) _state[pageName]--;
 				return _state;
 			},
 			isFirstPage: (
@@ -413,7 +418,7 @@ export const get_paginationTypes = (
 				let pageName = paginationArgs.find((arg) => {
 					return arg.dd_standsFor == 'page';
 				})?.dd_displayName;
-				return get(_paginationState_Store)?.[pageName] == 1;
+				return pageName ? get(_paginationState_Store)?.[pageName] == 1 : true;
 			},
 			check: (standsForArray: string[]) => {
 				return standsForArray.includes('page');
@@ -424,7 +429,9 @@ export const get_paginationTypes = (
 			get_rowLimitingArgNames: (paginationArgs: FieldWithDerivedData[]) => {
 				return [];
 			},
-			get_initialState: (paginationArgs: FieldWithDerivedData[]): PaginationState => {},
+			get_initialState: (paginationArgs: FieldWithDerivedData[]): PaginationState => {
+				return {};
+			},
 			get_defaultPaginationStateForDynamic: (state) => {
 				return state;
 			},
@@ -434,11 +441,15 @@ export const get_paginationTypes = (
 			get_nextPageState: (
 				state: PaginationState,
 				paginationArgs: FieldWithDerivedData[]
-			): PaginationState => {},
+			): PaginationState => {
+				return state;
+			},
 			get_prevPageState: (
 				state: PaginationState,
 				paginationArgs: FieldWithDerivedData[]
-			): PaginationState => {},
+			): PaginationState => {
+				return state;
+			},
 			isFirstPage: (
 				_paginationState_Store: PaginationStateStore,
 				paginationArgs: FieldWithDerivedData[]

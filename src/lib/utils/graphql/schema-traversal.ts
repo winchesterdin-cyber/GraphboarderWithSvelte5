@@ -20,7 +20,7 @@ const toReversed = <T>(arr: T[]): T[] => {
  * @param type The type object to traverse.
  * @returns Array of GraphQLKind strings.
  */
-export const get_KindsArray = (type: Partial<FieldWithDerivedData>): GraphQLKind[] => {
+export const get_KindsArray = (type: any): GraphQLKind[] => {
 	let kinds: GraphQLKind[] = [];
 
 	// Manual traversal to match original behavior logic
@@ -42,7 +42,7 @@ export const get_KindsArray = (type: Partial<FieldWithDerivedData>): GraphQLKind
  * @param type The type object.
  * @returns Array of type names.
  */
-export const get_NamesArray = (type: Partial<FieldWithDerivedData>): string[] => {
+export const get_NamesArray = (type: any): string[] => {
 	let names: string[] = [];
 	if (type?.name) names.push(type.name);
 	if (type?.type?.name) names.push(type.type.name);
@@ -113,7 +113,7 @@ export const getFields_Grouped = (
 
 	let fieldsArray: FieldWithDerivedData[] | undefined;
 	if ((node as FieldWithDerivedData)?.args) {
-		fieldsArray = (node as FieldWithDerivedData).args;
+		fieldsArray = (node as FieldWithDerivedData).args as unknown as FieldWithDerivedData[];
 	} else if (node_rootType?.fields) {
 		fieldsArray = node_rootType.fields;
 	} else if (node_rootType?.inputFields) {
@@ -121,7 +121,7 @@ export const getFields_Grouped = (
 		fieldsArray = node_rootType.inputFields as unknown as FieldWithDerivedData[];
 	} else if (node_rootType?.enumValues) {
 		// enumValues might have different shape, but treated as fields here
-		fieldsArray = node.enumValues as unknown as FieldWithDerivedData[];
+		fieldsArray = (node as any).enumValues as unknown as FieldWithDerivedData[];
 	}
 
 	if (fieldsArray) {
@@ -270,7 +270,7 @@ export const generate_derivedData = (
 	let displayInterface = get_displayInterface(derivedData, endpointInfo);
 
 	if (!derivedData.dd_displayInterface || ['text'].includes(derivedData.dd_displayInterface)) {
-		derivedData.dd_displayInterface = displayInterface || undefined; // Normalize null to undefined if interface expects it
+		derivedData.dd_displayInterface = (displayInterface as any) || undefined; // Normalize null to undefined if interface expects it
 	}
 
 	derivedData.dd_isArg = !type?.args;
@@ -287,8 +287,8 @@ export const generate_derivedData = (
 		const baseFilterOperatorNames = ['_and', '_or', '_not', 'and', 'or', 'not'];
 		let dd_baseFilterOperators: string[] = [];
 		let dd_nonBaseFilterOperators: string[] = [];
-		if (type?.inputFields) {
-			type.inputFields.forEach((inputField) => {
+		if ((type as any)?.inputFields) {
+			(type as any).inputFields.forEach((inputField: any) => {
 				if (baseFilterOperatorNames.includes(inputField.name)) {
 					dd_baseFilterOperators.push(inputField.name);
 				}
@@ -317,16 +317,18 @@ export const generate_derivedData = (
 	if (derivedData?.dd_baseFilterOperators) {
 		let defaultdisplayInterface = get_displayInterface(derivedData, endpointInfo);
 		if (type?.inputFields !== undefined) {
-			type.inputFields.forEach((inputField) => {
+			type.inputFields.forEach((inputField: any) => {
 				Object.assign(inputField, { dd_displayInterface: defaultdisplayInterface });
 			});
 		}
 	}
 	if (derivedData.args) {
-		mark_paginationArgs(derivedData.args, endpointInfo);
-		derivedData.dd_paginationArgs = derivedData.args.filter((arg) => arg.dd_isPaginationArg);
+		mark_paginationArgs(derivedData.args as any, endpointInfo);
+		derivedData.dd_paginationArgs = (derivedData.args as any).filter(
+			(arg: any) => arg.dd_isPaginationArg
+		);
 		derivedData.dd_paginationType = get_paginationType(
-			derivedData.dd_paginationArgs,
+			derivedData.dd_paginationArgs as any,
 			endpointInfo,
 			schemaData
 		);

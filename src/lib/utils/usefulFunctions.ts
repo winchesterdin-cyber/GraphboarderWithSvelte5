@@ -10,3 +10,4 @@ export * from './serializationUtils';
 export * from './graphql/graphql-builder';
 export * from './graphql/schema-traversal';
 export * from './graphql/data-processing';
+export * from './downloadUtils';

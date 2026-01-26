@@ -80,9 +80,9 @@ export const Create_activeArgumentsDataGrouped_Store = (
 						originType: QMS_info,
 						group_name: 'root',
 						group_isRoot: true,
-						dd_kindList: false,
 						group_args: [],
-						...QMS_info
+						...QMS_info,
+						dd_kindList: false
 					};
 					activeArgumentsDataGrouped.push(rootGroup);
 				}
@@ -91,7 +91,7 @@ export const Create_activeArgumentsDataGrouped_Store = (
 					if (!el.dd_isRootArg) {
 						const newGroupData: ActiveArgumentGroup = {
 							originType: QMS_info,
-							group_name: el.dd_displayName,
+							group_name: el.dd_displayName || 'unknown',
 							group_isRoot: false,
 							...el,
 							group_args: [],
@@ -449,7 +449,7 @@ const addAllRootArgs = (
 		return arg.dd_isRootArg;
 	});
 	groupArgs.forEach((argType, i) => {
-		const argData = generateArgData([argType.dd_displayName], argType, schemaData);
+		const argData = generateArgData([argType.dd_displayName || 'unknown'], argType, schemaData);
 		add_activeArgumentOrContainerTo_activeArgumentsDataGrouped(
 			argData,
 			groupName,

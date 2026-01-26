@@ -4,13 +4,21 @@
 	import { flip } from 'svelte/animate';
 	import { getContext, setContext } from 'svelte';
 
+	interface Props {
+		group: any;
+		argsInfo?: any;
+		update_activeArgumentsDataGrouped?: any;
+		activeArgumentsDataGrouped?: any;
+		onUpdateQuery?: () => void;
+	}
+
 	let {
 		group = $bindable(),
 		argsInfo,
 		update_activeArgumentsDataGrouped,
 		activeArgumentsDataGrouped,
 		onUpdateQuery
-	} = $props();
+	}: Props = $props();
 
 	let showDescription;
 
@@ -20,7 +28,7 @@
 
 	const flipDurationMs = 200;
 	let dragDisabled = $state(true);
-	function handleSort(e) {
+	function handleSort(e: any) {
 		group.group_args = e.detail.items;
 
 		dragDisabled = true;

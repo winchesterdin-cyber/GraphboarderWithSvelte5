@@ -4,13 +4,15 @@
 		typeInfo?: any;
 		rawValue?: any;
 		dispatchValue?: any;
+		onChanged?: (detail: any) => void;
 	}
 
 	let {
 		alwaysOn_interfacePicker,
 		typeInfo,
 		rawValue = $bindable(),
-		dispatchValue
+		dispatchValue,
+		onChanged
 	}: Props = $props();
 </script>
 

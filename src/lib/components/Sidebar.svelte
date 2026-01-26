@@ -5,6 +5,7 @@
 	import { getContext } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
 	import type { QMSMainWraperContext } from '$lib/types';
+	import { downloadJSON } from '$lib/utils/usefulFunctions';
 
 	interface Props {
 		forceVisibleSidebar?: boolean;
@@ -26,6 +27,19 @@
 
 	let QMSContext = getContext<QMSMainWraperContext>(`${prefix}QMSMainWraperContext`);
 	const endpointInfo = QMSContext?.endpointInfo;
+	const schemaData = QMSContext?.schemaData;
+
+	/**
+	 * Downloads the current schema as a JSON file.
+	 */
+	const downloadSchema = () => {
+		if (schemaData && $schemaData.isReady && $schemaData.schema) {
+			console.debug('Downloading schema...', $schemaData.schema);
+			downloadJSON($schemaData.schema, 'schema.json');
+		} else {
+			console.warn('Schema data is not ready or missing.');
+		}
+	};
 </script>
 
 <div
@@ -36,8 +50,17 @@
 >
 	<div class="invisible flex h-full flex-col md:visible">
 		<TabContainer {endpointInfo} />
-		<div class="absolute bottom-2 left-2 z-50 md:left-4">
+		<div class="absolute bottom-2 left-2 z-50 md:left-4 flex items-center gap-2">
 			<ThemeToggle />
+			<div class="tooltip tooltip-right" data-tip="Download Schema">
+				<button
+					class="btn btn-circle btn-ghost btn-sm"
+					onclick={downloadSchema}
+					aria-label="Download Schema"
+				>
+					<i class="bi bi-download"></i>
+				</button>
+			</div>
 		</div>
 	</div>
 </div>

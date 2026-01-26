@@ -5,6 +5,7 @@
 	} from '$lib/stores/QMSHandling/activeArgumentsDataGrouped_Store';
 	import { getRootType } from '$lib/utils/usefulFunctions';
 	import { getContext } from 'svelte';
+	import type { QMSMainWraperContext as QMSMainWraperContextType } from '$lib/types';
 
 	interface Props {
 		expand: any;
@@ -38,7 +39,7 @@
 		stepsOfFields = [...predefinedFirstSteps];
 	}
 
-	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
+	let QMSMainWraperContext = getContext<QMSMainWraperContextType>(`${prefix}QMSMainWraperContext`);
 	const schemaData = QMSMainWraperContext?.schemaData;
 
 	let {

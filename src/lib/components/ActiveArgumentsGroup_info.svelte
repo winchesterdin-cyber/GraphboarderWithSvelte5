@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { ActiveArgumentGroup, QMSMainWraperContext as QMSMainWraperContextType } from '$lib/types';
 	import { getRootType } from '$lib/utils/usefulFunctions';
 	import { getContext } from 'svelte';
 
@@ -9,7 +10,7 @@
 
 	let { group, prefix = '' } = $props();
 
-	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
+	let QMSMainWraperContext = getContext<QMSMainWraperContextType>(`${prefix}QMSMainWraperContext`);
 	const schemaData = QMSMainWraperContext?.schemaData;
 	let showDescription = $state();
 </script>

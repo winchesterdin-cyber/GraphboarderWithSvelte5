@@ -2,6 +2,7 @@
 	import { getContext, setContext } from 'svelte';
 	import Arg from '$lib/components/Arg.svelte';
 	import { getQMSWraperCtxDataGivenControlPanelItem } from '$lib/utils/usefulFunctions';
+	import type { QMSMainWraperContext as QMSMainWraperContextType } from '$lib/types';
 
 	interface Props {
 		group: any;
@@ -30,12 +31,12 @@
 	/////start
 	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`);
 	let pathIsInCP = false;
-	const nodeContext = getContext(`${prefix}nodeContext`);
+	const nodeContext = getContext<any>(`${prefix}nodeContext`);
 	if (nodeContext) {
 		pathIsInCP = nodeContext?.pathIsInCP;
 	}
 	let nodeIsInCP = false;
-	const CPItemContext = getContext(`${prefix}CPItemContext`);
+	const CPItemContext = getContext<any>(`${prefix}CPItemContext`);
 	if (CPItemContext?.CPItem.nodeId == node.id) {
 		setContext(`${prefix}nodeContext`, { pathIsInCP: true });
 		nodeIsInCP = true;
@@ -55,7 +56,7 @@
 	const { finalGqlArgObj_Store, QMS_info, activeArgumentsDataGrouped_Store } =
 		correctQMSWraperContext;
 	/////end
-	let rootArgs = argsInfo.filter((arg) => {
+	let rootArgs = argsInfo.filter((arg: any) => {
 		return arg.dd_isRootArg;
 	});
 
@@ -63,7 +64,7 @@
 		? rootArgs
 		: group.dd_relatedRoot.inputFields || group.inputFields || group.args;
 	let predefinedFirstSteps = group.group_isRoot ? [] : [group.group_name];
-	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`);
+	let QMSMainWraperContext = getContext<QMSMainWraperContextType>(`${prefix}QMSMainWraperContext`);
 	const endpointInfo = QMSMainWraperContext?.endpointInfo;
 </script>
 

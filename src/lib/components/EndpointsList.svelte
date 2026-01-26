@@ -23,6 +23,11 @@
 	import JSON5 from 'json5';
 
 	/**
+	 * Component that displays a list of results from a GraphQL endpoint.
+	 * Handles data fetching, pagination, and switching between table and JSON views.
+	 */
+
+	/**
 	 * Props for EndpointsList
 	 */
 	interface Props {
@@ -230,7 +235,7 @@
 		QMSName={queryName}
 		QMS_info={currentQMS_info}
 	/>
-	<div class="grow==">
+	<div class="grow">
 		{#if showModal}
 			<Modal
 				modalIdentifier={'activeArgumentsDataModal'}
@@ -300,16 +305,14 @@
 	<div class="mx-auto mb-2 px-4">
 		<div class="alert alert-error shadow-lg">
 			<div>
-				<button class="btn p-0 btn-ghost btn-sm" aria-label="Dismiss error">
+				<button
+					class="btn p-0 btn-ghost btn-sm"
+					aria-label="Dismiss error"
+					onclick={() => {
+						queryData.error = null;
+					}}
+				>
 					<svg
-						onclick={() => {
-							queryData.error = null;
-						}}
-						role="button"
-						tabindex="0"
-						onkeydown={(e) => {
-							if (e.key === 'Enter') queryData.error = null;
-						}}
 						xmlns="http://www.w3.org/2000/svg"
 						class="h-6 w-6 flex-shrink-0 cursor-pointer stroke-current"
 						fill="none"

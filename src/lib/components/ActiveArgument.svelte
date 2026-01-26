@@ -31,19 +31,19 @@
 	interface Props {
 		setNotInUseIfNotValid?: boolean;
 		setNotInUseIfNotValidAndENUM?: boolean;
-		parentNode: ContainerData | ActiveArgumentData;
-		node: ActiveArgumentData | ContainerData;
+		parentNode?: ContainerData | ActiveArgumentData;
+		node?: ActiveArgumentData | ContainerData;
 		prefix?: string;
-		isNot: boolean;
+		isNot?: boolean;
 		activeArgumentData: ActiveArgumentData;
 		group: ActiveArgumentGroup;
-		activeArgumentsDataGrouped: ActiveArgumentGroup[];
-		nodes: (ActiveArgumentData | ContainerData)[];
-		originalNodes: (ActiveArgumentData | ContainerData)[];
-		type: string;
-		parentNodeId: string;
-		availableOperators: string[];
-		startDrag: (e: any) => void;
+		activeArgumentsDataGrouped?: ActiveArgumentGroup[];
+		nodes?: (ActiveArgumentData | ContainerData)[];
+		originalNodes?: (ActiveArgumentData | ContainerData)[];
+		type?: string;
+		parentNodeId?: string;
+		availableOperators?: string[];
+		startDrag?: (e: any) => void;
 		onChanged?: (detail: any) => void;
 		onInUseChanged?: () => void;
 		onContextmenuUsed?: () => void;
@@ -55,19 +55,19 @@
 	let {
 		setNotInUseIfNotValid = true,
 		setNotInUseIfNotValidAndENUM = true,
-		parentNode,
-		node,
+		parentNode = undefined,
+		node = undefined,
 		prefix = '',
-		isNot = $bindable(),
+		isNot = $bindable(false),
 		activeArgumentData = $bindable(),
 		group,
-		activeArgumentsDataGrouped,
-		nodes = $bindable(),
-		originalNodes,
-		type,
-		parentNodeId,
-		availableOperators,
-		startDrag,
+		activeArgumentsDataGrouped = [],
+		nodes = $bindable([]),
+		originalNodes = [],
+		type = '',
+		parentNodeId = '',
+		availableOperators = [],
+		startDrag = () => {},
 		onChanged,
 		onInUseChanged,
 		onContextmenuUsed,
@@ -138,9 +138,9 @@
 				value = activeArgumentData.chd_dispatchValue.join(', ');
 			} else if (typeof activeArgumentData.chd_dispatchValue == 'string') {
 				value = string_transformerREVERSE(
-					(activeArgumentData.chd_dispatchValue as string) ||
-						(activeArgumentData.defaultValue as string)
-				);
+					((activeArgumentData.chd_dispatchValue as string) ||
+						(activeArgumentData.defaultValue as string)) as any
+				) as string;
 			}
 		}
 
@@ -267,7 +267,7 @@
 	{originalNodes}
 	{type}
 	{node}
-	parentNode={parentNode as ContainerData}
+		parentNode={parentNode as any}
 	{parentNodeId}
 	{availableOperators}
 	{group}

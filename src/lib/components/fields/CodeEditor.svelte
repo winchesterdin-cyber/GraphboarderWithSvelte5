@@ -32,7 +32,7 @@
 
 <CodeMirror
 	bind:value={rawValue}
-	{lang}
+	lang={lang as any}
 	theme={oneDark}
 	styles={{
 		'&': {

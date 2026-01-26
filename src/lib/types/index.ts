@@ -32,7 +32,7 @@ export interface GraphQLField {
 	deprecationReason?: string;
 }
 
-export interface GraphQLArgument {
+export interface GraphQLArgument extends Partial<DerivedData> {
 	name: string;
 	description?: string;
 	type: GraphQLType;

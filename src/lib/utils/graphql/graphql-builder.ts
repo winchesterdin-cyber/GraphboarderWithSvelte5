@@ -74,7 +74,7 @@ export const build_QMS_bodyPart = (
 		listOfSubstrings.join(''),
 		'(',
 		')',
-		stringToQMSString_transformer,
+		stringToQMSString_transformer as any,
 		outsideTextModifier
 	);
 
@@ -227,11 +227,11 @@ export const generate_group_gqlArgObj_forHasOperators = (
 				dataToAssign = _.merge({}, itemData.selectedRowsColValues[0], dataToAssign);
 			}
 		}
-		resultingGqlArgObj = setValueAtPath({}, nodeStepClean, dataToAssign, true) as Record<
+		resultingGqlArgObj = setValueAtPath({}, nodeStepClean as string[], dataToAssign, true) as Record<
 			string,
 			unknown
 		>;
-		let itemObjectTestCurr = setValueAtPath({}, nodeStepClean, dataToAssign, true);
+		let itemObjectTestCurr = setValueAtPath({}, nodeStepClean as string[], dataToAssign, true);
 		let itemObjectTest2 = 'not set';
 		if (resultingGqlArgObj == undefined) {
 			// let itemObjectTest2 = 'set'

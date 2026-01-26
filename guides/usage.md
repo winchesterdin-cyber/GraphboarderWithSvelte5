@@ -73,6 +73,7 @@ As you build the query, the results are fetched and displayed automatically.
 ## 7. Appearance
 
 - **Theme Toggle**: Use the sun/moon icon at the bottom of the sidebar to switch between Light and Dark themes.
+- **Download Schema**: Click the download icon (arrow pointing down) next to the theme toggle to download the current GraphQL schema as a JSON file. This is useful for offline analysis or for use with other tools.
 
 ## 8. Mutations
 
