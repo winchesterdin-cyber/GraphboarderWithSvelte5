@@ -48,7 +48,7 @@ export const Create_QMS_bodyPart_StoreDerived = (
 			set(
 				build_QMS_bodyPart(
 					QMS_name,
-					tableColsDataToQueryFields($tableColsData_Store) as any,
+					tableColsDataToQueryFields($tableColsData_Store as any) as any,
 					get_QMS_args(),
 					QMS_type as any,
 					$mergedChildren_finalGqlArgObj_Store as any

@@ -15,7 +15,7 @@ export const stringToQMSString_transformer = (value: unknown): string | unknown 
 		console.warn('stringToQMSString_transformer: value is not a string', value);
 		return value;
 	}
-	const modifiedValue = value
+	const modifiedValue = (value as string)
 		.replace(/"/g, '')
 		.replace(/'/g, `"`)
 		.replace(/&Prime;/g, `\\"`)
@@ -36,7 +36,7 @@ export const string_transformer = (value: unknown): string | unknown => {
 		console.warn('string_transformer: value is not a string', value);
 		return value;
 	}
-	return `'${value.replaceAll(`"`, `&Prime;`).replaceAll(`'`, `&prime;`)}'`;
+	return `'${(value as string).replaceAll(`"`, `&Prime;`).replaceAll(`'`, `&prime;`)}'`;
 };
 
 /**
@@ -55,9 +55,9 @@ export const string_transformerREVERSE = (
 		return value;
 	}
 	if (onlySingleQuotes) {
-		return value.replaceAll(`'`, ``);
+		return (value as string).replaceAll(`'`, ``);
 	}
-	return value.replaceAll(`&Prime;`, `"`).replaceAll(`&prime;`, `'`);
+	return (value as string).replaceAll(`&Prime;`, `"`).replaceAll(`&prime;`, `'`);
 };
 
 export const number_transformer = (value: unknown): number | unknown => {
@@ -66,7 +66,7 @@ export const number_transformer = (value: unknown): number | unknown => {
 		return value;
 	}
 	//value * 1 removes leadin zeros: 0001 becomes 1, 0001.5 becomes 1.5
-	return value * 1;
+	return (value as number) * 1;
 };
 export const ISO8601_transformerGETDEFAULTVAl = (): string => {
 	return ISO8601_transformerREVERSE(string_transformer(new Date().toISOString()));
@@ -90,7 +90,7 @@ export const ISO8601_transformer = (value: string): string | unknown => {
  */
 export const ISO8601_transformerREVERSE = (value: unknown): string => {
 	// Convert ISO 8601 string to Date object
-	const dateObject = new Date(string_transformerREVERSE(value, true));
+	const dateObject = new Date(string_transformerREVERSE(value, true) as string);
 	// Extract individual components
 	const year = dateObject.getFullYear().toString().padStart(4, '0');
 	const preMonth = dateObject.getMonth() + 1; // Months are zero-indexed
@@ -136,13 +136,18 @@ export const geojson_transformerREVERSE = (
 	value: GeoJSONGeometry | GeoJSONGeometry[]
 ): GeoJSONFeatureCollection => {
 	const valueType = getPreciseType(value);
+	let features: GeoJSONGeometry[];
+
 	if (valueType == 'object') {
-		value = [value];
+		features = [value as GeoJSONGeometry];
+	} else {
+		features = value as GeoJSONGeometry[];
 	}
-	value = JSON.parse(string_transformerREVERSE(JSON.stringify(value), true));
+
+	const jsonFeatures = JSON.parse(string_transformerREVERSE(JSON.stringify(features), true) as string);
 
 	return {
-		features: value.map((feature) => {
+		features: jsonFeatures.map((feature: GeoJSONGeometry) => {
 			return { geometry: feature, type: 'Feature', properties: {} };
 		}),
 		type: 'FeatureCollection'
@@ -152,7 +157,7 @@ export const boolean_transformer = (value: unknown): boolean => {
 	if (value == undefined) {
 		return false;
 	}
-	return value;
+	return value as boolean;
 };
 const escapeAllSigngleAndDoubleQuotes = (str: string): string => {
 	return str.replace(/["']/g, (match) => {

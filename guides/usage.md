@@ -18,6 +18,11 @@ From the home page, click **"Get Started"** to navigate to the **Endpoint Picker
 - **Edit/Delete**: User-defined endpoints can be edited or deleted using the buttons on the card.
 - **Duplicate**: Click the duplicate icon (copy) on any endpoint card to create a copy of its configuration. This is useful for creating variations of endpoints (e.g., Development vs. Production) without re-entering all details.
 - **Export/Import**: You can export your user-defined endpoints to a JSON file and import them later.
+- **Health Check**:
+  - The application automatically checks the connectivity of endpoints.
+  - A green dot indicates the endpoint is Online (with latency in ms).
+  - A red badge indicates the endpoint is Offline or unreachable.
+  - Use the "Refresh Status" button to manually re-check all endpoints.
 
 ## 2. Exploring the Schema
 

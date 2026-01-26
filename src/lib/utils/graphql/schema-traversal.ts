@@ -316,8 +316,8 @@ export const generate_derivedData = (
 
 	if (derivedData?.dd_baseFilterOperators) {
 		let defaultdisplayInterface = get_displayInterface(derivedData, endpointInfo);
-		if (type?.inputFields !== undefined) {
-			type.inputFields.forEach((inputField: any) => {
+		if ((type as any)?.inputFields !== undefined) {
+			(type as any).inputFields.forEach((inputField: any) => {
 				Object.assign(inputField, { dd_displayInterface: defaultdisplayInterface });
 			});
 		}

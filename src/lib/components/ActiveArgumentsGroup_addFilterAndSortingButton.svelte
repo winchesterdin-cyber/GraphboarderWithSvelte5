@@ -48,7 +48,7 @@
 	if (isCPChild) {
 		correctQMSWraperContext = getQMSWraperCtxDataGivenControlPanelItem(
 			CPItemContext?.CPItem,
-			OutermostQMSWraperContext
+			OutermostQMSWraperContext as any
 		);
 	} else {
 		correctQMSWraperContext = getContext(`${prefix}QMSWraperContext`);

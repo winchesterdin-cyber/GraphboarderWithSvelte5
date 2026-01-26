@@ -266,7 +266,7 @@
 	onChildrenStartDrag={startDrag}
 	{originalNodes}
 	{type}
-	{node}
+	node={node ?? activeArgumentData as any}
 		parentNode={parentNode as any}
 	{parentNodeId}
 	{availableOperators}
