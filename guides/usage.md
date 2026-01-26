@@ -48,21 +48,21 @@ You can build queries visually without writing GraphQL code.
 As you build the query, the results are fetched and displayed automatically.
 
 - **View Modes**:
-    - **Table**: The default view presenting data in a responsive table.
-    - **JSON**: Toggle to "JSON" view to see the raw response from the server.
+  - **Table**: The default view presenting data in a responsive table.
+  - **JSON**: Toggle to "JSON" view to see the raw response from the server.
 - **Metrics**:
-    - **Time**: Displays the execution time of the request in milliseconds (ms).
-    - **Size**: Displays the size of the response payload.
+  - **Time**: Displays the execution time of the request in milliseconds (ms).
+  - **Size**: Displays the size of the response payload.
 - **Pagination**: If the API supports pagination, use the controls to navigate pages or load more rows (infinite scroll).
 - **Sorting/Filtering**: Click column headers to sort or use filters if supported by the API arguments.
 - **Columns**:
-    - **Hide**: Click the column menu (chevron icon) to hide specific fields.
-    - **Add**: Use the "Add Column" feature to include more fields from the schema.
+  - **Hide**: Click the column menu (chevron icon) to hide specific fields.
+  - **Add**: Use the "Add Column" feature to include more fields from the schema.
 - **Export**:
-    - **CSV**: Click the **"Export CSV"** button above the table to download the current table view as a `.csv` file.
-    - **JSON**: Click the **"Export JSON"** button to download the current table data as a `.json` file.
+  - **CSV**: Click the **"Export CSV"** button above the table to download the current table view as a `.csv` file.
+  - **JSON**: Click the **"Export JSON"** button to download the current table data as a `.json` file.
 - **Maintenance**:
-    - **Edit Table Name**: Click the **"Edit"** button (pencil icon) to open a modal where you can alias table names for better readability in the UI.
+  - **Edit Table Name**: Click the **"Edit"** button (pencil icon) to open a modal where you can alias table names for better readability in the UI.
 
 ## 5. View Generated GraphQL
 

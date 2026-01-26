@@ -1,5 +1,8 @@
 <script lang="ts">
-	import type { ActiveArgumentGroup, QMSMainWraperContext as QMSMainWraperContextType } from '$lib/types';
+	import type {
+		ActiveArgumentGroup,
+		QMSMainWraperContext as QMSMainWraperContextType
+	} from '$lib/types';
 	import { getRootType } from '$lib/utils/usefulFunctions';
 	import { getContext } from 'svelte';
 

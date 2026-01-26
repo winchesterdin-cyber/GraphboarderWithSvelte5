@@ -11,14 +11,7 @@
 		oncolAddRequest?: (detail: any) => void;
 	}
 
-	let {
-		prefix = '',
-		types,
-		template,
-		depth,
-		stepsOfFields,
-		oncolAddRequest
-	}: Props = $props();
+	let { prefix = '', types, template, depth, stepsOfFields, oncolAddRequest }: Props = $props();
 </script>
 
 {#each types as type, index (index)}
@@ -30,6 +23,6 @@
 		{depth}
 		{stepsOfFields}
 		isOnMainList={true}
-		oncolAddRequest={oncolAddRequest}
+		{oncolAddRequest}
 	/>
 {/each}

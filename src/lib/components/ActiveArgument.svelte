@@ -196,10 +196,7 @@
 
 	const updateActiveArgument = (): void => {
 		if (!CPItemContext) {
-			activeArgumentsDataGrouped_Store.update_activeArgument(
-				activeArgumentData,
-				group.group_name
-			);
+			activeArgumentsDataGrouped_Store.update_activeArgument(activeArgumentData, group.group_name);
 			finalGqlArgObj_Store.regenerate_groupsAndfinalGqlArgObj();
 		}
 		//update the activeArgumentsDataGrouped_StoreForCPItem and related
@@ -261,13 +258,13 @@
 	}}
 	bind:showSelectModal
 	{onUpdateQuery}
-		bind:nodes={nodes as any}
+	bind:nodes={nodes as any}
 	{onChanged}
 	onChildrenStartDrag={startDrag}
 	{originalNodes}
 	{type}
-	node={node ?? activeArgumentData as any}
-		parentNode={parentNode as any}
+	node={node ?? (activeArgumentData as any)}
+	parentNode={parentNode as any}
 	{parentNodeId}
 	{availableOperators}
 	{group}

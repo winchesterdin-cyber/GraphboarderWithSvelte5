@@ -56,9 +56,7 @@ export const Create_paginationState = (
 		},
 		resetToDefault: () => {
 			update((val) => {
-				return (
-					paginationTypeInfo?.get_defaultPaginationStateForDynamic(val, paginationArgs) || val
-				);
+				return paginationTypeInfo?.get_defaultPaginationStateForDynamic(val, paginationArgs) || val;
 			});
 		}
 	};

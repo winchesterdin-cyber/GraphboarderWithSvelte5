@@ -144,7 +144,9 @@ export const geojson_transformerREVERSE = (
 		features = value as GeoJSONGeometry[];
 	}
 
-	const jsonFeatures = JSON.parse(string_transformerREVERSE(JSON.stringify(features), true) as string);
+	const jsonFeatures = JSON.parse(
+		string_transformerREVERSE(JSON.stringify(features), true) as string
+	);
 
 	return {
 		features: jsonFeatures.map((feature: GeoJSONGeometry) => {

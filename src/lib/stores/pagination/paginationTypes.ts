@@ -186,7 +186,8 @@ export const get_paginationTypes = (
 				const endpointInfoVal = get(endpointInfo);
 				const pageInfoFieldsLocation = endpointInfoVal.pageInfoFieldsLocation || [];
 				let currentQMS_info = schemaData.get_QMS_Field(QMS_name, QMS_type as any, schemaData);
-				const rowsLocation = endpointInfo.get_rowsLocation(currentQMS_info as any, schemaData) || [];
+				const rowsLocation =
+					endpointInfo.get_rowsLocation(currentQMS_info as any, schemaData) || [];
 
 				const relayPageInfoFieldsNames = endpointInfo.get_relayPageInfoFieldsNames(
 					currentQMS_info as any,
@@ -285,7 +286,8 @@ export const get_paginationTypes = (
 				const rowsLocationResult = rowsLocationPossibilities.find((rowsLocation) => {
 					return rowsLocation.check(currentQMS_info as any, schemaData);
 				});
-				const rowsLocation = (rowsLocationResult as any)?.get_Val(currentQMS_info as any, schemaData) || [];
+				const rowsLocation =
+					(rowsLocationResult as any)?.get_Val(currentQMS_info as any, schemaData) || [];
 
 				const relayPageInfoFieldsNames = endpointInfo.get_relayPageInfoFieldsNames(
 					currentQMS_info as any,
@@ -307,7 +309,11 @@ export const get_paginationTypes = (
 					return arg.dd_standsFor == 'after';
 				})?.dd_displayName;
 				const stepsOfFieldsToCursor = ['edges', 'cursor'];
-				const stepsOfFieldsToEndCursor = [QMS_name || '', ...pageInfoFieldsLocation, namings.endCursor];
+				const stepsOfFieldsToEndCursor = [
+					QMS_name || '',
+					...pageInfoFieldsLocation,
+					namings.endCursor
+				];
 				const _state = JSON.parse(JSON.stringify(state));
 				if (namings?.endCursor && returnedDataBatch_last) {
 					let endCursorValue = getDataGivenStepsOfFields(

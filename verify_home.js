@@ -14,10 +14,10 @@ import { chromium } from 'playwright';
 		const heading = page.getByRole('heading', { level: 1 });
 		await heading.waitFor({ state: 'visible' });
 
-		// Verify it says "GraphQL Endpoint Explorer"
+		// Verify it says "GraphQL Explorer"
 		const text = await heading.textContent();
-		if (text?.trim() !== 'GraphQL Endpoint Explorer') {
-			throw new Error(`Expected heading to be 'GraphQL Endpoint Explorer', got '${text}'`);
+		if (text?.trim() !== 'GraphQL Explorer') {
+			throw new Error(`Expected heading to be 'GraphQL Explorer', got '${text}'`);
 		}
 
 		await page.screenshot({ path: '/home/jules/verification/verification.png' });

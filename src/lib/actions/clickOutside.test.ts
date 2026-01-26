@@ -243,12 +243,15 @@ describe('clickOutside action', () => {
 			return new Promise<void>((resolve) => {
 				const action = clickOutside(element);
 
-				element.addEventListener('click_outside' as any, ((event: CustomEvent) => {
-					expect(event).toBeInstanceOf(CustomEvent);
-					expect(event.type).toBe('click_outside');
-					action.destroy();
-					resolve();
-				}) as EventListener);
+				element.addEventListener(
+					'click_outside' as any,
+					((event: CustomEvent) => {
+						expect(event).toBeInstanceOf(CustomEvent);
+						expect(event.type).toBe('click_outside');
+						action.destroy();
+						resolve();
+					}) as EventListener
+				);
 
 				const clickEvent = new MouseEvent('click', {
 					bubbles: true,

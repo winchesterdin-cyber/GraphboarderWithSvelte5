@@ -65,7 +65,9 @@
 		if (QMSMainWraperContext) {
 			const { endpointInfo } = QMSMainWraperContext;
 			// Access store value
-			const endpoint = (endpointInfo as any)?.subscribe ? (getStoreValue(endpointInfo) as any) : endpointInfo;
+			const endpoint = (endpointInfo as any)?.subscribe
+				? (getStoreValue(endpointInfo) as any)
+				: endpointInfo;
 			if (endpoint?.url) {
 				url = endpoint.url;
 			}
@@ -100,7 +102,7 @@
 	// Helper to get store value safely
 	function getStoreValue(store: any) {
 		let storeVal;
-		store.subscribe(($: any) => storeVal = $)();
+		store.subscribe(($: any) => (storeVal = $))();
 		return storeVal;
 	}
 
@@ -223,7 +225,7 @@
 	</div>
 	<div class="absolute top-3 right-4 flex gap-2">
 		<button
-			class="btn btn-xs btn-primary normal-case"
+			class="btn normal-case btn-xs btn-primary"
 			onclick={copyCurlToClipboard}
 			aria-label="Copy cURL"
 		>
@@ -234,7 +236,7 @@
 			{/if}
 		</button>
 		<button
-			class="btn btn-xs btn-primary normal-case"
+			class="btn normal-case btn-xs btn-primary"
 			onclick={copyToClipboard}
 			aria-label="Copy Query"
 		>

@@ -73,15 +73,12 @@
 			// We need to subscribe to get value? or just use get()?
 			// In derived, we should use $schemaData if we want reactivity.
 			// But schemaData seems to be used as an object with methods in `get_QMS_Field`.
-
 			// Original code:
 			// let currentQMS_info = schemaData.get_QMS_Field(queryName, 'query', schemaData);
 			// const rowsLocation = $endpointInfo.rowsLocation;
-
 			// If we put this in $derived, we need to ensure we don't break reactivity.
 			// It might be safer to keep it as side-effect or just computed once if schema doesn't change often.
 			// But schema might load async.
-
 			// Let's stick to the prompt: fix warnings.
 		}
 

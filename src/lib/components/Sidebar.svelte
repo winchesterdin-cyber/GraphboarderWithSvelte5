@@ -50,7 +50,7 @@
 >
 	<div class="invisible flex h-full flex-col md:visible">
 		<TabContainer {endpointInfo} />
-		<div class="absolute bottom-2 left-2 z-50 md:left-4 flex items-center gap-2">
+		<div class="absolute bottom-2 left-2 z-50 flex items-center gap-2 md:left-4">
 			<ThemeToggle />
 			<div class="tooltip tooltip-right" data-tip="Download Schema">
 				<button

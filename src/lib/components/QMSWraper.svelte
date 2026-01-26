@@ -91,7 +91,9 @@
 	}
 
 	// Now we can use the props
-	let QMSMainWraperContext = getContext(`${prefix}QMSMainWraperContext`) as QMSMainWraperContextType;
+	let QMSMainWraperContext = getContext(
+		`${prefix}QMSMainWraperContext`
+	) as QMSMainWraperContextType;
 	const endpointInfo: EndpointInfoStore = QMSMainWraperContext?.endpointInfo;
 	const schemaData: SchemaData = QMSMainWraperContext?.schemaData;
 
@@ -140,7 +142,9 @@
 	);
 
 	const rowsLocation = QMS_info ? endpointInfo.get_rowsLocation(QMS_info, schemaData) : [];
-	const nodeFieldsQMS_info = QMS_info ? get_nodeFieldsQMS_info(QMS_info, rowsLocation, schemaData) : undefined;
+	const nodeFieldsQMS_info = QMS_info
+		? get_nodeFieldsQMS_info(QMS_info, rowsLocation, schemaData)
+		: undefined;
 	// let scalarColsData = get_scalarColsData(
 	// 	nodeFieldsQMS_info,
 	// 	[QMS_info.dd_displayName, ...rowsLocation],
@@ -240,7 +244,9 @@
 		QMSType
 	);
 	let QMS_bodyPart_StoreDerived_rowsCount = null;
-	const rowCountLocation = QMS_info ? endpointInfo.get_rowCountLocation(QMS_info, schemaData) : undefined;
+	const rowCountLocation = QMS_info
+		? endpointInfo.get_rowCountLocation(QMS_info, schemaData)
+		: undefined;
 	if (rowCountLocation) {
 		const tableColsData_Store_rowsCount = writable([
 			{ stepsOfFields: rowCountLocation, title: 'count' }
@@ -264,7 +270,9 @@
 	const tableName = QMS_info ? endpointInfo.get_tableName(QMS_info, schemaData) : '';
 	const thisContext = endpointInfo.get_thisContext();
 	const objective = 'getOne';
-	const qmsNameForObjective = QMS_info ? endpointInfo.get_qmsNameForObjective(QMS_info, schemaData, objective) : '';
+	const qmsNameForObjective = QMS_info
+		? endpointInfo.get_qmsNameForObjective(QMS_info, schemaData, objective)
+		: '';
 
 	let idColName = getIdColumnName(
 		returningColumnsLocationQMS_Info,
@@ -311,7 +319,7 @@
 </script>
 
 {#if isOutermostQMSWraper}
-	{#each ($mergedChildren_QMSWraperCtxData_Store as any[]) as QMSWraperCtxDataCurrent (QMSWraperCtxDataCurrent?.stepsOfFields?.join() || Math.random())}
+	{#each $mergedChildren_QMSWraperCtxData_Store as any[] as QMSWraperCtxDataCurrent (QMSWraperCtxDataCurrent?.stepsOfFields?.join() || Math.random())}
 		<QMSWraperCtxDataCurrentComputations {QMSWraperCtxDataCurrent} />
 	{/each}
 {/if}

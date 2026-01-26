@@ -124,13 +124,13 @@
 		if (!data || data.length === 0) return;
 
 		// Extract headers
-		const headers = cols.map(col => `"${col.title.replace(/"/g, '""')}"`);
+		const headers = cols.map((col) => `"${col.title.replace(/"/g, '""')}"`);
 
 		// Create CSV content
 		const csvRows = [headers.join(',')];
 
 		for (const row of data) {
-			const values = cols.map(col => {
+			const values = cols.map((col) => {
 				const cellData = getTableCellData(row, col, 0); // index 0 as approximation if not array
 				// Handle different data types
 				let stringValue = '';
@@ -164,11 +164,11 @@
 
 <div class=" h-[80vh] overflow-y-auto overscroll-contain rounded-box pb-32">
 	{#if data && data.length > 0}
-		<div class="mb-2 flex justify-end px-2 gap-2">
-			<button class="btn btn-ghost btn-sm gap-2" onclick={downloadCSV} aria-label="Export CSV">
+		<div class="mb-2 flex justify-end gap-2 px-2">
+			<button class="btn gap-2 btn-ghost btn-sm" onclick={downloadCSV} aria-label="Export CSV">
 				<i class="bi bi-filetype-csv"></i> Export CSV
 			</button>
-			<button class="btn btn-ghost btn-sm gap-2" onclick={downloadJSON} aria-label="Export JSON">
+			<button class="btn gap-2 btn-ghost btn-sm" onclick={downloadJSON} aria-label="Export JSON">
 				<i class="bi bi-filetype-json"></i> Export JSON
 			</button>
 		</div>

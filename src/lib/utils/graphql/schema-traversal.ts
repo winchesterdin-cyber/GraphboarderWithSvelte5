@@ -243,7 +243,8 @@ export const generate_derivedData = (
 	derivedData.dd_namesArray = get_NamesArray(type);
 	derivedData.dd_rootName = get_rootName(derivedData.dd_namesArray);
 	derivedData.dd_displayName = get_displayName(derivedData.dd_namesArray);
-	derivedData.dd_relatedRoot = getRootType(rootTypes, derivedData.dd_rootName, schemaData) || 'unknown';
+	derivedData.dd_relatedRoot =
+		getRootType(rootTypes, derivedData.dd_rootName, schemaData) || 'unknown';
 
 	derivedData.dd_kindEl = undefined;
 	derivedData.dd_kindEl_NON_NULL = false;
@@ -275,10 +276,10 @@ export const generate_derivedData = (
 
 	derivedData.dd_isArg = !type?.args;
 
-	const relatedRoot = typeof derivedData.dd_relatedRoot === 'string' ? null : derivedData.dd_relatedRoot;
-	derivedData.dd_relatedRoot_inputFields_allScalar = relatedRoot?.inputFields?.every(
-		(field) => get_KindsArray(field).includes('SCALAR')
-	) || false;
+	const relatedRoot =
+		typeof derivedData.dd_relatedRoot === 'string' ? null : derivedData.dd_relatedRoot;
+	derivedData.dd_relatedRoot_inputFields_allScalar =
+		relatedRoot?.inputFields?.every((field) => get_KindsArray(field).includes('SCALAR')) || false;
 
 	derivedData.dd_canExpand =
 		!derivedData.dd_kindsArray?.includes('SCALAR') && derivedData.dd_kindsArray.length > 0;
@@ -303,9 +304,7 @@ export const generate_derivedData = (
 				dd_nonBaseFilterOperators.length > 0 ? dd_nonBaseFilterOperators : undefined;
 		}
 
-		derivedData.dd_isRootArg = !(
-			derivedData.dd_canExpand && !relatedRoot?.enumValues
-		);
+		derivedData.dd_isRootArg = !(derivedData.dd_canExpand && !relatedRoot?.enumValues);
 	}
 
 	derivedData.dd_shouldExpand = derivedData.dd_canExpand && !relatedRoot?.enumValues;
@@ -358,8 +357,14 @@ export const getDeepField = (
 	let currentObj: Partial<FieldWithDerivedData> | undefined = obj;
 	for (let i = 0; i < propertyPath.length; i++) {
 		const prop = propertyPath[i];
-		const currentObjRootType = schemaData.get_rootType(null, currentObj?.dd_rootName || '', schemaData);
-		const currentObjRootTypeFields = currentObjRootType?.[fieldsType] as FieldWithDerivedData[] | undefined;
+		const currentObjRootType = schemaData.get_rootType(
+			null,
+			currentObj?.dd_rootName || '',
+			schemaData
+		);
+		const currentObjRootTypeFields = currentObjRootType?.[fieldsType] as
+			| FieldWithDerivedData[]
+			| undefined;
 		const nextObj = currentObjRootTypeFields?.find((field) => field.dd_displayName === prop);
 
 		if (!nextObj) {

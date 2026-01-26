@@ -35,7 +35,9 @@
 	let endpointToDelete = $state<AvailableEndpoint | null>(null);
 
 	// Health Check State
-	let healthStatus = $state<Record<string, { healthy: boolean; latency?: number; error?: string }>>({});
+	let healthStatus = $state<Record<string, { healthy: boolean; latency?: number; error?: string }>>(
+		{}
+	);
 	let isChecking = $state<Record<string, boolean>>({});
 
 	const runHealthCheck = async (endpoint: AvailableEndpoint) => {
@@ -117,10 +119,10 @@
 
 	<div class="flex w-full items-center justify-end gap-2 md:w-auto">
 		<button
-			class="btn btn-sm btn-ghost gap-2"
+			class="btn gap-2 btn-ghost btn-sm"
 			onclick={() => {
 				healthStatus = {};
-				endpoints.forEach(ep => runHealthCheck(ep));
+				endpoints.forEach((ep) => runHealthCheck(ep));
 			}}
 			title="Re-check connection status for all endpoints"
 		>
@@ -188,28 +190,26 @@
 						<!-- Health Status Indicator -->
 						<div
 							class="tooltip tooltip-left"
-							data-tip={
-								isChecking[endpoint.id]
-									? "Checking..."
-									: healthStatus[endpoint.id]?.healthy
-										? `Online (${healthStatus[endpoint.id]?.latency}ms)`
-										: `Offline: ${healthStatus[endpoint.id]?.error || 'Unknown error'}`
-							}
+							data-tip={isChecking[endpoint.id]
+								? 'Checking...'
+								: healthStatus[endpoint.id]?.healthy
+									? `Online (${healthStatus[endpoint.id]?.latency}ms)`
+									: `Offline: ${healthStatus[endpoint.id]?.error || 'Unknown error'}`}
 						>
 							{#if isChecking[endpoint.id]}
-								<span class="loading loading-spinner loading-xs text-info"></span>
+								<span class="loading loading-xs loading-spinner text-info"></span>
 							{:else if healthStatus[endpoint.id]?.healthy}
-								<div class="badge badge-success badge-xs gap-1 py-2">
+								<div class="badge gap-1 badge-xs py-2 badge-success">
 									<span class="h-2 w-2 rounded-full bg-white"></span>
 									{healthStatus[endpoint.id]?.latency}ms
 								</div>
 							{:else if healthStatus[endpoint.id]}
-								<div class="badge badge-error badge-xs gap-1 py-2">
+								<div class="badge gap-1 badge-xs py-2 badge-error">
 									<span class="h-2 w-2 rounded-full bg-white"></span>
 									Offline
 								</div>
 							{:else}
-								<div class="badge badge-ghost badge-xs gap-1 py-2">
+								<div class="badge gap-1 badge-ghost badge-xs py-2">
 									<span class="h-2 w-2 rounded-full bg-base-content/50"></span>
 									Pending
 								</div>

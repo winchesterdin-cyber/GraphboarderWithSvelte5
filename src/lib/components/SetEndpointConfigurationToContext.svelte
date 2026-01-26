@@ -73,7 +73,9 @@
 	let dd_relatedRoot = getRootType(null, currentQMS_info?.dd_rootName, schemaData);
 
 	if (!currentQMS_info) {
-		console.warn(`[SetEndpointConfigurationToContext] Query '${queryName}' not found. Redirecting.`);
+		console.warn(
+			`[SetEndpointConfigurationToContext] Query '${queryName}' not found. Redirecting.`
+		);
 		goto('/queries');
 	}
 
@@ -340,7 +342,7 @@
 	</MainWraper>
 {:else if queryData.fetching}
 	<div class="flex h-screen w-full items-center justify-center bg-base-100">
-		<span class="loading loading-spinner loading-lg text-primary"></span>
+		<span class="loading loading-lg loading-spinner text-primary"></span>
 		<span class="ml-4 text-lg font-semibold opacity-70">Loading configuration...</span>
 	</div>
 {:else if queryData.error}
@@ -348,6 +350,6 @@
 		<i class="bi bi-exclamation-triangle text-4xl"></i>
 		<h3 class="mt-2 text-lg font-bold">Error loading configuration</h3>
 		<p class="mt-1 opacity-80">{queryData.error}</p>
-		<button class="btn btn-primary mt-4" onclick={() => location.reload()}>Retry</button>
+		<button class="btn mt-4 btn-primary" onclick={() => location.reload()}>Retry</button>
 	</div>
 {/if}

@@ -11,10 +11,7 @@
 	let { prefix = '', CPItem }: Props = $props();
 	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`) as any;
 
-	const QMSWraperCtx = getQMSWraperCtxDataGivenControlPanelItem(
-		CPItem,
-		OutermostQMSWraperContext
-	);
+	const QMSWraperCtx = getQMSWraperCtxDataGivenControlPanelItem(CPItem, OutermostQMSWraperContext);
 	const activeArgumentsDataGrouped_Store = QMSWraperCtx.activeArgumentsDataGrouped_Store;
 
 	const CPItemContext = { CPItem, QMSWraperCtx };
