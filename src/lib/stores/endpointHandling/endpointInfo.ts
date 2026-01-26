@@ -81,11 +81,7 @@ export const endpointInfoDefaultValues: EndpointConfiguration = {
 
 				const fields = rootType?.fields;
 				let idField;
-				const { scalarFields } = getFields_Grouped(
-					rootType,
-					[],
-					schemaData
-				);
+				const { scalarFields } = getFields_Grouped(rootType, [], schemaData);
 				const nonNullScalarFields = scalarFields.filter((field) => {
 					return field.dd_NON_NULL;
 				});
@@ -158,7 +154,11 @@ export const endpointInfoDefaultValues: EndpointConfiguration = {
 					use_transformer: (val: unknown) => string_transformer(val as string)
 				};
 			},
-			check: function (dd_rootName: string, dd_displayName: string, typeObj: Partial<FieldWithDerivedData>) {
+			check: function (
+				dd_rootName: string,
+				dd_displayName: string,
+				typeObj: Partial<FieldWithDerivedData>
+			) {
 				if (!dd_rootName) {
 					return null;
 				}
@@ -175,7 +175,11 @@ export const endpointInfoDefaultValues: EndpointConfiguration = {
 					use_transformer: (val: unknown) => string_transformer(val as string)
 				};
 			},
-			check: function (dd_rootName: string, dd_displayName: string, typeObj: Partial<FieldWithDerivedData>) {
+			check: function (
+				dd_rootName: string,
+				dd_displayName: string,
+				typeObj: Partial<FieldWithDerivedData>
+			) {
 				if (!dd_rootName) {
 					return null;
 				}
@@ -195,7 +199,11 @@ export const endpointInfoDefaultValues: EndpointConfiguration = {
 					use_transformer: (val: unknown) => ISO8601_transformer(val as string)
 				};
 			},
-			check: function (dd_rootName: string, dd_displayName: string, typeObj: Partial<FieldWithDerivedData>) {
+			check: function (
+				dd_rootName: string,
+				dd_displayName: string,
+				typeObj: Partial<FieldWithDerivedData>
+			) {
 				if (!dd_rootName) {
 					return null;
 				}
@@ -219,7 +227,11 @@ export const endpointInfoDefaultValues: EndpointConfiguration = {
 					use_transformer: (val: unknown) => number_transformer(val as string)
 				};
 			},
-			check: function (dd_rootName: string, dd_displayName: string, typeObj: Partial<FieldWithDerivedData>) {
+			check: function (
+				dd_rootName: string,
+				dd_displayName: string,
+				typeObj: Partial<FieldWithDerivedData>
+			) {
 				if (!dd_rootName) {
 					return null;
 				}
@@ -242,7 +254,11 @@ export const endpointInfoDefaultValues: EndpointConfiguration = {
 					use_transformer: (val: unknown) => geojson_transformer(val as any)
 				};
 			},
-			check: function (dd_rootName: string, dd_displayName: string, typeObj: Partial<FieldWithDerivedData>) {
+			check: function (
+				dd_rootName: string,
+				dd_displayName: string,
+				typeObj: Partial<FieldWithDerivedData>
+			) {
 				if (!dd_rootName) {
 					return null;
 				}
@@ -262,7 +278,11 @@ export const endpointInfoDefaultValues: EndpointConfiguration = {
 					use_transformer: boolean_transformer
 				};
 			},
-			check: function (dd_rootName: string, dd_displayName: string, typeObj: Partial<FieldWithDerivedData>) {
+			check: function (
+				dd_rootName: string,
+				dd_displayName: string,
+				typeObj: Partial<FieldWithDerivedData>
+			) {
 				if (!dd_rootName) {
 					return null;
 				}
@@ -282,7 +302,11 @@ export const endpointInfoDefaultValues: EndpointConfiguration = {
 					use_transformer: (val) => val
 				};
 			},
-			check: function (dd_rootName: string, dd_displayName: string, typeObj: Partial<FieldWithDerivedData>) {
+			check: function (
+				dd_rootName: string,
+				dd_displayName: string,
+				typeObj: Partial<FieldWithDerivedData>
+			) {
 				if (!dd_rootName) {
 					return null;
 				}
@@ -299,7 +323,11 @@ export const endpointInfoDefaultValues: EndpointConfiguration = {
 					use_transformer: (val) => val
 				};
 			},
-			check: function (dd_rootName: string, dd_displayName: string, typeObj: Partial<FieldWithDerivedData>) {
+			check: function (
+				dd_rootName: string,
+				dd_displayName: string,
+				typeObj: Partial<FieldWithDerivedData>
+			) {
 				return true;
 			}
 		}
@@ -320,8 +348,13 @@ export const endpointInfoDefaultValues: EndpointConfiguration = {
 	pageInfoFieldsLocation: ['pageInfo']
 };
 
-export const create_endpointInfo_Store = (endpointConfiguration: Partial<EndpointConfiguration> = {}): EndpointInfoStore => {
-	const store = writable<EndpointConfiguration>({ ...endpointInfoDefaultValues, ...endpointConfiguration });
+export const create_endpointInfo_Store = (
+	endpointConfiguration: Partial<EndpointConfiguration> = {}
+): EndpointInfoStore => {
+	const store = writable<EndpointConfiguration>({
+		...endpointInfoDefaultValues,
+		...endpointConfiguration
+	});
 
 	const get_fieldsNames = (
 		currentQMS_info: FieldWithDerivedData,
@@ -364,9 +397,15 @@ export const create_endpointInfo_Store = (endpointConfiguration: Partial<Endpoin
 		smartSet: (newEndpoint: EndpointConfiguration) => {
 			store.set({ ...endpointInfoDefaultValues, ...newEndpoint });
 		},
-		get_inputFieldsContainerLocation: function (QMS_info: FieldWithDerivedData, schemaData: SchemaData) {
+		get_inputFieldsContainerLocation: function (
+			QMS_info: FieldWithDerivedData,
+			schemaData: SchemaData
+		) {
 			const storeVal = get(store);
-			if (!storeVal?.inputColumnsPossibleLocationsInArg || storeVal.inputColumnsPossibleLocationsInArg.length === 0) {
+			if (
+				!storeVal?.inputColumnsPossibleLocationsInArg ||
+				storeVal.inputColumnsPossibleLocationsInArg.length === 0
+			) {
 				return [];
 			}
 
@@ -407,7 +446,11 @@ export const create_endpointInfo_Store = (endpointConfiguration: Partial<Endpoin
 		},
 		get_rowCountLocation: function (QMS_info: FieldWithDerivedData, schemaData: SchemaData) {
 			const storeVal = get(store);
-			if (!storeVal || !storeVal.rowCountLocationPossibilities || storeVal.rowCountLocationPossibilities.length === 0) {
+			if (
+				!storeVal ||
+				!storeVal.rowCountLocationPossibilities ||
+				storeVal.rowCountLocationPossibilities.length === 0
+			) {
 				return null;
 			}
 
@@ -425,7 +468,11 @@ export const create_endpointInfo_Store = (endpointConfiguration: Partial<Endpoin
 		},
 		get_idField: (QMS_info: FieldWithDerivedData, schemaData: SchemaData) => {
 			const storeVal = get(store);
-			if (!storeVal || !storeVal.idFieldPossibilities || storeVal.idFieldPossibilities.length === 0) {
+			if (
+				!storeVal ||
+				!storeVal.idFieldPossibilities ||
+				storeVal.idFieldPossibilities.length === 0
+			) {
 				console.warn('no idFieldPossibilities found or endpointInfo value is null/undefined');
 				return null;
 			}
@@ -442,9 +489,16 @@ export const create_endpointInfo_Store = (endpointConfiguration: Partial<Endpoin
 
 			return null;
 		},
-		get_typeExtraData: (typeInfo: Partial<FieldWithDerivedData>, choosenDisplayInterface?: DisplayInterface) => {
+		get_typeExtraData: (
+			typeInfo: Partial<FieldWithDerivedData>,
+			choosenDisplayInterface?: DisplayInterface
+		) => {
 			const storeVal = get(store);
-			if (!storeVal || !storeVal.typesExtraDataPossibilities || storeVal.typesExtraDataPossibilities.length === 0) {
+			if (
+				!storeVal ||
+				!storeVal.typesExtraDataPossibilities ||
+				storeVal.typesExtraDataPossibilities.length === 0
+			) {
 				return null;
 			}
 			let typesExtraDataPossibility;
@@ -478,7 +532,11 @@ export const create_endpointInfo_Store = (endpointConfiguration: Partial<Endpoin
 		},
 		get_tableName: (QMS_info: FieldWithDerivedData, schemaData: SchemaData) => {
 			const storeVal = get(store);
-			if (!storeVal || !storeVal.tableNamePossibilities || storeVal.tableNamePossibilities.length === 0) {
+			if (
+				!storeVal ||
+				!storeVal.tableNamePossibilities ||
+				storeVal.tableNamePossibilities.length === 0
+			) {
 				return null;
 			}
 			const tableNamePossibility = storeVal.tableNamePossibilities.find((tableNamePossibility) => {
@@ -492,7 +550,11 @@ export const create_endpointInfo_Store = (endpointConfiguration: Partial<Endpoin
 
 			return null;
 		},
-		get_qmsNameForObjective: function (QMS_info: FieldWithDerivedData, schemaData: SchemaData, qmsObjective: string) {
+		get_qmsNameForObjective: function (
+			QMS_info: FieldWithDerivedData,
+			schemaData: SchemaData,
+			qmsObjective: string
+		) {
 			const thisContext = this;
 			const tableName = this.get_tableName(QMS_info, schemaData);
 			if (!tableName) {
@@ -500,7 +562,11 @@ export const create_endpointInfo_Store = (endpointConfiguration: Partial<Endpoin
 				return null;
 			}
 			const storeVal = get(store);
-			if (!storeVal || !storeVal.qmsNameForObjectivePossibilities || storeVal.qmsNameForObjectivePossibilities.length === 0) {
+			if (
+				!storeVal ||
+				!storeVal.qmsNameForObjectivePossibilities ||
+				storeVal.qmsNameForObjectivePossibilities.length === 0
+			) {
 				return null;
 			}
 			const qmsNameForObjectivePossibility = storeVal.qmsNameForObjectivePossibilities.find(
@@ -530,7 +596,11 @@ export const create_endpointInfo_Store = (endpointConfiguration: Partial<Endpoin
 		},
 		get_decodedId: (QMS_info: FieldWithDerivedData, schemaData: SchemaData, id: string) => {
 			const storeVal = get(store);
-			if (!storeVal || !storeVal.idDecoderPossibilities || storeVal.idDecoderPossibilities.length === 0) {
+			if (
+				!storeVal ||
+				!storeVal.idDecoderPossibilities ||
+				storeVal.idDecoderPossibilities.length === 0
+			) {
 				return null;
 			}
 			const idDecoderPossibility = storeVal.idDecoderPossibilities.find((idDecoderPossibility) => {
@@ -545,7 +615,11 @@ export const create_endpointInfo_Store = (endpointConfiguration: Partial<Endpoin
 			return null;
 		},
 
-		get_relayPageInfoFieldsNames: (currentQMS_info: FieldWithDerivedData, pageInfoFieldsLocation: string[], schemaData: SchemaData) => {
+		get_relayPageInfoFieldsNames: (
+			currentQMS_info: FieldWithDerivedData,
+			pageInfoFieldsLocation: string[],
+			schemaData: SchemaData
+		) => {
 			const storeVal = get(store);
 			if (!storeVal || !storeVal.relayPageInfoFieldsPossibleNames) {
 				return null;
@@ -557,7 +631,11 @@ export const create_endpointInfo_Store = (endpointConfiguration: Partial<Endpoin
 				'relayPageInfoFieldsPossibleNames'
 			);
 		},
-		get_relayCursorFieldName: (currentQMS_info: FieldWithDerivedData, rowsLocation: string[], schemaData: SchemaData) => {
+		get_relayCursorFieldName: (
+			currentQMS_info: FieldWithDerivedData,
+			rowsLocation: string[],
+			schemaData: SchemaData
+		) => {
 			const storeVal = get(store);
 			if (!storeVal || !storeVal.relayCursorPossibleNames) {
 				return null;

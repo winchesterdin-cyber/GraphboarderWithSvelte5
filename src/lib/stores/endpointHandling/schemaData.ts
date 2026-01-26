@@ -71,14 +71,26 @@ export const create_schemaData = (): SchemaDataStore => {
 			let new_rootTypes = sortByName([...schema.types]);
 			if (withDerivedData) {
 				new_rootTypes.forEach((el: any) => {
-					Object.assign(el, generate_derivedData(el, new_rootTypes, false, endpointInfo, returnObject));
+					Object.assign(
+						el,
+						generate_derivedData(el, new_rootTypes, false, endpointInfo, returnObject)
+					);
 					el?.args?.forEach((arg: any) => {
-						Object.assign(arg, generate_derivedData(arg, new_rootTypes, false, endpointInfo, returnObject));
+						Object.assign(
+							arg,
+							generate_derivedData(arg, new_rootTypes, false, endpointInfo, returnObject)
+						);
 					});
 					el?.fields?.forEach((field: any) => {
-						Object.assign(field, generate_derivedData(field, new_rootTypes, false, endpointInfo, returnObject));
+						Object.assign(
+							field,
+							generate_derivedData(field, new_rootTypes, false, endpointInfo, returnObject)
+						);
 						field?.args?.forEach((arg: any) => {
-							Object.assign(arg, generate_derivedData(arg, new_rootTypes, false, endpointInfo, returnObject));
+							Object.assign(
+								arg,
+								generate_derivedData(arg, new_rootTypes, false, endpointInfo, returnObject)
+							);
 						});
 					});
 					el?.inputFields?.forEach((inputField: any) => {
@@ -147,7 +159,10 @@ export const create_schemaData = (): SchemaDataStore => {
 
 				if (withDerivedData && new_QMS_Fields) {
 					new_QMS_Fields.forEach((el) => {
-						Object.assign(el, generate_derivedData(el, rootTypes, isQMSField, endpointInfo, returnObject));
+						Object.assign(
+							el,
+							generate_derivedData(el, rootTypes, isQMSField, endpointInfo, returnObject)
+						);
 						el?.args?.forEach((arg: any) => {
 							Object.assign(
 								arg,
@@ -266,10 +281,7 @@ export const create_schemaData = (): SchemaDataStore => {
 			});
 
 			if (!QMSField) {
-				console.debug(
-					'get_QMS_Field: Field not found',
-					{ name, _QMS_ }
-				);
+				console.debug('get_QMS_Field: Field not found', { name, _QMS_ });
 			}
 			return QMSField;
 		}

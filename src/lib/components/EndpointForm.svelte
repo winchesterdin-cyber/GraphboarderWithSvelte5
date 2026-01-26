@@ -11,12 +11,7 @@
 		isDuplicate?: boolean;
 	}
 
-	let {
-		onEndpointAdded,
-		onHide,
-		endpointToEdit = null,
-		isDuplicate = false
-	}: Props = $props();
+	let { onEndpointAdded, onHide, endpointToEdit = null, isDuplicate = false }: Props = $props();
 
 	let id = $state('');
 	let url = $state('');
@@ -260,7 +255,7 @@
 			type="button"
 		>
 			{#if isTestingConnection}
-				<span class="loading loading-spinner loading-xs"></span>
+				<span class="loading loading-xs loading-spinner"></span>
 			{:else}
 				Test Connection
 			{/if}

@@ -10,10 +10,13 @@ export const sortingFunctionMutipleColumnsGivenArray = (array: [unknown, unknown
 	let maxIndex = array.length - 1;
 	const check = (currentIndex: number): number => {
 		const column = array[currentIndex];
-		if (column[0] < column[1]) {
+		const valA = column[0] as any;
+		const valB = column[1] as any;
+
+		if (valA < valB) {
 			return -1;
 		}
-		if (column[0] > column[1]) {
+		if (valA > valB) {
 			return 1;
 		}
 		if (currentIndex + 1 <= maxIndex) {
@@ -207,7 +210,7 @@ export const argumentCanRunQuery = (arg: ActiveArgumentData): boolean => {
 	if (dd_kindList_NON_NULL && chd_dispatchValue == null) {
 		return false;
 	}
-	if (dd_kindEl && (chd_dispatchValue == undefined || chd_dispatchValue.length == 0)) {
+	if (dd_kindEl && (chd_dispatchValue == undefined || (chd_dispatchValue as any).length == 0)) {
 		return false;
 	}
 	if (chd_dispatchValue == undefined) {
@@ -252,7 +255,7 @@ export const getQMSWraperCtxDataGivenControlPanelItem = (
 
 	let mergedChildren_QMSWraperCtxData_Value = get(mergedChildren_QMSWraperCtxData_Store);
 
-	const QMSWraperCtxData = mergedChildren_QMSWraperCtxData_Value.find((currCtx: any) => {
+	const QMSWraperCtxData = (mergedChildren_QMSWraperCtxData_Value as any[]).find((currCtx: any) => {
 		return currCtx.stepsOfFields.join() == CPItem.stepsOfFieldsThisAppliesTo.join();
 	});
 	return QMSWraperCtxData;

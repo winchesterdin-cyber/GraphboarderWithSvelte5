@@ -186,7 +186,10 @@
 							rows = [...rows, ...rowsCurrent];
 						}
 						if (
-							paginationTypeInfo?.isFirstPage?.(paginationState, currentQMS_info.dd_paginationArgs) &&
+							paginationTypeInfo?.isFirstPage?.(
+								paginationState,
+								currentQMS_info.dd_paginationArgs
+							) &&
 							rowsCurrent?.length == 0
 						) {
 							rows = rowsCurrent;

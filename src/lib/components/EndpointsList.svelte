@@ -1,3 +1,17 @@
+<script module>
+	function formatBytes(bytes: number, decimals = 2) {
+		if (!+bytes) return '0 Bytes';
+
+		const k = 1024;
+		const dm = decimals < 0 ? 0 : decimals;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+		return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+	}
+</script>
+
 <script lang="ts">
 	import AddColumn from './AddColumn.svelte';
 	import { page } from '$app/stores';
@@ -181,9 +195,8 @@
 				}
 
 				const limitingArgs =
-					paginationTypeInfo?.get_rowLimitingArgNames?.(
-						currentQMS_info!.dd_paginationArgs || []
-					) || [];
+					paginationTypeInfo?.get_rowLimitingArgNames?.(currentQMS_info!.dd_paginationArgs || []) ||
+					[];
 
 				if (
 					(limitingArgs.length > 0 &&
@@ -273,13 +286,13 @@
 		}}>QMS body</button
 	>
 	{#if executionTime !== null}
-		<div class="badge badge-ghost gap-2">
+		<div class="badge gap-2 badge-ghost">
 			<i class="bi bi-stopwatch"></i>
 			{executionTime}ms
 		</div>
 	{/if}
 	{#if responseSize !== null}
-		<div class="badge badge-ghost gap-2">
+		<div class="badge gap-2 badge-ghost">
 			<i class="bi bi-hdd-network"></i>
 			{formatBytes(responseSize)}
 		</div>
@@ -363,17 +376,3 @@
 	{/if}
 </div>
 <div></div>
-
-<script module>
-	function formatBytes(bytes: number, decimals = 2) {
-		if (!+bytes) return '0 Bytes';
-
-		const k = 1024;
-		const dm = decimals < 0 ? 0 : decimals;
-		const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
-		const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-		return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
-	}
-</script>

@@ -13,7 +13,9 @@
 	import type { QMSWraperContext } from '$lib/types/index';
 
 	const { finalGqlArgObj_Store, stepsOfFields, paginationState_derived } = QMSWraperCtxDataCurrent;
-	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`) as QMSWraperContext;
+	const OutermostQMSWraperContext = getContext(
+		`${prefix}OutermostQMSWraperContext`
+	) as QMSWraperContext;
 	const { mergedChildren_finalGqlArgObj_Store } = OutermostQMSWraperContext;
 	/////////////////
 	let QMSarguments = $state();

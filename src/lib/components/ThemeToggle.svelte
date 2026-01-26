@@ -21,7 +21,7 @@
 </script>
 
 <button
-	class="btn btn-ghost btn-circle"
+	class="btn btn-circle btn-ghost"
 	onclick={toggleTheme}
 	aria-label="Toggle Theme"
 	title="Toggle Theme"

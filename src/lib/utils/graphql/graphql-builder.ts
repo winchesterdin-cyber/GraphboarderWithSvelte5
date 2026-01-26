@@ -227,10 +227,12 @@ export const generate_group_gqlArgObj_forHasOperators = (
 				dataToAssign = _.merge({}, itemData.selectedRowsColValues[0], dataToAssign);
 			}
 		}
-		resultingGqlArgObj = setValueAtPath({}, nodeStepClean as string[], dataToAssign, true) as Record<
-			string,
-			unknown
-		>;
+		resultingGqlArgObj = setValueAtPath(
+			{},
+			nodeStepClean as string[],
+			dataToAssign,
+			true
+		) as Record<string, unknown>;
 		let itemObjectTestCurr = setValueAtPath({}, nodeStepClean as string[], dataToAssign, true);
 		let itemObjectTest2 = 'not set';
 		if (resultingGqlArgObj == undefined) {
@@ -471,7 +473,10 @@ export const nodeAddDefaultFields = (
 
 	[...scalarFields, ...enumFields].forEach((element) => {
 		let stepsOfFields = [
-			group.group_name || node.dd_displayName || (node as any).parent_node?.dd_displayName || 'unknown',
+			group.group_name ||
+				node.dd_displayName ||
+				(node as any).parent_node?.dd_displayName ||
+				'unknown',
 			element.dd_displayName
 		];
 		let newArgData = {
@@ -496,7 +501,10 @@ export const nodeAddDefaultFields = (
 		})
 		?.forEach((element) => {
 			let stepsOfFields = [
-				group.group_name || node.dd_displayName || (node as any).parent_node?.dd_displayName || 'unknown',
+				group.group_name ||
+					node.dd_displayName ||
+					(node as any).parent_node?.dd_displayName ||
+					'unknown',
 				element.dd_displayName
 			];
 

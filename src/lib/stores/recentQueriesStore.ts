@@ -28,11 +28,7 @@ const createRecentQueriesStore = () => {
 				// Remove duplicates (same name, type, and endpoint)
 				const filtered = queries.filter(
 					(q) =>
-						!(
-							q.name === query.name &&
-							q.type === query.type &&
-							q.endpointId === query.endpointId
-						)
+						!(q.name === query.name && q.type === query.type && q.endpointId === query.endpointId)
 				);
 				const updated = [newQuery, ...filtered].slice(0, MAX_RECENT);
 				if (browser) {

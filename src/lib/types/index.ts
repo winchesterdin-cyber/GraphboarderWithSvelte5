@@ -175,7 +175,11 @@ export interface PaginationTypeInfo {
 	name: string;
 	check: (standsForArray: string[]) => boolean;
 	get_rowLimitingArgNames?: (paginationArgs: FieldWithDerivedData[]) => (string | undefined)[];
-	get_dependencyColsData?: (qmsName: string, qmsType: QMSType, schemaData: SchemaDataStore) => unknown[];
+	get_dependencyColsData?: (
+		qmsName: string,
+		qmsType: QMSType,
+		schemaData: SchemaDataStore
+	) => unknown[];
 	get_initialState: (paginationArgs: FieldWithDerivedData[]) => PaginationState;
 	get_nextPageState: (
 		currentState: PaginationState,
@@ -335,7 +339,10 @@ export interface EndpointInfoStore {
 		schemaData: SchemaDataStore
 	) => string[];
 	get_rowsLocation: (qmsInfo: FieldWithDerivedData, schemaData: SchemaDataStore) => string[];
-	get_rowCountLocation: (qmsInfo: FieldWithDerivedData, schemaData: SchemaDataStore) => string[] | null;
+	get_rowCountLocation: (
+		qmsInfo: FieldWithDerivedData,
+		schemaData: SchemaDataStore
+	) => string[] | null;
 	get_idField: (
 		qmsInfo: FieldWithDerivedData,
 		schemaData: SchemaDataStore

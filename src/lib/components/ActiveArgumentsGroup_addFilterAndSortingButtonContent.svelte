@@ -79,8 +79,7 @@
 		} else if (parent_inputFields) {
 			groupArgsPossibilities = parent_inputFields;
 		} else {
-			groupArgsPossibilities =
-				getRootType(null, group.dd_rootName, schemaData)?.inputFields || [];
+			groupArgsPossibilities = getRootType(null, group.dd_rootName, schemaData)?.inputFields || [];
 		}
 		if (!groupArgsPossibilities) {
 			groupArgsPossibilities = node?.args || [];

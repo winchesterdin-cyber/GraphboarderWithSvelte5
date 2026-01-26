@@ -292,13 +292,7 @@
 	$effect(() => {
 		stepsOfFieldsFull = stepsOfNodesToStepsOfFields(stepsOfNodes as any[]);
 		stepsOfFields = filterElFromArr(stepsOfFieldsFull, ['list', 'bonded']);
-		updateNodeSteps(
-			node,
-			stepsOfFieldsFull,
-			stepsOfFields,
-			stepsOfNodes as any[],
-			filterElFromArr
-		);
+		updateNodeSteps(node, stepsOfFieldsFull, stepsOfFields, stepsOfNodes as any[], filterElFromArr);
 	});
 	$effect(() => {
 		if (labelEl) {
@@ -505,8 +499,9 @@
 						role="button"
 						tabindex={dragDisabled ? 0 : -1}
 						aria-label="drag-handle"
-						class="  transition:all bi bi-grip-vertical -mr-1 ml-2 rounded-l-md text-lg duration-500 {(node as ContainerData)?.operator ==
-							undefined || (node as ContainerData)?.operator == 'bonded'
+						class="  transition:all bi bi-grip-vertical -mr-1 ml-2 rounded-l-md text-lg duration-500 {(
+							node as ContainerData
+						)?.operator == undefined || (node as ContainerData)?.operator == 'bonded'
 							? 'text-base-content'
 							: (node as ContainerData)?.operator == '_and'
 								? 'text-primary'
@@ -536,8 +531,9 @@
 				<!-- node?.items?.length <= 1 -->
 				{#if (node as ContainerData)?.operator && !$mutationVersion}
 					<button
-						class="btn rounded-full px-[1px] text-xs font-light normal-case btn-ghost transition-all duration-500 btn-xs {(node as ContainerData)?.operator ==
-							'bonded' || (node as ContainerData)?.operator == 'list'
+						class="btn rounded-full px-[1px] text-xs font-light normal-case btn-ghost transition-all duration-500 btn-xs {(
+							node as ContainerData
+						)?.operator == 'bonded' || (node as ContainerData)?.operator == 'list'
 							? 'text-base-content'
 							: (node as ContainerData)?.operator == '_and'
 								? 'text-primary'
@@ -574,10 +570,14 @@
 		class="  w-min-max w-max transition-all duration-500
 	
 	
-	{(node as ContainerData)?.operator && ((node as ContainerData).items.length > 1 || ($mutationVersion && (node as ContainerData).items.length >= 1))
+	{(node as ContainerData)?.operator &&
+		((node as ContainerData).items.length > 1 ||
+			($mutationVersion && (node as ContainerData).items.length >= 1))
 			? 'bg-gradient-to-rxxx my-1==   rounded-l-md border-l-[1px] shadow-sm'
 			: ''} 
-	{(node as ContainerData)?.isMain ? '  bg-gradient-to-rxxx my-1==   rounded-l-md border-l-[2px] shadow-sm' : ''}
+	{(node as ContainerData)?.isMain
+			? '  bg-gradient-to-rxxx my-1==   rounded-l-md border-l-[2px] shadow-sm'
+			: ''}
 {(node as ContainerData)?.operator && node?.not ? 'border-dashed  ' : ''}
 {(node as ContainerData)?.operator == 'bonded' || (node as ContainerData)?.operator == 'list'
 			? 'border-base-content'
@@ -609,7 +609,8 @@
 						class="btn rounded-full px-[1px] text-xs font-light normal-case btn-ghost transition-all duration-500 btn-xs {getManyQMS ||
 						$selectedQMSAAA
 							? 'text-secondary'
-							: ''}   {(node as ContainerData)?.operator == 'bonded' || (node as ContainerData)?.operator == 'list'
+							: ''}   {(node as ContainerData)?.operator == 'bonded' ||
+						(node as ContainerData)?.operator == 'list'
 							? 'text-base-content'
 							: (node as ContainerData)?.operator == '_and'
 								? 'text-primary'
@@ -663,8 +664,9 @@
 
 				{#if (node as ContainerData)?.isMain}
 					<button
-						class="btn rounded-full px-[1px] text-xs font-light normal-case btn-ghost transition-all duration-500 btn-xs {(node as ContainerData)?.operator ==
-							'bonded' || (node as ContainerData)?.operator == 'list'
+						class="btn rounded-full px-[1px] text-xs font-light normal-case btn-ghost transition-all duration-500 btn-xs {(
+							node as ContainerData
+						)?.operator == 'bonded' || (node as ContainerData)?.operator == 'list'
 							? 'text-base-content'
 							: (node as ContainerData)?.operator == '_and'
 								? 'text-primary'
@@ -690,7 +692,7 @@
 						{onUpdateQuery}
 						bind:nodes={nodes as any}
 						{onChanged}
-						startDrag={startDrag}
+						{startDrag}
 						onChildrenStartDrag={startDrag}
 						{parentNode}
 						{node}
@@ -717,9 +719,9 @@
 
 		{#if node.hasOwnProperty('items')}
 			<section
-				class=" duration-500 {$dndIsOn
-					? '  min-h-[30px] min-w-[200px]'
-					: 'pl-1'} rounded-l-none {(node as ContainerData)?.isMain && !isCPChild
+				class=" duration-500 {$dndIsOn ? '  min-h-[30px] min-w-[200px]' : 'pl-1'} rounded-l-none {(
+					node as ContainerData
+				)?.isMain && !isCPChild
 					? ' min-h-[40vh] border-l-2  border-l-transparent md:min-h-[60vh] '
 					: ' '}
 				 w-full"

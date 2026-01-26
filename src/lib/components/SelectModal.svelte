@@ -13,16 +13,18 @@
 	import { nodeAddDefaultFields } from '$lib/utils/usefulFunctions';
 	import SelectItem from './SelectItem.svelte';
 	import SelectQMS from './SelectQMS.svelte';
-	import {
-		createQMSSearchInstance,
-		discoverMatchingQMS,
-	} from '$lib/utils/searchUtils';
+	import { createQMSSearchInstance, discoverMatchingQMS } from '$lib/utils/searchUtils';
 	import {
 		getRowSelectionState,
 		processSelectedRowsColValues,
 		getRequiredColumnNames
 	} from '$lib/utils/rowSelectionUtils';
-	import type { ContainerData, ActiveArgumentData, QMSWraperContext, QMSMainWraperContext } from '$lib/types';
+	import type {
+		ContainerData,
+		ActiveArgumentData,
+		QMSWraperContext,
+		QMSMainWraperContext
+	} from '$lib/types';
 
 	interface Props {
 		nodes: Record<string, ContainerData | ActiveArgumentData>;
@@ -66,13 +68,17 @@
 	let stepsOfFieldsFull = $state<string[]>([]);
 	let testName_stepsOFFieldsWasUpdated = false;
 
-	const OutermostQMSWraperContext = getContext(`${prefix}OutermostQMSWraperContext`) as QMSWraperContext;
+	const OutermostQMSWraperContext = getContext(
+		`${prefix}OutermostQMSWraperContext`
+	) as QMSWraperContext;
 	let pathIsInCP = false;
 	const nodeContext = getContext(`${prefix}nodeContext`) as { pathIsInCP: boolean } | undefined;
 	if (nodeContext) {
 		pathIsInCP = nodeContext?.pathIsInCP;
 	}
-	const CPItemContext = getContext(`${prefix}CPItemContext`) as { CPItem: { nodeId: string } } | undefined;
+	const CPItemContext = getContext(`${prefix}CPItemContext`) as
+		| { CPItem: { nodeId: string } }
+		| undefined;
 	let nodeIsInCP = $derived(CPItemContext?.CPItem.nodeId == node.id);
 
 	if (CPItemContext?.CPItem.nodeId == node.id) {
@@ -131,7 +137,11 @@
 	const getUpdatedStepsOfNodes = (stepsOfNodesParent: any[]) => {
 		testName_stepsOFFieldsWasUpdated = true;
 		let stepsOfNodesCopy = JSON.parse(JSON.stringify(stepsOfNodesParent));
-		stepsOfNodesCopy.push([node?.not ? '_not' : undefined, node?.dd_displayName, (node as ContainerData)?.operator]);
+		stepsOfNodesCopy.push([
+			node?.not ? '_not' : undefined,
+			node?.dd_displayName,
+			(node as ContainerData)?.operator
+		]);
 		return stepsOfNodesCopy;
 	};
 
@@ -410,11 +420,9 @@
 						let selectedRowsOriginal = detail.rows.map((row: any) => row.original);
 
 						const returningColumnsLocation =
-							$endpointInfo?.returningColumnsPossibleLocationsInQueriesPerRow?.find(
-								(item: any) => {
-									return hasDeepProperty(selectedRowsOriginal[0], item);
-								}
-							);
+							$endpointInfo?.returningColumnsPossibleLocationsInQueriesPerRow?.find((item: any) => {
+								return hasDeepProperty(selectedRowsOriginal[0], item);
+							});
 						//string_transformer
 
 						$selectedRowsColValues = selectedRowsOriginal.map((row: any) => {

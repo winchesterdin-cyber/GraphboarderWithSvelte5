@@ -181,7 +181,9 @@ export const Create_activeArgumentsDataGrouped_Store = (
 					return arg.id == activeArgumentData.id;
 				});
 				const activeArgument =
-					activeArgumentIndex >= 0 && group.group_args ? group.group_args[activeArgumentIndex] : null;
+					activeArgumentIndex >= 0 && group.group_args
+						? group.group_args[activeArgumentIndex]
+						: null;
 				const activeArgumentNode = group?.group_argsNode?.[activeArgumentData.id];
 
 				if (!activeArgument && !activeArgumentNode) {
@@ -349,7 +351,8 @@ export const add_activeArgumentOrContainerTo_activeArgumentsDataGrouped = (
 			newArgumentOrContainerData.dd_relatedRoot =
 				'overwritten to evade error: Uncaught TypeError: Converting circular structure to JSON' as any;
 			newArgumentOrContainerData.not = false;
-			group.group_argsNode[newArgumentOrContainerData.id] = newArgumentOrContainerData as ContainerData;
+			group.group_argsNode[newArgumentOrContainerData.id] =
+				newArgumentOrContainerData as ContainerData;
 
 			if (parentContainerId && group.group_argsNode[parentContainerId]) {
 				group.group_argsNode[parentContainerId].items.push(newArgumentOrContainerData as any);

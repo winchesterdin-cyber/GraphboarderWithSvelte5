@@ -78,7 +78,7 @@
 			>
 				<input
 					type="text"
-					class="input input-sm input-bordered input-accent m-2"
+					class="input-bordered input m-2 input-sm input-accent"
 					placeholder="(> or .) producer>films>title "
 					bind:value={column_stepsOfFields}
 					onkeypress={addColumnFromInput}

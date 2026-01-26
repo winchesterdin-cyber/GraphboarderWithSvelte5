@@ -9,6 +9,7 @@
 	- Add new custom endpoints.
 	- Edit or delete user-defined endpoints.
 	- Visually distinguish between "Maintained" (built-in) and "User Defined" endpoints.
+	- Check and display endpoint health status (New Feature).
 -->
 <script lang="ts">
 	import { goto } from '$app/navigation';
@@ -17,6 +18,7 @@
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 	import { addToast } from '$lib/stores/toastStore';
 	import type { AvailableEndpoint } from '$lib/types';
+	import { checkEndpointHealth } from '$lib/utils/healthCheck';
 
 	interface Props {
 		endpoints: AvailableEndpoint[];
@@ -31,6 +33,32 @@
 	let sortOption = $state<'name-asc' | 'name-desc'>('name-asc');
 	let showDeleteModal = $state(false);
 	let endpointToDelete = $state<AvailableEndpoint | null>(null);
+
+	// Health Check State
+	let healthStatus = $state<Record<string, { healthy: boolean; latency?: number; error?: string }>>(
+		{}
+	);
+	let isChecking = $state<Record<string, boolean>>({});
+
+	const runHealthCheck = async (endpoint: AvailableEndpoint) => {
+		if (isChecking[endpoint.id]) return;
+		isChecking[endpoint.id] = true;
+		healthStatus = { ...healthStatus }; // Trigger reactivity if needed, though Svelte 5 proxies should handle it
+
+		const result = await checkEndpointHealth(endpoint.url, endpoint.headers);
+		healthStatus[endpoint.id] = result;
+		isChecking[endpoint.id] = false;
+		healthStatus = { ...healthStatus };
+	};
+
+	$effect(() => {
+		// Run check for any endpoint that hasn't been checked yet
+		endpoints.forEach((ep) => {
+			if (!healthStatus[ep.id] && !isChecking[ep.id]) {
+				runHealthCheck(ep);
+			}
+		});
+	});
 
 	let filteredEndpoints = $derived(
 		endpoints
@@ -90,6 +118,16 @@
 	</div>
 
 	<div class="flex w-full items-center justify-end gap-2 md:w-auto">
+		<button
+			class="btn gap-2 btn-ghost btn-sm"
+			onclick={() => {
+				healthStatus = {};
+				endpoints.forEach((ep) => runHealthCheck(ep));
+			}}
+			title="Re-check connection status for all endpoints"
+		>
+			<i class="bi bi-arrow-clockwise"></i> Refresh Status
+		</button>
 		<select bind:value={sortOption} class="select-bordered select">
 			<option value="name-asc">Name (A-Z)</option>
 			<option value="name-desc">Name (Z-A)</option>
@@ -142,12 +180,42 @@
 							<div class="badge shrink-0 badge-ghost badge-sm">User Defined</div>
 						{/if}
 					</div>
-					<p
-						class="w-full truncate rounded bg-base-200 p-1 font-mono text-xs opacity-50"
-						title={endpoint.url}
-					>
-						{endpoint.url}
-					</p>
+					<div class="flex items-center gap-2 text-xs">
+						<p
+							class="w-full flex-1 truncate rounded bg-base-200 p-1 font-mono opacity-50"
+							title={endpoint.url}
+						>
+							{endpoint.url}
+						</p>
+						<!-- Health Status Indicator -->
+						<div
+							class="tooltip tooltip-left"
+							data-tip={isChecking[endpoint.id]
+								? 'Checking...'
+								: healthStatus[endpoint.id]?.healthy
+									? `Online (${healthStatus[endpoint.id]?.latency}ms)`
+									: `Offline: ${healthStatus[endpoint.id]?.error || 'Unknown error'}`}
+						>
+							{#if isChecking[endpoint.id]}
+								<span class="loading loading-xs loading-spinner text-info"></span>
+							{:else if healthStatus[endpoint.id]?.healthy}
+								<div class="badge gap-1 badge-xs py-2 badge-success">
+									<span class="h-2 w-2 rounded-full bg-white"></span>
+									{healthStatus[endpoint.id]?.latency}ms
+								</div>
+							{:else if healthStatus[endpoint.id]}
+								<div class="badge gap-1 badge-xs py-2 badge-error">
+									<span class="h-2 w-2 rounded-full bg-white"></span>
+									Offline
+								</div>
+							{:else}
+								<div class="badge gap-1 badge-ghost badge-xs py-2">
+									<span class="h-2 w-2 rounded-full bg-base-content/50"></span>
+									Pending
+								</div>
+							{/if}
+						</div>
+					</div>
 					{#if endpoint.description}
 						<p class="mt-2 line-clamp-2 w-full text-sm text-base-content/80">
 							{endpoint.description}

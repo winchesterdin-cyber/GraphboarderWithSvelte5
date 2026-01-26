@@ -53,11 +53,7 @@
 		schemaData,
 		'inputFields'
 	);
-	const inputFieldsContainerRoot = getRootType(
-		null,
-		inputFieldsContainer?.dd_rootName,
-		schemaData
-	);
+	const inputFieldsContainerRoot = getRootType(null, inputFieldsContainer?.dd_rootName, schemaData);
 	const inputFields = inputFieldsContainerRoot?.inputFields || [];
 </script>
 
