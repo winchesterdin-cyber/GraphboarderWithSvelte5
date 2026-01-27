@@ -71,9 +71,14 @@ As you build the query, the results are fetched and displayed automatically.
 - **Copy cURL**: Click the **"Copy cURL"** button to copy a cURL command for the current query to your clipboard, allowing you to easily test it in your terminal.
 - **Prettify**: Use the "Show Prettified" toggle to switch between raw and formatted views.
 
-## 6. History & Recent Queries
+## 6. History & Favorites
 
 - **Recent**: The sidebar includes a "Recent" tab that tracks your recently visited queries and mutations for quick access.
+- **Favorites**:
+  - You can save frequently used queries to your **Favorites** list.
+  - Click the **"Save"** (star icon) button in the query code display toolbar.
+  - Enter a name for your query.
+  - Access your favorite queries from the "Favorites" tab in the sidebar.
 
 ## 7. Appearance
 

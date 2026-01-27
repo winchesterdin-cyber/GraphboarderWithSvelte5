@@ -39,8 +39,8 @@ export function getReturningFields(
 	}
 
 	depth++;
-	let rootType = schemaData.get_rootType(null, type.dd_rootName, schemaData);
-	let fields = rootType?.fields;
+	const rootType = schemaData.get_rootType(null, type.dd_rootName, schemaData);
+	const fields = rootType?.fields;
 
 	if (!fields) {
 		return null;

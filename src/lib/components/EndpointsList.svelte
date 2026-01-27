@@ -251,7 +251,7 @@
 	<div class="grow">
 		{#if showModal}
 			<Modal
-				modalIdentifier={'activeArgumentsDataModal'}
+				modalIdentifier="activeArgumentsDataModal"
 				showApplyBtn={false}
 				onCancel={(detail: any) => {
 					if (detail.modalIdentifier == 'activeArgumentsDataModal') {

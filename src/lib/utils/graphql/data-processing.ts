@@ -7,7 +7,7 @@ import type { TableColumnData, ActiveArgumentData, EndpointInfoStore } from '$li
  * @returns -1 if A < B, 1 if A > B, 0 if equal.
  */
 export const sortingFunctionMutipleColumnsGivenArray = (array: [unknown, unknown][]): number => {
-	let maxIndex = array.length - 1;
+	const maxIndex = array.length - 1;
 	const check = (currentIndex: number): number => {
 		const column = array[currentIndex];
 		const valA = column[0] as any;
@@ -231,7 +231,7 @@ export const generateNewArgData = (
 	type: Partial<any>, // Partial<FieldWithDerivedData>
 	extraData: Record<string, unknown> = {}
 ): ActiveArgumentData => {
-	let infoToCast = {
+	const infoToCast = {
 		stepsOfFields,
 		stepsOfFieldsStringified: JSON.stringify(stepsOfFields),
 		id: `${JSON.stringify(stepsOfFields)}${Math.random()}`,
@@ -253,7 +253,7 @@ export const getQMSWraperCtxDataGivenControlPanelItem = (
 ): any => {
 	const { mergedChildren_QMSWraperCtxData_Store } = OutermostQMSWraperContext;
 
-	let mergedChildren_QMSWraperCtxData_Value = get(mergedChildren_QMSWraperCtxData_Store);
+	const mergedChildren_QMSWraperCtxData_Value = get(mergedChildren_QMSWraperCtxData_Store);
 
 	const QMSWraperCtxData = (mergedChildren_QMSWraperCtxData_Value as any[]).find((currCtx: any) => {
 		return currCtx.stepsOfFields.join() == CPItem.stepsOfFieldsThisAppliesTo.join();

@@ -88,9 +88,7 @@
 
 				{#if !dd_canExpand}
 					<div class="btn rounded bg-base-200 p-1 btn-xs">
-						{#if dd_displayName == dd_namesArray[dd_namesArray.length - 1]}
-							{''}
-						{:else}
+						{#if dd_displayName == dd_namesArray[dd_namesArray.length - 1]}{:else}
 							{dd_namesArray[dd_namesArray.length - 1]}
 						{/if}
 					</div>
@@ -102,7 +100,7 @@
 						{:else if dd_namesArray[1] && dd_namesArray[1] !== dd_displayName}
 							({dd_namesArray[1]})
 						{:else}
-							{'same'}
+							same
 						{/if}
 					</div>
 				{/if}

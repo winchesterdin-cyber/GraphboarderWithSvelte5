@@ -4,6 +4,7 @@
 	import { getQMSLinks } from '$lib/utils/usefulFunctions';
 	import { getContext, onMount } from 'svelte';
 	import { recentQueries } from '$lib/stores/recentQueriesStore';
+	import { favoriteQueries } from '$lib/stores/favoriteQueriesStore';
 	import type { QMSMainWraperContext } from '$lib/types';
 
 	interface LinkItem {
@@ -61,6 +62,20 @@
 			isSelected: false,
 			hasFill: false,
 			items: $recentQueries
+				.filter((q) => q.endpointId === endpointid)
+				.map((q) => ({
+					title: q.name,
+					url: `/endpoints/${endpointid}/${q.type == 'query' ? 'queries' : 'mutations'}/${q.name}`
+				}))
+		},
+		{
+			title: 'Favorites',
+			url: `/endpoints/${endpointid}/favorites`,
+			urlIsRoute: false,
+			icon: 'bi bi-star',
+			isSelected: false,
+			hasFill: false,
+			items: $favoriteQueries
 				.filter((q) => q.endpointId === endpointid)
 				.map((q) => ({
 					title: q.name,
@@ -132,7 +147,7 @@
 
 	{#if itemsToShow.length > 0}
 		<div class="">
-			<div class="h-[50px] bg-accent">{''}</div>
+			<div class="h-[50px] bg-accent"></div>
 			<ul
 				class="h-full w-[60vw] grow space-y-1 overflow-x-auto overflow-y-auto overscroll-contain bg-base-100 px-4 py-4 pb-[25vh] md:w-full"
 			>

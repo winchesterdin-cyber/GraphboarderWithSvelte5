@@ -7,7 +7,7 @@
 	let input = $state<HTMLInputElement>();
 </script>
 
-<Page MenuItem={true} CustomId="fdsfds" backPath={`/`} title="Mutations">
+<Page MenuItem={true} CustomId="fdsfds" backPath="/" title="Mutations">
 	<div class="h-full overflow-auto">
 		<input
 			class="input m-5 input-xs w-32"

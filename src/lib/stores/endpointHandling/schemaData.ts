@@ -31,7 +31,7 @@ export const create_schemaData = (): SchemaDataStore => {
 	});
 	const { subscribe, set, update } = store;
 
-	let returnObject: SchemaDataStore = {
+	const returnObject: SchemaDataStore = {
 		subscribe,
 		set,
 		update,
@@ -59,8 +59,8 @@ export const create_schemaData = (): SchemaDataStore => {
 			endpointInfo: EndpointInfoStore
 		): RootType[] => {
 			console.debug('set_rootTypes called', { withDerivedData, set_storeVal });
-			let storeValue = get(store);
-			let { schema } = storeValue;
+			const storeValue = get(store);
+			const { schema } = storeValue;
 
 			// Ensure schema.types exists before proceeding
 			if (!schema || !schema.types) {
@@ -68,7 +68,7 @@ export const create_schemaData = (): SchemaDataStore => {
 				return [];
 			}
 
-			let new_rootTypes = sortByName([...schema.types]);
+			const new_rootTypes = sortByName([...schema.types]);
 			if (withDerivedData) {
 				new_rootTypes.forEach((el: any) => {
 					Object.assign(
@@ -135,17 +135,17 @@ export const create_schemaData = (): SchemaDataStore => {
 			endpointInfo: EndpointInfoStore
 		): Record<string, unknown> => {
 			console.debug('set_QMSFields called', { withDerivedData, set_storeVal, QMS });
-			let storeValue = get(store);
-			let { rootTypes, schema } = storeValue;
-			let result: Record<string, any> = {};
-			let isQMSField = true;
+			const storeValue = get(store);
+			const { rootTypes, schema } = storeValue;
+			const result: Record<string, any> = {};
+			const isQMSField = true;
 
 			QMS.forEach((_QMS_) => {
 				// _QMS_ -> current QMS (one of: Query,Mutation,Subscription) - normalized to lowercase usually
 				// But schema lookup might need different casing.
 				// Assuming standard "queryType", "mutationType", "subscriptionType" in schema
-				let schemaTypeProp = `${_QMS_.toLowerCase()}Type`;
-				let _QMS_Type_name = (schema as any)?.[schemaTypeProp]?.name;
+				const schemaTypeProp = `${_QMS_.toLowerCase()}Type`;
+				const _QMS_Type_name = (schema as any)?.[schemaTypeProp]?.name;
 				let new_QMS_Fields: any[] | undefined;
 
 				if (_QMS_Type_name) {
@@ -199,7 +199,7 @@ export const create_schemaData = (): SchemaDataStore => {
 				if (set_storeVal) {
 					// We need to update the specific QMS field in the store
 					// mapping 'query' -> 'queryFields', etc.
-					let fieldKey = `${_QMS_}Fields`;
+					const fieldKey = `${_QMS_}Fields`;
 					(storeValue as any)[fieldKey] = new_QMS_Fields || [];
 				}
 				result[`${_QMS_}Fields`] = new_QMS_Fields;
@@ -218,11 +218,11 @@ export const create_schemaData = (): SchemaDataStore => {
 		 */
 		set_fields: (endpointInfo: EndpointInfoStore) => {
 			//set rootTypes,queryFields,mutationFields,subscriptionFields
-			let rootTypes = returnObject.set_rootTypes(true, true, endpointInfo);
+			const rootTypes = returnObject.set_rootTypes(true, true, endpointInfo);
 			// Update store value ref after set_rootTypes potentially modified it
-			let storeValue = get(store);
+			const storeValue = get(store);
 
-			let QMSFields = returnObject.set_QMSFields(
+			const QMSFields = returnObject.set_QMSFields(
 				true,
 				false, // Don't set individually, we set all at once below
 				['query', 'mutation', 'subscription'],
@@ -270,8 +270,8 @@ export const create_schemaData = (): SchemaDataStore => {
 			_QMS_: QMSType,
 			schemaData: SchemaDataStore
 		): FieldWithDerivedData | undefined => {
-			let storeValue = get(schemaData);
-			let fieldKey = `${_QMS_}Fields` as keyof SchemaDataValue;
+			const storeValue = get(schemaData);
+			const fieldKey = `${_QMS_}Fields` as keyof SchemaDataValue;
 
 			// Safe access with type guard logic if needed, but casting relies on structure
 			const fields = storeValue[fieldKey] as FieldWithDerivedData[] | undefined;

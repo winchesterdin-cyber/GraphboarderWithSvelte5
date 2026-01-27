@@ -8,6 +8,7 @@
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
 	import type { AvailableEndpoint } from '$lib/types';
+	import { untrack } from 'svelte';
 
 	interface Props {
 		data: LayoutData;
@@ -24,7 +25,7 @@
 
 	$effect(() => {
 		endpointid = $page.params.endpointid ?? '';
-		console.debug('EndpointLayout: Resolving endpoint ID:', endpointid);
+		// console.debug('EndpointLayout: Resolving endpoint ID:', endpointid);
 
 		if (endpointid) {
 			// 1. Try exact match in localEndpoints (hardcoded)
@@ -32,13 +33,13 @@
 
 			// 2. Try exact match in localStorageEndpoints
 			if (!found && $localStorageEndpoints) {
-				console.debug('EndpointLayout: Searching in localStorageEndpoints');
+				// console.debug('EndpointLayout: Searching in localStorageEndpoints');
 				found = $localStorageEndpoints.find((endpoint) => endpoint.id == endpointid);
 			}
 
 			// 3. Legacy: Check for prefixes (if any legacy links still exist)
 			if (!found) {
-				console.debug('EndpointLayout: Checking for legacy ID formats');
+				// console.debug('EndpointLayout: Checking for legacy ID formats');
 				if (endpointid.startsWith('localEndpoint--')) {
 					found = localEndpoints.find((endpoint) => endpoint.id == endpointid.split('--')[1]);
 				} else if (endpointid.startsWith('localstorageEndpoint--') && $localStorageEndpoints) {
@@ -48,25 +49,8 @@
 				}
 			}
 
-			if (found) {
-				console.debug('EndpointLayout: Found endpoint configuration:', found);
-			} else {
-				console.warn('EndpointLayout: Endpoint configuration not found for ID:', endpointid);
-			}
-
 			endpointConfiguration = found;
-
-			// Redirect to explorer if we are on the root endpoint page
-			// We do this here because +page.svelte (children) might not render if Introspection fails in MainWraper
-			if (browser && endpointConfiguration) {
-				const currentPath = $page.url.pathname;
-				const targetPath = `/endpoints/${endpointid}`;
-				// Handle trailing slash differences
-				if (currentPath === targetPath || currentPath === targetPath + '/') {
-					console.debug('EndpointLayout: Redirecting to explorer');
-					goto(`${targetPath}/explorer`, { replaceState: true });
-				}
-			}
+			// Redirect logic moved to +page.svelte to avoid infinite loops in layout
 			isLoading = false;
 		}
 	});
