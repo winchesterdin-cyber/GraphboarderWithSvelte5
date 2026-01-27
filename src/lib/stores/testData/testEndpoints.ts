@@ -279,7 +279,7 @@ export const localEndpoints: AvailableEndpoint[] = [
 		idDecoderPossibilities: [
 			{
 				get_Val: (QMS_info: FieldWithDerivedData, schemaData: SchemaDataStore, id: string) => {
-					let array = stringToJs(atob(id)) as any;
+					const array = stringToJs(atob(id)) as any;
 					return array[array.length - 1];
 				},
 				check: (QMS_info: FieldWithDerivedData, schemaData: SchemaDataStore) => {

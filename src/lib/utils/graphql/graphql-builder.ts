@@ -85,17 +85,17 @@ export const build_QMS_bodyPart = (
 
 export const generate_gqlArgObj = (group_argumentsData: ActiveArgumentData[]): GQLArgObj => {
 	// check for group if expects list and treat it accordingly like here --->https://stackoverflow.com/questions/69040911/hasura-order-by-date-with-distinct
-	let gqlArgObj = {};
+	const gqlArgObj = {};
 	let canRunQuery = true;
 	group_argumentsData.every((argData) => {
-		let _argumentCanRunQuery = argumentCanRunQuery(argData);
+		const _argumentCanRunQuery = argumentCanRunQuery(argData);
 		if (!_argumentCanRunQuery) {
 			canRunQuery = false;
 			return false;
 		}
-		let { chd_dispatchValue, stepsOfFields, dd_displayName } = argData;
+		const { chd_dispatchValue, stepsOfFields, dd_displayName } = argData;
 
-		let curr_gqlArgObj: any = gqlArgObj;
+		const curr_gqlArgObj: any = gqlArgObj;
 		if (dd_displayName) {
 			curr_gqlArgObj[dd_displayName] = chd_dispatchValue;
 		}
@@ -132,10 +132,10 @@ export const generate_group_gqlArgObj = (
 	//if is where/filter (its related_root has filter_operators  ,like __or,__and,_not) handle differently after implementing the new ui
 	let group_gqlArgObj = {};
 
-	let group_argumentsData = group.group_args.filter((arg) => {
+	const group_argumentsData = group.group_args.filter((arg) => {
 		return arg.inUse;
 	});
-	let group_canRunQuery = group_argumentsData.every((arg) => {
+	const group_canRunQuery = group_argumentsData.every((arg) => {
 		return arg.canRunQuery;
 	});
 	if (group_argumentsData?.length > 0) {
@@ -146,7 +146,7 @@ export const generate_group_gqlArgObj = (
 		}
 	}
 
-	let group_gqlArgObj_string = gqlArgObjToString(group_gqlArgObj);
+	const group_gqlArgObj_string = gqlArgObjToString(group_gqlArgObj);
 	return {
 		group_gqlArgObj,
 		group_gqlArgObj_string,
@@ -159,7 +159,7 @@ const validItems = (
 	nodes: Record<string, ContainerData>
 ): { id: string }[] => {
 	return items.filter((item) => {
-		let itemData = nodes[item.id];
+		const itemData = nodes[item.id];
 		return (
 			itemData.inUse ||
 			(itemData.operator && validItems(itemData.items, nodes).length > 0) ||
@@ -177,7 +177,7 @@ export const generate_group_gqlArgObj_forHasOperators = (
 	itemsResultingData: Record<string, unknown>[];
 } => {
 	let resultingGqlArgObj: Record<string, unknown> | undefined;
-	let itemsResultingData: Record<string, unknown>[] = [];
+	const itemsResultingData: Record<string, unknown>[] = [];
 	const spreadItemsIfInSpreadContainers = (items: { id: string }[]): { id: string }[] => {
 		const spreadOutItems: { id: string }[] = [];
 		items.forEach((item) => {
@@ -193,7 +193,7 @@ export const generate_group_gqlArgObj_forHasOperators = (
 
 	const spreadOutItems = spreadItemsIfInSpreadContainers(items);
 	spreadOutItems.forEach((item) => {
-		let itemData = nodes[item.id];
+		const itemData = nodes[item.id];
 		const isContainer = itemData.hasOwnProperty('items');
 		const nodeStep = itemData?.stepsOfNodes?.[itemData?.stepsOfNodes.length - 1];
 		const nodeStepClean = filterElFromArr(nodeStep as any, [null, undefined, 'bonded', 'list']);
@@ -234,7 +234,7 @@ export const generate_group_gqlArgObj_forHasOperators = (
 			true
 		) as Record<string, unknown>;
 		let itemObjectTestCurr = setValueAtPath({}, nodeStepClean as string[], dataToAssign, true);
-		let itemObjectTest2 = 'not set';
+		const itemObjectTest2 = 'not set';
 		if (resultingGqlArgObj == undefined) {
 			// let itemObjectTest2 = 'set'
 			//itemObjectTest2 = dataToAssign
@@ -279,16 +279,16 @@ export const generate_group_gqlArgObjAndCanRunQuery_forHasOperators = (
 	group_gqlArgObj_string: string;
 	group_canRunQuery: boolean;
 } => {
-	let { group_argsNode, group_name, group_hasAllArgs } = group;
+	const { group_argsNode, group_name, group_hasAllArgs } = group;
 
 	let group_canRunQuery = true;
 	if (!group_argsNode) {
 		return { group_gqlArgObj: {}, group_gqlArgObj_string: '{}', group_canRunQuery: true };
 	}
 
-	let nodes = JSON.parse(JSON.stringify(group_argsNode));
-	let nodesArray = Object.values(nodes);
-	let mainContainer = (nodesArray as any).filter((node: any) => {
+	const nodes = JSON.parse(JSON.stringify(group_argsNode));
+	const nodesArray = Object.values(nodes);
+	const mainContainer = (nodesArray as any).filter((node: any) => {
 		return node.isMain;
 	})[0];
 
@@ -298,7 +298,7 @@ export const generate_group_gqlArgObjAndCanRunQuery_forHasOperators = (
 		nodes
 	);
 
-	let group_argumentsData = group.group_args.filter((arg) => {
+	const group_argumentsData = group.group_args.filter((arg) => {
 		return arg.inUse;
 	});
 	group_canRunQuery = group_argumentsData.every((arg) => {
@@ -313,7 +313,7 @@ export const generate_group_gqlArgObjAndCanRunQuery_forHasOperators = (
 	} else {
 		group_gqlArgObj = generate_group_gqlArgObj_forHasOperatorsRESULT.resultingGqlArgObj;
 	}
-	let group_gqlArgObj_string = gqlArgObjToString(group_gqlArgObj as Record<string, unknown>);
+	const group_gqlArgObj_string = gqlArgObjToString(group_gqlArgObj as Record<string, unknown>);
 	return {
 		group_gqlArgObj: group_gqlArgObj as Record<string, unknown>,
 		group_gqlArgObj_string,
@@ -324,8 +324,8 @@ export const generate_group_gqlArgObjAndCanRunQuery_forHasOperators = (
 export const generate_finalGqlArgObj_fromGroups = (
 	activeArgumentsDataGrouped: ActiveArgumentGroup[]
 ): FinalGQLArgObj => {
-	let finalGqlArgObj = {};
-	let final_canRunQuery = activeArgumentsDataGrouped.every((group) => {
+	const finalGqlArgObj = {};
+	const final_canRunQuery = activeArgumentsDataGrouped.every((group) => {
 		return group.group_canRunQuery;
 	});
 
@@ -342,18 +342,18 @@ export const getQMSLinks = (
 	endpointInfo: EndpointInfoStore,
 	schemaData: SchemaData
 ): { url: string; title: string }[] => {
-	let $page = get(page);
+	const $page = get(page);
 	// let origin = $page.url.origin; // Unused
 	let queryLinks: { url: string; title: string }[] = [];
-	let $schemaData = get(schemaData);
+	const $schemaData = get(schemaData);
 	const sortIt = (QMSFields: FieldWithDerivedData[]): FieldWithDerivedData[] => {
 		return QMSFields?.sort((a, b) => {
-			let ea = a.dd_rootName;
-			let eb = b.dd_rootName;
-			let fa = a.dd_displayName.substring(6);
-			let fb = b.dd_displayName.substring(6);
-			let ga = a.dd_displayName;
-			let gb = b.dd_displayName;
+			const ea = a.dd_rootName;
+			const eb = b.dd_rootName;
+			const fa = a.dd_displayName.substring(6);
+			const fb = b.dd_displayName.substring(6);
+			const ga = a.dd_displayName;
+			const gb = b.dd_displayName;
 			return sortingFunctionMutipleColumnsGivenArray([
 				[ea, eb],
 				[fa, fb],
@@ -362,28 +362,28 @@ export const getQMSLinks = (
 		});
 	};
 
-	let fieldsKey = `${QMSName}Fields` as keyof typeof $schemaData;
-	let fields = $schemaData[fieldsKey] as FieldWithDerivedData[];
+	const fieldsKey = `${QMSName}Fields` as keyof typeof $schemaData;
+	const fields = $schemaData[fieldsKey] as FieldWithDerivedData[];
 
 	queryLinks = sortIt(fields)?.map((query) => {
-		let queryName = query.name;
+		const queryName = query.name;
 		let queryNameDisplay = queryName;
 
-		let currentQMS_info = schemaData.get_QMS_Field(queryName, QMSName, schemaData);
+		const currentQMS_info = schemaData.get_QMS_Field(queryName, QMSName, schemaData);
 		if (!currentQMS_info) return { url: '', title: '' };
 
 		const rowsLocation = endpointInfo.get_rowsLocation(currentQMS_info, schemaData);
 		const nodeFieldsQMS_info = get_nodeFieldsQMS_info(currentQMS_info, rowsLocation, schemaData);
-		let scalarFields = get_scalarColsData(
+		const scalarFields = get_scalarColsData(
 			nodeFieldsQMS_info,
 			[currentQMS_info.dd_displayName, ...rowsLocation],
 			schemaData
 		);
 
-		let mandatoryArgs = query?.args?.filter((arg) => {
+		const mandatoryArgs = query?.args?.filter((arg) => {
 			return arg.dd_NON_NULL;
 		});
-		let ID_Args = query?.args?.filter((arg) => {
+		const ID_Args = query?.args?.filter((arg) => {
 			return arg.dd_rootName == 'ID';
 		});
 		if (mandatoryArgs && mandatoryArgs.length > 0) {
@@ -395,7 +395,7 @@ export const getQMSLinks = (
 		if (scalarFields.length == 0) {
 			queryNameDisplay = queryNameDisplay + ' (no scalar)';
 		}
-		let queryLink = { url: `${parentURL}/${queryName}`, title: queryNameDisplay };
+		const queryLink = { url: `${parentURL}/${queryName}`, title: queryNameDisplay };
 		return queryLink;
 	});
 	return queryLinks || [];
@@ -406,12 +406,12 @@ export const stepsOfFieldsToQueryFragmentObject = (
 	excludeFirstStep: boolean = true,
 	dataForLastStep: string = 'novaluehere'
 ): StepsOfFieldsObject => {
-	let _stepsOfFields = [...stepsOfFields];
+	const _stepsOfFields = [...stepsOfFields];
 	if (excludeFirstStep) {
 		_stepsOfFields.shift();
 	}
-	let _stepsOfFields_length = _stepsOfFields.length;
-	let queryObject: any = {};
+	const _stepsOfFields_length = _stepsOfFields.length;
+	const queryObject: any = {};
 	let queryObjectCurrLevel: any = queryObject;
 	_stepsOfFields.forEach((fieldName, index) => {
 		if (_stepsOfFields_length == index + 1) {
@@ -466,20 +466,20 @@ export const nodeAddDefaultFields = (
 		'not'
 	];
 
-	let fields_Grouped = getFields_Grouped(node, dd_displayNameToExclude as string[], schemaData);
-	let scalarFields = fields_Grouped.scalarFields;
-	let non_scalarFields = fields_Grouped.non_scalarFields;
-	let enumFields = fields_Grouped.enumFields;
+	const fields_Grouped = getFields_Grouped(node, dd_displayNameToExclude as string[], schemaData);
+	const scalarFields = fields_Grouped.scalarFields;
+	const non_scalarFields = fields_Grouped.non_scalarFields;
+	const enumFields = fields_Grouped.enumFields;
 
 	[...scalarFields, ...enumFields].forEach((element) => {
-		let stepsOfFields = [
+		const stepsOfFields = [
 			group.group_name ||
 				node.dd_displayName ||
 				(node as any).parent_node?.dd_displayName ||
 				'unknown',
 			element.dd_displayName
 		];
-		let newArgData = {
+		const newArgData = {
 			stepsOfFields,
 			stepsOfFieldsStringified: JSON.stringify(stepsOfFields),
 			id: `${JSON.stringify(stepsOfFields)}${Math.random()}`,
@@ -493,14 +493,14 @@ export const nodeAddDefaultFields = (
 		);
 	});
 
-	let baseFilterOperators = ['_and', '_or', '_not', 'and', 'or', 'not'];
+	const baseFilterOperators = ['_and', '_or', '_not', 'and', 'or', 'not'];
 
 	non_scalarFields
 		?.filter((arg) => {
 			return !baseFilterOperators.includes(arg.dd_displayName);
 		})
 		?.forEach((element) => {
-			let stepsOfFields = [
+			const stepsOfFields = [
 				group.group_name ||
 					node.dd_displayName ||
 					(node as any).parent_node?.dd_displayName ||
@@ -508,20 +508,20 @@ export const nodeAddDefaultFields = (
 				element.dd_displayName
 			];
 
-			let newContainerData: any = {
+			const newContainerData: any = {
 				stepsOfFields,
 				stepsOfFieldsStringified: JSON.stringify(stepsOfFields),
 				id: `${JSON.stringify(stepsOfFields)}${Math.random()}`,
 				...element
 			};
-			let randomNr = Math.random().toString();
-			let newContainerDataRootType = schemaData.get_rootType(
+			const randomNr = Math.random().toString();
+			const newContainerDataRootType = schemaData.get_rootType(
 				null,
 				newContainerData.dd_rootName,
 				schemaData
 			);
 
-			let isListContainer = newContainerData?.dd_kindList;
+			const isListContainer = newContainerData?.dd_kindList;
 			let operator: any;
 			if (!operator && isListContainer) {
 				operator = 'list';

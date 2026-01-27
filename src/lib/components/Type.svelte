@@ -122,7 +122,7 @@
 				<div class="border-l-2 border-secondary bg-accent/5">
 					<div class="">
 						{#each type?.args as arg, index}
-							<Arg {index} type={arg} {template} predefinedFirstSteps={[]} groupName={'default'} />
+							<Arg {index} type={arg} {template} predefinedFirstSteps={[]} groupName="default" />
 						{/each}
 					</div>
 				</div>

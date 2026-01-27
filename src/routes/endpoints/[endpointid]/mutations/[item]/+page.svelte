@@ -6,7 +6,7 @@
 	import QMSWraper from '$lib/components/QMSWraper.svelte';
 </script>
 
-<Page MenuItem={false} CustomId="fdsfdsee" backPath={`/`} title={$page.params.item}>
+<Page MenuItem={false} CustomId="fdsfdsee" backPath="/" title={$page.params.item}>
 	{#key $page.params.item}
 		{#if $page.params.item}
 			<QMSWraper isOutermostQMSWraper={true} QMSName={$page.params.item} QMSType="mutation">

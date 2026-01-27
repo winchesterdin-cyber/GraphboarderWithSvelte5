@@ -54,7 +54,7 @@ export const smartModifyStringBasedOnBoundries = (
 	if (!inputString.includes(openBoundryChar)) {
 		return inputString;
 	}
-	let result: string[] = [];
+	const result: string[] = [];
 	//let splitByOpened=inputString.split('(')
 	const splitByClosed = inputString.split(closeBoundryChar);
 	splitByClosed.forEach((element) => {

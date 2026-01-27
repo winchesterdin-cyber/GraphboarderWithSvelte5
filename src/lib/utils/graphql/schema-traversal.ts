@@ -21,7 +21,7 @@ const toReversed = <T>(arr: T[]): T[] => {
  * @returns Array of GraphQLKind strings.
  */
 export const get_KindsArray = (type: any): GraphQLKind[] => {
-	let kinds: GraphQLKind[] = [];
+	const kinds: GraphQLKind[] = [];
 
 	// Manual traversal to match original behavior logic
 	if (type?.kind) kinds.push(type.kind);
@@ -43,7 +43,7 @@ export const get_KindsArray = (type: any): GraphQLKind[] => {
  * @returns Array of type names.
  */
 export const get_NamesArray = (type: any): string[] => {
-	let names: string[] = [];
+	const names: string[] = [];
 	if (type?.name) names.push(type.name);
 	if (type?.type?.name) names.push(type.type.name);
 	if (type?.ofType?.name) names.push(type.ofType.name);
@@ -107,9 +107,9 @@ export const getFields_Grouped = (
 		node?.dd_rootName || (node as any).parent_node?.dd_rootName || 'unknown',
 		schemaData
 	);
-	let scalarFields: FieldWithDerivedData[] = [];
-	let non_scalarFields: FieldWithDerivedData[] = [];
-	let enumFields: (RootType & FieldWithDerivedData)[] = [];
+	const scalarFields: FieldWithDerivedData[] = [];
+	const non_scalarFields: FieldWithDerivedData[] = [];
+	const enumFields: (RootType & FieldWithDerivedData)[] = [];
 
 	let fieldsArray: FieldWithDerivedData[] | undefined;
 	if ((node as FieldWithDerivedData)?.args) {
@@ -181,7 +181,7 @@ export const mark_paginationArgs = (
 	const paginationPossibleNames = get(endpointInfo).paginationArgsPossibleNames || {};
 	const paginationPossibleNamesKeys = Object.keys(paginationPossibleNames);
 	args.forEach((arg) => {
-		let matchingKey = paginationPossibleNamesKeys.find((key) => {
+		const matchingKey = paginationPossibleNamesKeys.find((key) => {
 			return paginationPossibleNames[key].includes(arg.dd_displayName);
 		});
 		if (matchingKey) {
@@ -238,7 +238,7 @@ export const generate_derivedData = (
 	endpointInfo: EndpointInfoStore,
 	schemaData: SchemaData
 ): FieldWithDerivedData => {
-	let derivedData = { ...type } as FieldWithDerivedData;
+	const derivedData = { ...type } as FieldWithDerivedData;
 	derivedData.dd_kindsArray = get_KindsArray(type);
 	derivedData.dd_namesArray = get_NamesArray(type);
 	derivedData.dd_rootName = get_rootName(derivedData.dd_namesArray);
@@ -268,7 +268,7 @@ export const generate_derivedData = (
 		}
 	});
 
-	let displayInterface = get_displayInterface(derivedData, endpointInfo);
+	const displayInterface = get_displayInterface(derivedData, endpointInfo);
 
 	if (!derivedData.dd_displayInterface || ['text'].includes(derivedData.dd_displayInterface)) {
 		derivedData.dd_displayInterface = (displayInterface as any) || undefined; // Normalize null to undefined if interface expects it
@@ -286,8 +286,8 @@ export const generate_derivedData = (
 
 	if (derivedData.dd_isArg) {
 		const baseFilterOperatorNames = ['_and', '_or', '_not', 'and', 'or', 'not'];
-		let dd_baseFilterOperators: string[] = [];
-		let dd_nonBaseFilterOperators: string[] = [];
+		const dd_baseFilterOperators: string[] = [];
+		const dd_nonBaseFilterOperators: string[] = [];
 		if ((type as any)?.inputFields) {
 			(type as any).inputFields.forEach((inputField: any) => {
 				if (baseFilterOperatorNames.includes(inputField.name)) {
@@ -314,7 +314,7 @@ export const generate_derivedData = (
 	derivedData.dd_derivedTypeBorrowed = 'implement this? maybe not?';
 
 	if (derivedData?.dd_baseFilterOperators) {
-		let defaultdisplayInterface = get_displayInterface(derivedData, endpointInfo);
+		const defaultdisplayInterface = get_displayInterface(derivedData, endpointInfo);
 		if ((type as any)?.inputFields !== undefined) {
 			(type as any).inputFields.forEach((inputField: any) => {
 				Object.assign(inputField, { dd_displayInterface: defaultdisplayInterface });
@@ -435,12 +435,12 @@ export const get_scalarColsData = (
 	if (prefixStepsOfFields.length > 0) {
 		keep_currentQMS_info_dd_displayName = false;
 	}
-	let dd_relatedRoot = getRootType(null, currentQMS_info.dd_rootName, schemaData);
+	const dd_relatedRoot = getRootType(null, currentQMS_info.dd_rootName, schemaData);
 	// Note: getFields_Grouped is available in this module
-	let { scalarFields } = getFields_Grouped(dd_relatedRoot!, [], schemaData);
-	let currentQuery_fields_SCALAR_names = scalarFields.map((field) => field.name);
+	const { scalarFields } = getFields_Grouped(dd_relatedRoot!, [], schemaData);
+	const currentQuery_fields_SCALAR_names = scalarFields.map((field) => field.name);
 
-	let scalarColsData = currentQuery_fields_SCALAR_names.map((name) => {
+	const scalarColsData = currentQuery_fields_SCALAR_names.map((name) => {
 		let stepsOfFields;
 		if (keep_currentQMS_info_dd_displayName) {
 			stepsOfFields = [...prefixStepsOfFields, currentQMS_info.dd_displayName, name];
@@ -459,7 +459,7 @@ export const get_scalarColsData = (
 		// Let's implement a simple version of stepsOfFieldsToQueryFragmentObject here or make it shared.
 		// It seems purely structural, no schema dependency.
 
-		let scalarColData = {
+		const scalarColData = {
 			title: name,
 			stepsOfFields: stepsOfFields,
 			// stepsOfFieldsOBJ: stepsOfFieldsToQueryFragmentObject(stepsOfFields, false) // Circular dep potentially
@@ -477,12 +477,12 @@ const _localStepsOfFieldsToQueryFragmentObject = (
 	excludeFirstStep: boolean = true,
 	dataForLastStep: string = 'novaluehere'
 ): Record<string, any> => {
-	let _stepsOfFields = [...stepsOfFields];
+	const _stepsOfFields = [...stepsOfFields];
 	if (excludeFirstStep) {
 		_stepsOfFields.shift();
 	}
-	let _stepsOfFields_length = _stepsOfFields.length;
-	let queryObject: any = {};
+	const _stepsOfFields_length = _stepsOfFields.length;
+	const queryObject: any = {};
 	let queryObjectCurrLevel: any = queryObject;
 	_stepsOfFields.forEach((fieldName, index) => {
 		if (_stepsOfFields_length == index + 1) {

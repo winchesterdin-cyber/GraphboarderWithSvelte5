@@ -10,6 +10,10 @@
 	import { parse, print } from 'graphql';
 	import JSON5 from 'json5';
 	import { browser } from '$app/environment';
+	import { page } from '$app/stores';
+	import Modal from '$lib/components/Modal.svelte';
+	import { favoriteQueries } from '$lib/stores/favoriteQueriesStore';
+	import { addToast } from '$lib/stores/toastStore';
 
 	interface Props {
 		showNonPrettifiedQMSBody?: boolean;
@@ -27,6 +31,31 @@
 
 	let valueModifiedManually = $state<string>();
 	let lastSyncedValue = $state(value);
+
+	// Favorites State
+	let showFavoriteModal = $state(false);
+	let favoriteName = $state('');
+
+	const handleSaveFavorite = () => {
+		if (!favoriteName.trim()) return;
+
+		const endpointId = $page.params.endpointid;
+		if (!endpointId) {
+			addToast('Could not determine endpoint ID', 'error');
+			return;
+		}
+
+		favoriteQueries.add({
+			name: favoriteName,
+			query: value,
+			type: value.trim().startsWith('mutation') ? 'mutation' : 'query',
+			endpointId: endpointId
+		});
+
+		addToast(`Saved favorite: ${favoriteName}`, 'success');
+		showFavoriteModal = false;
+		favoriteName = '';
+	};
 
 	// Try to get context if available
 	let QMSWraperContext: any = $state();
@@ -225,6 +254,14 @@
 	</div>
 	<div class="absolute top-3 right-4 flex gap-2">
 		<button
+			class="btn normal-case btn-xs btn-warning"
+			onclick={() => (showFavoriteModal = true)}
+			aria-label="Save to Favorites"
+			title="Save this query to favorites"
+		>
+			<i class="bi bi-star-fill"></i> Save
+		</button>
+		<button
 			class="btn normal-case btn-xs btn-primary"
 			onclick={copyCurlToClipboard}
 			aria-label="Copy cURL"
@@ -256,3 +293,25 @@
 		>
 	</div>
 </div>
+
+<Modal
+	bind:show={showFavoriteModal}
+	modalIdentifier="favorite-query-modal"
+	onApply={handleSaveFavorite}
+	showApplyBtn={true}
+>
+	<h3 class="text-lg font-bold">Save Favorite Query</h3>
+	<div class="form-control mt-4 w-full">
+		<label class="label" for="fav-name">
+			<span class="label-text">Name</span>
+		</label>
+		<input
+			id="fav-name"
+			type="text"
+			placeholder="My Awesome Query"
+			class="input-bordered input w-full"
+			bind:value={favoriteName}
+			onkeydown={(e) => e.key === 'Enter' && handleSaveFavorite()}
+		/>
+	</div>
+</Modal>

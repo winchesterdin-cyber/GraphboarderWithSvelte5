@@ -151,7 +151,7 @@ export const Create_activeArgumentsDataGrouped_Store = (
 		},
 		update_groups: (groupNewData: ActiveArgumentGroup) => {
 			update((activeArgumentsDataGrouped) => {
-				let index = activeArgumentsDataGrouped.findIndex((group) => {
+				const index = activeArgumentsDataGrouped.findIndex((group) => {
 					return group.group_name == groupNewData.group_name;
 				});
 				if (index !== -1) {
@@ -211,7 +211,7 @@ export const Create_activeArgumentsDataGrouped_Store = (
 		},
 		delete_activeArgument: (activeArgumentData: ActiveArgumentData, groupName: string) => {
 			update((activeArgumentsDataGrouped) => {
-				let group = activeArgumentsDataGrouped?.find((group) => {
+				const group = activeArgumentsDataGrouped?.find((group) => {
 					return group.group_name == groupName;
 				});
 
@@ -236,10 +236,10 @@ export const Create_activeArgumentsDataGrouped_Store = (
 				}
 
 				if (group.group_argsNode) {
-					let containers = Object.values(group.group_argsNode).filter((container) => {
+					const containers = Object.values(group.group_argsNode).filter((container) => {
 						return container?.items;
 					});
-					let argumentParentContainer = containers.find((container) => {
+					const argumentParentContainer = containers.find((container) => {
 						return container.items.find((item) => {
 							return item.id == activeArgumentData.id;
 						});
@@ -325,7 +325,7 @@ export const add_activeArgumentOrContainerTo_activeArgumentsDataGrouped = (
 		if (!endpointInfo) {
 			return;
 		}
-		let typeExtraData = endpointInfo.get_typeExtraData(newArgumentOrContainerData);
+		const typeExtraData = endpointInfo.get_typeExtraData(newArgumentOrContainerData);
 		if (!typeExtraData) {
 			return;
 		}

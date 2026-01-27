@@ -91,7 +91,7 @@ export const endpointInfoDefaultValues: EndpointConfiguration = {
 
 				const tableNameLowercase = QMS_info.dd_displayName.toLowerCase().replaceAll('s', '');
 
-				let possibleNames = ['id', `${tableNameLowercase}_id`, `${tableNameLowercase}id`];
+				const possibleNames = ['id', `${tableNameLowercase}_id`, `${tableNameLowercase}id`];
 				// Array.find doesn't return the FOUND element of the inner search, it returns the element of possibleNames.
 				// The original code logic was slightly flawed: `possibleNames.find` returns a string, but the callback sets `idField`.
 				possibleNames.find((possibleName) => {
@@ -129,7 +129,7 @@ export const endpointInfoDefaultValues: EndpointConfiguration = {
 					return idField;
 				}
 
-				let idFields = nonNullScalarFields?.filter((field) => {
+				const idFields = nonNullScalarFields?.filter((field) => {
 					const fieldDisplayNameLowercase = field.dd_displayName.toLowerCase().replaceAll('s', '');
 					return fieldDisplayNameLowercase.includes('id');
 				});
@@ -409,7 +409,7 @@ export const create_endpointInfo_Store = (
 				return [];
 			}
 
-			let inputColumnsLocationInArg = storeVal.inputColumnsPossibleLocationsInArg.find(
+			const inputColumnsLocationInArg = storeVal.inputColumnsPossibleLocationsInArg.find(
 				(currPossibility) => {
 					if (currPossibility.length == 0) {
 						return true;
@@ -433,7 +433,7 @@ export const create_endpointInfo_Store = (
 				return [];
 			}
 
-			let rowsLocationPossibilitiy = storeVal.rowsLocationPossibilities.find(
+			const rowsLocationPossibilitiy = storeVal.rowsLocationPossibilities.find(
 				(rowsLocationPossibilitiy) => {
 					return rowsLocationPossibilitiy.check(QMS_info, schemaData);
 				}
