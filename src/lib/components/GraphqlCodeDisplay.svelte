@@ -78,6 +78,7 @@
 	let astPrinted = $state('');
 	let copyFeedback = $state(false);
 	let curlCopyFeedback = $state(false);
+	let fetchCopyFeedback = $state(false);
 
 	const copyToClipboard = () => {
 		navigator.clipboard.writeText(value);
@@ -128,6 +129,51 @@
 		return `curl -X POST "${url}" -H "Content-Type: application/json"${headerString} -d '${queryJson}'`;
 	};
 
+	const generateFetchCommand = () => {
+		let url = 'http://localhost:4000/graphql'; // Default fallback
+		let headers: Record<string, string> = {};
+
+		if (QMSMainWraperContext) {
+			const { endpointInfo } = QMSMainWraperContext;
+			// Access store value
+			const endpoint = (endpointInfo as any)?.subscribe
+				? (getStoreValue(endpointInfo) as any)
+				: endpointInfo;
+			if (endpoint?.url) {
+				url = endpoint.url;
+			}
+			if (endpoint?.headers) {
+				headers = { ...endpoint.headers };
+			}
+		}
+
+		// Also try localStorage headers if not found in endpoint
+		if (Object.keys(headers).length === 0 && browser) {
+			const headersStr = localStorage.getItem('headers');
+			if (headersStr) {
+				try {
+					const storedHeaders = JSON.parse(headersStr);
+					headers = { ...storedHeaders };
+				} catch (e) {
+					// ignore
+				}
+			}
+		}
+
+		// Add Content-Type if not present
+		if (!headers['Content-Type']) {
+			headers['Content-Type'] = 'application/json';
+		}
+
+		const body = { query: value };
+
+		return `fetch("${url}", {
+  method: "POST",
+  headers: ${JSON.stringify(headers, null, 2)},
+  body: JSON.stringify(${JSON.stringify(body, null, 2)})
+});`;
+	};
+
 	// Helper to get store value safely
 	function getStoreValue(store: any) {
 		let storeVal;
@@ -137,10 +183,21 @@
 
 	const copyCurlToClipboard = () => {
 		const curl = generateCurlCommand();
+		console.debug('Copying cURL command to clipboard');
 		navigator.clipboard.writeText(curl);
 		curlCopyFeedback = true;
 		setTimeout(() => {
 			curlCopyFeedback = false;
+		}, 2000);
+	};
+
+	const copyFetchToClipboard = () => {
+		const fetchCmd = generateFetchCommand();
+		console.debug('Copying fetch command to clipboard');
+		navigator.clipboard.writeText(fetchCmd);
+		fetchCopyFeedback = true;
+		setTimeout(() => {
+			fetchCopyFeedback = false;
 		}, 2000);
 	};
 
@@ -270,6 +327,17 @@
 				<i class="bi bi-check"></i> Copied cURL!
 			{:else}
 				<i class="bi bi-terminal"></i> Copy cURL
+			{/if}
+		</button>
+		<button
+			class="btn normal-case btn-xs btn-primary"
+			onclick={copyFetchToClipboard}
+			aria-label="Copy Fetch"
+		>
+			{#if fetchCopyFeedback}
+				<i class="bi bi-check"></i> Copied Fetch!
+			{:else}
+				<i class="bi bi-code-slash"></i> Copy Fetch
 			{/if}
 		</button>
 		<button

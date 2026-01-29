@@ -69,6 +69,7 @@ As you build the query, the results are fetched and displayed automatically.
 - Click the **"QMS body"** button to toggle the view of the actual GraphQL query being sent to the server.
 - **Copy Query**: Click the **"Copy"** button to copy the query string to your clipboard.
 - **Copy cURL**: Click the **"Copy cURL"** button to copy a cURL command for the current query to your clipboard, allowing you to easily test it in your terminal.
+- **Copy Fetch**: Click the **"Copy Fetch"** button to copy a JavaScript `fetch` code snippet for the current query to your clipboard. This is useful for quickly integrating the query into your application code.
 - **Prettify**: Use the "Show Prettified" toggle to switch between raw and formatted views.
 
 ## 6. History & Favorites

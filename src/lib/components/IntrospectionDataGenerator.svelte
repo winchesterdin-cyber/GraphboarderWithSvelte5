@@ -22,15 +22,27 @@
 	const endpointInfo = MainWraperContext?.endpointInfo;
 	const schemaData = MainWraperContext?.schemaData;
 
-	const endpointInfoUrl = $endpointInfo?.url;
+	let endpointInfoUrl = $derived($endpointInfo?.url);
 	const getStoredSchemaData = (endpointInfoUrl: string | undefined) => {
 		if (!endpointInfoUrl) return undefined;
-		return endpointsSchemaData.find((item: any) => item.url === endpointInfoUrl);
+		console.debug('Checking stored schema for URL:', endpointInfoUrl);
+		const found = endpointsSchemaData.find((item: any) => item.url === endpointInfoUrl);
+		console.debug('Found stored schema?', !!found);
+		return found;
 	};
-	const storedSchemaData = getStoredSchemaData(endpointInfoUrl);
-	if (storedSchemaData && schemaData) {
-		$schemaData = storedSchemaData as any; // Casting as test data might not perfectly match interface
-	}
+	let storedSchemaData = $derived(getStoredSchemaData(endpointInfoUrl));
+
+	$effect(() => {
+		if (storedSchemaData && schemaData) {
+			console.debug('Using stored schema data');
+			if (!storedSchemaData.rootTypes && storedSchemaData.schema && endpointInfo) {
+				$schemaData.schema = storedSchemaData.schema;
+				schemaData.set_fields(endpointInfo);
+			} else {
+				$schemaData = storedSchemaData as any; // Casting as test data might not perfectly match interface
+			}
+		}
+	});
 	//setClient(urqlCoreClient);
 	//ds
 	const queryStoreRes = queryStore({
@@ -177,7 +189,7 @@
 	<!-- content here -->
 	{@render children?.()}
 {/if}
-{#if $queryStoreRes?.error}
+{#if $queryStoreRes?.error && !storedSchemaData}
 	<!-- The button to open modal -->
 	<!-- <label for="my-modal" class="btn">open modal</label> -->
 

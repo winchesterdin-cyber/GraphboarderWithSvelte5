@@ -27,6 +27,6 @@
 </script>
 
 <div class="flex h-full w-full items-center justify-center">
-	<span class="loading loading-spinner loading-lg"></span>
+	<span class="loading loading-lg loading-spinner"></span>
 	<span class="ml-2">Redirecting to Explorer...</span>
 </div>
