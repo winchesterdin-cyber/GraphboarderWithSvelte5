@@ -5,6 +5,7 @@
 	import { getContext, onMount } from 'svelte';
 	import { recentQueries } from '$lib/stores/recentQueriesStore';
 	import { favoriteQueries } from '$lib/stores/favoriteQueriesStore';
+	import { historyQueries } from '$lib/stores/historyQueriesStore';
 	import type { QMSMainWraperContext } from '$lib/types';
 
 	interface LinkItem {
@@ -66,6 +67,21 @@
 				.map((q) => ({
 					title: q.name,
 					url: `/endpoints/${endpointid}/${q.type == 'query' ? 'queries' : 'mutations'}/${q.name}`
+				}))
+		},
+		{
+			title: 'History',
+			url: `/endpoints/${endpointid}/history`,
+			urlIsRoute: false,
+			icon: 'bi bi-clock',
+			isSelected: false,
+			hasFill: false,
+			items: $historyQueries
+				.filter((q) => q.endpointId === endpointid)
+				.sort((a, b) => b.timestamp - a.timestamp)
+				.map((q) => ({
+					title: `${new Date(q.timestamp).toLocaleTimeString()} - ${q.queryName} (${q.status})`,
+					url: `/endpoints/${endpointid}/${q.type == 'query' ? 'queries' : 'mutations'}/${q.queryName}?historyId=${q.id}`
 				}))
 		},
 		{

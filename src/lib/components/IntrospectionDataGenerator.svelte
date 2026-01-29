@@ -35,8 +35,9 @@
 	$effect(() => {
 		if (storedSchemaData && schemaData) {
 			console.debug('Using stored schema data');
-			if (!storedSchemaData.rootTypes && storedSchemaData.schema && endpointInfo) {
-				$schemaData.schema = storedSchemaData.schema;
+			const _storedSchemaData = storedSchemaData as any;
+			if (!_storedSchemaData.rootTypes && _storedSchemaData.schema && endpointInfo) {
+				$schemaData.schema = _storedSchemaData.schema;
 				schemaData.set_fields(endpointInfo);
 			} else {
 				$schemaData = storedSchemaData as any; // Casting as test data might not perfectly match interface

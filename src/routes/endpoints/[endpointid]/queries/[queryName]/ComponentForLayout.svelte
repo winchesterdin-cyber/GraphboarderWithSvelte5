@@ -24,6 +24,8 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import GraphqlCodeDisplay from '$lib/components/GraphqlCodeDisplay.svelte';
 	import ControlPanel from '$lib/components/ControlPanel.svelte';
+	import { historyQueries } from '$lib/stores/historyQueriesStore';
+	import { get } from 'svelte/store';
 	import type {
 		QMSWraperContext,
 		QMSMainWraperContext,
@@ -149,18 +151,53 @@
 		let fetching = true;
 		let error: any = false;
 		let data: any = false;
+
+		const startTime = Date.now();
+		const endpointId = $page.params.endpointid;
+		const queryName = QMSName;
+
 		$urqlCoreClient
 			.query(queryBody, {})
 			.toPromise()
 			.then((result: any) => {
 				fetching = false;
+				const duration = Date.now() - startTime;
+				let status: 'success' | 'error' = 'success';
 
 				if (result.error) {
 					error = result.error.message;
+					status = 'error';
 				}
 				if (result.data) {
 					data = result.data;
 				}
+
+				// Capture history
+				try {
+					const finalGqlArgObj = get(finalGqlArgObj_Store) as any;
+					const tableColsData = get(tableColsData_Store) as any;
+
+					// Simple deep copy to avoid mutations affecting stored history if objects are referenced
+					const argsToSave = finalGqlArgObj?.finalGqlArgObj ? JSON.parse(JSON.stringify(finalGqlArgObj.finalGqlArgObj)) : {};
+					const colsToSave = tableColsData ? JSON.parse(JSON.stringify(tableColsData)) : [];
+
+					if (endpointId) {
+						historyQueries.add({
+							endpointId,
+							queryName,
+							type: 'query',
+							args: argsToSave,
+							cols: colsToSave,
+							timestamp: Date.now(),
+							duration,
+							status,
+							queryBody
+						});
+					}
+				} catch (e) {
+					console.error('Failed to save query history:', e);
+				}
+
 				queryData = { fetching, error, data };
 				let stepsOfFieldsInput = [
 					currentQMS_info.dd_displayName,

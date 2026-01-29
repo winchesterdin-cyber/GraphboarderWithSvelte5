@@ -307,7 +307,8 @@
 		mergedChildren_QMSWraperCtxData_Store,
 		mergedChildren_controlPanel_Store,
 		QMSFieldToQMSGetMany_Store,
-		extraInfo
+		extraInfo,
+		initialGqlArgObj
 	};
 	if (preferGivenQMSWraperContext && QMSWraperContextGiven) {
 		QMSWraperContext = QMSWraperContextGiven;

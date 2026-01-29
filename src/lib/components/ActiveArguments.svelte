@@ -38,6 +38,11 @@
 		QMS_info = QMSWraperContext.QMS_info;
 	}
 
+	// Use initialGqlArgObj from context if QMSarguments is missing
+	if (!QMSarguments && QMSWraperContext.initialGqlArgObj) {
+		QMSarguments = QMSWraperContext.initialGqlArgObj;
+	}
+
 	let activeArgumentsDataGrouped: any[] = [];
 
 	const update_activeArgumentsDataGrouped = (groupNewData: any) => {
