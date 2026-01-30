@@ -7,6 +7,7 @@
 	import 'highlight.js/styles/base16/solarized-dark.css';
 	import { getPreciseType } from '$lib/utils/usefulFunctions';
 	import { updateStoresFromAST } from '$lib/utils/astToUIState';
+	import { generateTypeScript } from '$lib/utils/graphql/typescript-generator';
 	import { parse, print } from 'graphql';
 	import JSON5 from 'json5';
 	import { browser } from '$app/environment';
@@ -79,6 +80,7 @@
 	let copyFeedback = $state(false);
 	let curlCopyFeedback = $state(false);
 	let fetchCopyFeedback = $state(false);
+	let tsCopyFeedback = $state(false);
 
 	const copyToClipboard = () => {
 		navigator.clipboard.writeText(value);
@@ -199,6 +201,36 @@
 		setTimeout(() => {
 			fetchCopyFeedback = false;
 		}, 2000);
+	};
+
+	/**
+	 * Generates a TypeScript interface based on the current AST and Schema.
+	 * Copies the result to the clipboard and shows feedback.
+	 */
+	const copyTypeScriptToClipboard = () => {
+		if (!ast || !QMSMainWraperContext?.schemaData) {
+			console.warn('Cannot generate TypeScript: missing AST or SchemaData');
+			addToast('Cannot generate TypeScript: Schema data missing', 'warning');
+			return;
+		}
+
+		try {
+			console.debug('Generating TypeScript interface...');
+			const tsCode = generateTypeScript(ast, QMSMainWraperContext.schemaData);
+			if (tsCode) {
+				navigator.clipboard.writeText(tsCode);
+				tsCopyFeedback = true;
+				addToast('TypeScript interface copied!', 'success');
+				setTimeout(() => {
+					tsCopyFeedback = false;
+				}, 2000);
+			} else {
+				addToast('Generated TypeScript was empty', 'warning');
+			}
+		} catch (e: any) {
+			console.error('Error generating TypeScript:', e);
+			addToast(`Failed to generate TypeScript: ${e.message}`, 'error');
+		}
 	};
 
 	const syncQueryToUI = (newAst: any) => {
@@ -333,6 +365,7 @@
 			class="btn normal-case btn-xs btn-primary"
 			onclick={copyFetchToClipboard}
 			aria-label="Copy Fetch"
+			title="Generate and copy Fetch request"
 		>
 			{#if fetchCopyFeedback}
 				<i class="bi bi-check"></i> Copied Fetch!
@@ -342,8 +375,21 @@
 		</button>
 		<button
 			class="btn normal-case btn-xs btn-primary"
+			onclick={copyTypeScriptToClipboard}
+			aria-label="Copy TypeScript Interface"
+			title="Generate and copy TypeScript interface"
+		>
+			{#if tsCopyFeedback}
+				<i class="bi bi-check"></i> Copied TS!
+			{:else}
+				<i class="bi bi-filetype-ts"></i> Copy TS
+			{/if}
+		</button>
+		<button
+			class="btn normal-case btn-xs btn-primary"
 			onclick={copyToClipboard}
 			aria-label="Copy Query"
+			title="Copy raw query string"
 		>
 			{#if copyFeedback}
 				<i class="bi bi-check"></i> Copied!
@@ -356,6 +402,7 @@
 			onclick={() => {
 				showNonPrettifiedQMSBody = !showNonPrettifiedQMSBody;
 			}}
+			title="Toggle between prettified and raw view"
 		>
 			{showNonPrettifiedQMSBody ? ' show prettified ' : ' show non-prettified '}</button
 		>

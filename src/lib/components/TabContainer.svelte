@@ -127,6 +127,17 @@
 		itemsToShow = currentLink?.items ?? [];
 	};
 
+	let isHistoryTab = $derived($page.url.pathname.includes('/history'));
+
+	/**
+	 * Clears the query history after user confirmation.
+	 */
+	const clearHistory = () => {
+		if (confirm('Are you sure you want to clear all history?')) {
+			historyQueries.clear();
+		}
+	};
+
 	onMount(() => {
 		get_itemsToShow();
 	});
@@ -163,7 +174,18 @@
 
 	{#if itemsToShow.length > 0}
 		<div class="">
-			<div class="h-[50px] bg-accent"></div>
+			<div class="flex h-[50px] items-center justify-between bg-accent px-4">
+				{#if isHistoryTab}
+					<span class="font-bold text-accent-content">History</span>
+					<button
+						class="btn btn-xs btn-error text-white"
+						onclick={clearHistory}
+						title="Clear all history"
+					>
+						<i class="bi bi-trash"></i> Clear
+					</button>
+				{/if}
+			</div>
 			<ul
 				class="h-full w-[60vw] grow space-y-1 overflow-x-auto overflow-y-auto overscroll-contain bg-base-100 px-4 py-4 pb-[25vh] md:w-full"
 			>

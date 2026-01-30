@@ -70,6 +70,7 @@ As you build the query, the results are fetched and displayed automatically.
 - **Copy Query**: Click the **"Copy"** button to copy the query string to your clipboard.
 - **Copy cURL**: Click the **"Copy cURL"** button to copy a cURL command for the current query to your clipboard, allowing you to easily test it in your terminal.
 - **Copy Fetch**: Click the **"Copy Fetch"** button to copy a JavaScript `fetch` code snippet for the current query to your clipboard. This is useful for quickly integrating the query into your application code.
+- **Copy TypeScript**: Click the **"Copy TS"** button to generate and copy a TypeScript interface definition for the current query response to your clipboard. This interface is automatically derived from the schema and matches the shape of the selected fields.
 - **Prettify**: Use the "Show Prettified" toggle to switch between raw and formatted views.
 
 ## 6. History & Favorites
@@ -78,6 +79,7 @@ As you build the query, the results are fetched and displayed automatically.
   - The application automatically tracks every query and mutation you execute in the **History** tab.
   - Each entry shows the timestamp, query name, and execution status (success/error).
   - Clicking a history item restores the exact state of the query (arguments, columns) at the time of execution.
+  - **Clear History**: Click the **"Clear"** button at the top of the history list to remove all history entries.
 - **Recent**: The sidebar includes a "Recent" tab that tracks your recently visited queries and mutations (by name only) for quick navigation.
 - **Favorites**:
   - You can save frequently used queries to your **Favorites** list.
