@@ -74,7 +74,11 @@ As you build the query, the results are fetched and displayed automatically.
 
 ## 6. History & Favorites
 
-- **Recent**: The sidebar includes a "Recent" tab that tracks your recently visited queries and mutations for quick access.
+- **History**:
+  - The application automatically tracks every query and mutation you execute in the **History** tab.
+  - Each entry shows the timestamp, query name, and execution status (success/error).
+  - Clicking a history item restores the exact state of the query (arguments, columns) at the time of execution.
+- **Recent**: The sidebar includes a "Recent" tab that tracks your recently visited queries and mutations (by name only) for quick navigation.
 - **Favorites**:
   - You can save frequently used queries to your **Favorites** list.
   - Click the **"Save"** (star icon) button in the query code display toolbar.

@@ -23,6 +23,8 @@
 	import TypeList from '$lib/components/TypeList.svelte';
 	import CodeEditor from '$lib/components/fields/CodeEditor.svelte';
 	import GraphqlCodeDisplay from '$lib/components/GraphqlCodeDisplay.svelte';
+	import { historyQueries } from '$lib/stores/historyQueriesStore';
+	import { get } from 'svelte/store';
 
 	// Props interface and destructuring MUST come before getContext calls that use prefix
 	interface Props {
@@ -114,18 +116,52 @@
 		let fetching = true;
 		let error: any = false;
 		let data: any = false;
+
+		const startTime = Date.now();
+		const endpointId = $page.params.endpointid;
+		const queryName = QMSName;
+
 		$urqlCoreClient
 			.mutation(queryBody)
 			.toPromise()
 			.then((result: any) => {
 				fetching = false;
+				const duration = Date.now() - startTime;
+				let status: 'success' | 'error' = 'success';
 
 				if (result.error) {
 					error = result.error.message;
+					status = 'error';
 				}
 				if (result.data) {
 					data = result.data;
 				}
+
+				// Capture history
+				try {
+					const finalGqlArgObj = get(finalGqlArgObj_Store) as any;
+					const tableColsData = get(tableColsData_Store) as any;
+
+					const argsToSave = finalGqlArgObj?.finalGqlArgObj ? JSON.parse(JSON.stringify(finalGqlArgObj.finalGqlArgObj)) : {};
+					const colsToSave = tableColsData ? JSON.parse(JSON.stringify(tableColsData)) : [];
+
+					if (endpointId) {
+						historyQueries.add({
+							endpointId,
+							queryName,
+							type: 'mutation',
+							args: argsToSave,
+							cols: colsToSave,
+							timestamp: Date.now(),
+							duration,
+							status,
+							queryBody
+						});
+					}
+				} catch (e) {
+					console.error('Failed to save mutation history:', e);
+				}
+
 				queryData = { fetching, error, data };
 				let stepsOfFieldsInput = [
 					QMS_info.dd_displayName,

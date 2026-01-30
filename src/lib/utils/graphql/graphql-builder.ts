@@ -37,6 +37,15 @@ import {
 	get_scalarColsData
 } from './schema-traversal';
 
+/**
+ * Constructs the body part of a GraphQL query/mutation string.
+ * @param QMS_name The name of the query/mutation.
+ * @param QMS_fields The fields to select.
+ * @param QMS_args The arguments for the operation.
+ * @param QMS_type The type of operation ('query' | 'mutation').
+ * @param mergedChildren_finalGqlArgObj Arguments from child components/nodes.
+ * @returns The constructed GraphQL string body part or null if no fields selected.
+ */
 export const build_QMS_bodyPart = (
 	QMS_name: string,
 	QMS_fields: Record<string, unknown>,
@@ -83,6 +92,11 @@ export const build_QMS_bodyPart = (
 	return QMS_bodyPart;
 };
 
+/**
+ * Generates the GraphQL argument object from active argument data.
+ * @param group_argumentsData List of active arguments.
+ * @returns Object containing the generated argument object and validity status.
+ */
 export const generate_gqlArgObj = (group_argumentsData: ActiveArgumentData[]): GQLArgObj => {
 	// check for group if expects list and treat it accordingly like here --->https://stackoverflow.com/questions/69040911/hasura-order-by-date-with-distinct
 	const gqlArgObj = {};
@@ -122,6 +136,11 @@ export const generate_group_gqlArgObjForRoot = (
 	);
 };
 
+/**
+ * Generates the GraphQL argument object for a group of arguments.
+ * @param group The active argument group.
+ * @returns Object containing the group's argument object, string representation, and validity.
+ */
 export const generate_group_gqlArgObj = (
 	group: ActiveArgumentGroup
 ): {
@@ -321,6 +340,11 @@ export const generate_group_gqlArgObjAndCanRunQuery_forHasOperators = (
 	};
 };
 
+/**
+ * Generates the final GraphQL argument object by combining all groups.
+ * @param activeArgumentsDataGrouped All active argument groups.
+ * @returns The final GraphQL argument object and overall validity.
+ */
 export const generate_finalGqlArgObj_fromGroups = (
 	activeArgumentsDataGrouped: ActiveArgumentGroup[]
 ): FinalGQLArgObj => {
