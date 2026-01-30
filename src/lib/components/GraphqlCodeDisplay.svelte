@@ -203,6 +203,10 @@
 		}, 2000);
 	};
 
+	/**
+	 * Generates a TypeScript interface based on the current AST and Schema.
+	 * Copies the result to the clipboard and shows feedback.
+	 */
 	const copyTypeScriptToClipboard = () => {
 		if (!ast || !QMSMainWraperContext?.schemaData) {
 			console.warn('Cannot generate TypeScript: missing AST or SchemaData');

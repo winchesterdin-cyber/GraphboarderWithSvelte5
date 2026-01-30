@@ -129,6 +129,9 @@
 
 	let isHistoryTab = $derived($page.url.pathname.includes('/history'));
 
+	/**
+	 * Clears the query history after user confirmation.
+	 */
 	const clearHistory = () => {
 		if (confirm('Are you sure you want to clear all history?')) {
 			historyQueries.clear();
