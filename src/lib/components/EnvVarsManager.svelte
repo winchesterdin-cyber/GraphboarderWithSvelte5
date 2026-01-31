@@ -40,8 +40,8 @@
 <div class="flex flex-col gap-4">
 	<div class="flex items-center justify-between">
 		<h3 class="text-lg font-bold">Environment Variables</h3>
-		<label class="cursor-pointer label">
-			<span class="mr-2 label-text">Show Values</span>
+		<label class="label cursor-pointer">
+			<span class="label-text mr-2">Show Values</span>
 			<input type="checkbox" class="toggle toggle-sm" bind:checked={showValues} />
 		</label>
 	</div>
@@ -75,7 +75,7 @@
 							</td>
 							<td>
 								<button
-									class="btn btn-ghost btn-xs text-error"
+									class="btn text-error btn-ghost btn-xs"
 									onclick={() => handleDelete(key)}
 									aria-label="Delete {key}"
 								>
@@ -106,7 +106,7 @@
 				class="input-bordered input input-sm w-full font-mono"
 				bind:value={newValue}
 			/>
-			<button class="btn btn-primary btn-sm" onclick={handleAdd}>
+			<button class="btn btn-sm btn-primary" onclick={handleAdd}>
 				<i class="bi bi-plus-lg"></i> Add
 			</button>
 		</div>

@@ -397,20 +397,12 @@
 	</button>
 
 	{#if showHeadersModal}
-		<Modal
-			bind:show={showHeadersModal}
-			modalIdentifier="headersModal"
-			showApplyBtn={false}
-		>
+		<Modal bind:show={showHeadersModal} modalIdentifier="headersModal" showApplyBtn={false}>
 			<HeadersEditor {endpointInfo} onClose={() => (showHeadersModal = false)} />
 		</Modal>
 	{/if}
 	{#if showVarsModal}
-		<Modal
-			bind:show={showVarsModal}
-			modalIdentifier="varsModal"
-			showApplyBtn={false}
-		>
+		<Modal bind:show={showVarsModal} modalIdentifier="varsModal" showApplyBtn={false}>
 			<EnvVarsManager onClose={() => (showVarsModal = false)} />
 		</Modal>
 	{/if}

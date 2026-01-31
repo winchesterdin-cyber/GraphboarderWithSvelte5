@@ -1,4 +1,10 @@
 <script module>
+	/**
+	 * Formats bytes into a human-readable string.
+	 * @param bytes - The number of bytes.
+	 * @param decimals - The number of decimal places (default 2).
+	 * @returns Formatted string (e.g., "1.5 MB").
+	 */
 	function formatBytes(bytes: number, decimals = 2) {
 		if (!+bytes) return '0 Bytes';
 
@@ -107,6 +113,10 @@
 		}
 	});
 
+	/**
+	 * Handles infinite scrolling events.
+	 * @param detail - Event detail containing loaded and complete callbacks.
+	 */
 	function infiniteHandler({ detail: { loaded, complete } }: any) {
 		loadedF = loaded;
 		completeF = complete;
@@ -128,6 +138,10 @@
 		}
 	}
 
+	/**
+	 * Executes the GraphQL query.
+	 * @param queryBody - The GraphQL query string.
+	 */
 	const runQuery = (queryBody: string) => {
 		let fetching = true;
 		let error: any = false;
@@ -291,14 +305,14 @@
 	</div>
 
 	<button
-		class="btn btn-xs normal-case"
+		class="btn normal-case btn-xs"
 		onclick={() => (showHeadersModal = true)}
 		title="Edit Request Headers"
 	>
 		<i class="bi bi-list-check"></i> Headers
 	</button>
 	<button
-		class="btn btn-xs normal-case"
+		class="btn normal-case btn-xs"
 		onclick={() => (showVarsModal = true)}
 		title="Manage Environment Variables"
 	>
@@ -396,7 +410,8 @@
 			<GraphqlCodeDisplay
 				value={JSON.stringify(queryData.data, null, 2)}
 				enableSyncToUI={false}
-				showNonPrettifiedQMSBody={true}
+				language="json"
+				readonly={true}
 			/>
 		</div>
 	{/if}

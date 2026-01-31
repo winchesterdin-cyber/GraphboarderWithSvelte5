@@ -50,6 +50,8 @@ As you build the query, the results are fetched and displayed automatically.
 - **View Modes**:
   - **Table**: The default view presenting data in a responsive table.
   - **JSON**: Toggle to "JSON" view to see the raw response from the server.
+    - **Syntax Highlighting**: The JSON view provides syntax highlighting for better readability.
+    - **Download**: Click the **"Download JSON"** button in the JSON view toolbar to save the response body as a `.json` file.
 - **Metrics**:
   - **Time**: Displays the execution time of the request in milliseconds (ms).
   - **Size**: Displays the size of the response payload.

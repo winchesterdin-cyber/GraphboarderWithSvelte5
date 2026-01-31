@@ -48,10 +48,10 @@ function createEnvVarsStore() {
 		getVar: (key: string) => {
 			// Note: access via subscription or $envVars in components
 			// This helper might be useful for one-off reads if needed,
-            // but usually we subscribe.
-            // Since this is a store, we can't sync return easily without get() from svelte/store
-            // but we can rely on the store value being passed around.
-            return null;
+			// but usually we subscribe.
+			// Since this is a store, we can't sync return easily without get() from svelte/store
+			// but we can rely on the store value being passed around.
+			return null;
 		}
 	};
 }

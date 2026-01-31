@@ -1,5 +1,11 @@
 import { getPreciseType } from './typeUtils';
 
+/**
+ * Stringifies a value, including functions, into a JSON-compatible string.
+ * Functions are serialized as "/Function(fnBody)/".
+ * @param data - The value to stringify.
+ * @returns The stringified representation.
+ */
 export const stigifyAll = (data: unknown): string => {
 	return JSON.stringify(data, function (key, value) {
 		if (typeof value === 'function') {
@@ -9,6 +15,12 @@ export const stigifyAll = (data: unknown): string => {
 	});
 };
 
+/**
+ * Parses a JSON string that may contain serialized functions.
+ * Reverses `stigifyAll`.
+ * @param json - The JSON string to parse.
+ * @returns The parsed value with functions restored.
+ */
 export const parseAll = (json: string): unknown => {
 	return JSON.parse(json, function (key, value) {
 		if (typeof value === 'string' && value.startsWith('/Function(') && value.endsWith(')/')) {
@@ -19,6 +31,11 @@ export const parseAll = (json: string): unknown => {
 	});
 };
 
+/**
+ * Evaluates a string as JavaScript code or parses it if it contains serialized functions.
+ * @param string - The string to evaluate.
+ * @returns The evaluated value.
+ */
 export const stringToJs = (string: unknown): unknown => {
 	if (getPreciseType(string) !== 'string') {
 		console.warn(
@@ -33,6 +50,13 @@ export const stringToJs = (string: unknown): unknown => {
 	return new Function(`return ${string}`)();
 };
 
+/**
+ * Converts an object into its source code string representation.
+ * Handles nested objects, arrays, and functions.
+ * @param obj - The object to convert.
+ * @returns The source code string.
+ * @throws If input is not an object.
+ */
 export const objectToSourceCode = (obj: Record<string, unknown>): string => {
 	// Check if the input is an object
 	if (typeof obj !== 'object' || obj === null) {
@@ -40,6 +64,7 @@ export const objectToSourceCode = (obj: Record<string, unknown>): string => {
 	}
 
 	// Helper function to convert functions to strings
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 	function functionToString(fn: Function): string {
 		return fn.toString();
 	}
@@ -54,7 +79,7 @@ export const objectToSourceCode = (obj: Record<string, unknown>): string => {
 			return '[' + obj.map(convertObjectToSourceCode).join(', ') + ']';
 		}
 
-		if (typeof obj === 'object') {
+		if (typeof obj === 'object' && obj !== null) {
 			return (
 				'{' +
 				Object.entries(obj as Record<string, unknown>)

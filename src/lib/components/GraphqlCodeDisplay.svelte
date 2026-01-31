@@ -18,19 +18,33 @@
 	import { encodeState } from '$lib/utils/stateEncoder';
 	import { get } from 'svelte/store';
 	import { goto } from '$app/navigation';
+	import { downloadText } from '$lib/utils/downloadUtils';
 
+	/**
+	 * Props for GraphqlCodeDisplay component.
+	 */
 	interface Props {
+		/** Whether to show the raw (non-prettified) query body initially. */
 		showNonPrettifiedQMSBody?: boolean;
+		/** The code value to display (GraphQL query or JSON). */
 		value: string;
+		/** Whether to enable synchronization from the code editor back to the UI stores. */
 		enableSyncToUI?: boolean;
+		/** Prefix for context keys. */
 		prefix?: string;
+		/** The language to display/highlight. Default: 'graphql'. */
+		language?: string;
+		/** Whether the editor should be read-only. Default: false. */
+		readonly?: boolean;
 	}
 
 	let {
 		showNonPrettifiedQMSBody = $bindable(false),
 		value,
 		enableSyncToUI = true,
-		prefix = ''
+		prefix = '',
+		language = 'graphql',
+		readonly = false
 	}: Props = $props();
 
 	let valueModifiedManually = $state<string>();
@@ -90,15 +104,32 @@
 	let tsCopyFeedback = $state(false);
 	let apolloCopyFeedback = $state(false);
 	let shareFeedback = $state(false);
+	let downloadFeedback = $state(false);
 
 	/**
-	 * Copies the raw GraphQL query string to the clipboard.
+	 * Copies the raw content string to the clipboard.
 	 */
 	const copyToClipboard = () => {
+		console.debug('Copying content to clipboard');
 		navigator.clipboard.writeText(value);
 		copyFeedback = true;
 		setTimeout(() => {
 			copyFeedback = false;
+		}, 2000);
+	};
+
+	/**
+	 * Downloads the current content as a JSON file.
+	 */
+	const handleDownloadJSON = () => {
+		if (!value) return;
+		console.debug('Downloading JSON response');
+		// Generate filename with timestamp
+		const filename = `response-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.json`;
+		downloadText(value, filename);
+		downloadFeedback = true;
+		setTimeout(() => {
+			downloadFeedback = false;
 		}, 2000);
 	};
 
@@ -314,7 +345,8 @@
 	 */
 	const generateApolloCommand = () => {
 		const queryMatch = value.match(/(query|mutation|subscription)\s+(\w+)/);
-		const operationType = queryMatch?.[1] || (value.trim().startsWith('mutation') ? 'mutation' : 'query');
+		const operationType =
+			queryMatch?.[1] || (value.trim().startsWith('mutation') ? 'mutation' : 'query');
 		const queryName = queryMatch?.[2] || 'MyQuery';
 		const hookName = `use${queryName.charAt(0).toUpperCase() + queryName.slice(1)}`;
 		const hookType = operationType === 'mutation' ? 'Mutation' : 'Query';
@@ -387,7 +419,8 @@ export function ${hookName}() {
 
 	$effect(() => {
 		try {
-			if (value) {
+			// Only parse as GraphQL if language is graphql
+			if (value && language === 'graphql') {
 				ast = parse(value);
 			}
 		} catch (e) {
@@ -398,12 +431,14 @@ export function ${hookName}() {
 	$effect(() => {
 		if (valueModifiedManually && valueModifiedManually !== lastSyncedValue) {
 			try {
-				ast = parse(valueModifiedManually);
+				if (language === 'graphql') {
+					ast = parse(valueModifiedManually);
 
-				// Sync to UI if enabled and context is available
-				if (enableSyncToUI && QMSWraperContext && QMSMainWraperContext) {
-					syncQueryToUI(ast);
-					lastSyncedValue = valueModifiedManually;
+					// Sync to UI if enabled and context is available
+					if (enableSyncToUI && QMSWraperContext && QMSMainWraperContext) {
+						syncQueryToUI(ast);
+						lastSyncedValue = valueModifiedManually;
+					}
 				}
 			} catch (e) {
 				console.error('Error parsing manually modified query:', e);
@@ -430,7 +465,18 @@ export function ${hookName}() {
 
 <div class="bg-base text-content mockup-code mx-2 my-1 px-2">
 	<div class="max-h-[50vh] overflow-y-auto">
-		{#if showNonPrettifiedQMSBody}
+		{#if language === 'json'}
+			<div class="mx-4 mt-2">
+				<CodeEditor
+					rawValue={value}
+					language="json"
+					{readonly}
+					onChanged={(detail) => {
+						if (!readonly) valueModifiedManually = detail.chd_rawValue;
+					}}
+				/>
+			</div>
+		{:else if showNonPrettifiedQMSBody}
 			<code class="px-10">{value}</code>
 			<div class="mt-4">
 				<code class="px-10">{astAsString}</code>
@@ -443,8 +489,9 @@ export function ${hookName}() {
 				<CodeEditor
 					rawValue={value}
 					language="graphql"
+					{readonly}
 					onChanged={(detail) => {
-						valueModifiedManually = detail.chd_rawValue;
+						if (!readonly) valueModifiedManually = detail.chd_rawValue;
 					}}
 				/>
 			</div>
@@ -459,78 +506,94 @@ export function ${hookName}() {
 		{/if}
 	</div>
 	<div class="absolute top-3 right-4 flex gap-2">
-		<button
-			class="btn normal-case btn-xs btn-warning"
-			onclick={() => (showFavoriteModal = true)}
-			aria-label="Save to Favorites"
-			title="Save this query to favorites"
-		>
-			<i class="bi bi-star-fill"></i> Save
-		</button>
-		<button
-			class="btn normal-case btn-xs btn-info"
-			onclick={handleShare}
-			aria-label="Share Link"
-			title="Generate and copy a shareable link"
-		>
-			{#if shareFeedback}
-				<i class="bi bi-check"></i> Copied!
-			{:else}
-				<i class="bi bi-share-fill"></i> Share
-			{/if}
-		</button>
-		<button
-			class="btn normal-case btn-xs btn-primary"
-			onclick={copyCurlToClipboard}
-			aria-label="Copy cURL"
-		>
-			{#if curlCopyFeedback}
-				<i class="bi bi-check"></i> Copied cURL!
-			{:else}
-				<i class="bi bi-terminal"></i> Copy cURL
-			{/if}
-		</button>
-		<button
-			class="btn normal-case btn-xs btn-primary"
-			onclick={copyFetchToClipboard}
-			aria-label="Copy Fetch"
-			title="Generate and copy Fetch request"
-		>
-			{#if fetchCopyFeedback}
-				<i class="bi bi-check"></i> Copied Fetch!
-			{:else}
-				<i class="bi bi-code-slash"></i> Copy Fetch
-			{/if}
-		</button>
-		<button
-			class="btn normal-case btn-xs btn-primary"
-			onclick={copyTypeScriptToClipboard}
-			aria-label="Copy TypeScript Interface"
-			title="Generate and copy TypeScript interface"
-		>
-			{#if tsCopyFeedback}
-				<i class="bi bi-check"></i> Copied TS!
-			{:else}
-				<i class="bi bi-filetype-ts"></i> Copy TS
-			{/if}
-		</button>
-		<button
-			class="btn normal-case btn-xs btn-primary"
-			onclick={copyApolloToClipboard}
-			aria-label="Copy Apollo Client Code"
-			title="Generate and copy React Apollo hook"
-		>
-			{#if apolloCopyFeedback}
-				<i class="bi bi-check"></i> Copied Apollo!
-			{:else}
-				<i class="bi bi-lightning-fill"></i> Copy Apollo
-			{/if}
-		</button>
+		{#if language === 'graphql'}
+			<button
+				class="btn normal-case btn-xs btn-warning"
+				onclick={() => (showFavoriteModal = true)}
+				aria-label="Save to Favorites"
+				title="Save this query to favorites"
+			>
+				<i class="bi bi-star-fill"></i> Save
+			</button>
+			<button
+				class="btn normal-case btn-xs btn-info"
+				onclick={handleShare}
+				aria-label="Share Link"
+				title="Generate and copy a shareable link"
+			>
+				{#if shareFeedback}
+					<i class="bi bi-check"></i> Copied!
+				{:else}
+					<i class="bi bi-share-fill"></i> Share
+				{/if}
+			</button>
+			<button
+				class="btn normal-case btn-xs btn-primary"
+				onclick={copyCurlToClipboard}
+				aria-label="Copy cURL"
+			>
+				{#if curlCopyFeedback}
+					<i class="bi bi-check"></i> Copied cURL!
+				{:else}
+					<i class="bi bi-terminal"></i> Copy cURL
+				{/if}
+			</button>
+			<button
+				class="btn normal-case btn-xs btn-primary"
+				onclick={copyFetchToClipboard}
+				aria-label="Copy Fetch"
+				title="Generate and copy Fetch request"
+			>
+				{#if fetchCopyFeedback}
+					<i class="bi bi-check"></i> Copied Fetch!
+				{:else}
+					<i class="bi bi-code-slash"></i> Copy Fetch
+				{/if}
+			</button>
+			<button
+				class="btn normal-case btn-xs btn-primary"
+				onclick={copyTypeScriptToClipboard}
+				aria-label="Copy TypeScript Interface"
+				title="Generate and copy TypeScript interface"
+			>
+				{#if tsCopyFeedback}
+					<i class="bi bi-check"></i> Copied TS!
+				{:else}
+					<i class="bi bi-filetype-ts"></i> Copy TS
+				{/if}
+			</button>
+			<button
+				class="btn normal-case btn-xs btn-primary"
+				onclick={copyApolloToClipboard}
+				aria-label="Copy Apollo Client Code"
+				title="Generate and copy React Apollo hook"
+			>
+				{#if apolloCopyFeedback}
+					<i class="bi bi-check"></i> Copied Apollo!
+				{:else}
+					<i class="bi bi-lightning-fill"></i> Copy Apollo
+				{/if}
+			</button>
+		{/if}
+		{#if language === 'json'}
+			<button
+				class="btn normal-case btn-xs btn-primary"
+				onclick={handleDownloadJSON}
+				aria-label="Download JSON"
+				title="Download response as JSON file"
+			>
+				{#if downloadFeedback}
+					<i class="bi bi-check"></i> Downloaded!
+				{:else}
+					<i class="bi bi-download"></i> Download JSON
+				{/if}
+			</button>
+		{/if}
 		<button
 			class="btn normal-case btn-xs btn-primary"
 			onclick={copyToClipboard}
-			aria-label="Copy Query"
-			title="Copy raw query string"
+			aria-label="Copy Content"
+			title="Copy raw content string"
 		>
 			{#if copyFeedback}
 				<i class="bi bi-check"></i> Copied!
@@ -538,15 +601,17 @@ export function ${hookName}() {
 				<i class="bi bi-clipboard"></i> Copy
 			{/if}
 		</button>
-		<button
-			class="mx-atuo btn normal-case btn-xs btn-accent"
-			onclick={() => {
-				showNonPrettifiedQMSBody = !showNonPrettifiedQMSBody;
-			}}
-			title="Toggle between prettified and raw view"
-		>
-			{showNonPrettifiedQMSBody ? ' show prettified ' : ' show non-prettified '}</button
-		>
+		{#if language === 'graphql'}
+			<button
+				class="mx-atuo btn normal-case btn-xs btn-accent"
+				onclick={() => {
+					showNonPrettifiedQMSBody = !showNonPrettifiedQMSBody;
+				}}
+				title="Toggle between prettified and raw view"
+			>
+				{showNonPrettifiedQMSBody ? ' show prettified ' : ' show non-prettified '}</button
+			>
+		{/if}
 	</div>
 </div>
 
