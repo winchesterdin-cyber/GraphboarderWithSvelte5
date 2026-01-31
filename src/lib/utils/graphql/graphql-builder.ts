@@ -93,9 +93,9 @@ export const build_QMS_bodyPart = (
 };
 
 /**
- * Generates the GraphQL argument object from active argument data.
- * @param group_argumentsData List of active arguments.
- * @returns Object containing the generated argument object and validity status.
+ * Generates the GraphQL argument object from a list of active argument data.
+ * @param group_argumentsData The list of active argument data objects.
+ * @returns An object containing the generated argument object, validity flag, and note.
  */
 export const generate_gqlArgObj = (group_argumentsData: ActiveArgumentData[]): GQLArgObj => {
 	// check for group if expects list and treat it accordingly like here --->https://stackoverflow.com/questions/69040911/hasura-order-by-date-with-distinct
@@ -125,6 +125,11 @@ export const generate_gqlArgObj = (group_argumentsData: ActiveArgumentData[]): G
 	};
 };
 
+/**
+ * Generates the GraphQL argument object for the root group by merging argument objects.
+ * @param group_argumentsData The list of active argument data objects for the root.
+ * @returns The merged argument object.
+ */
 export const generate_group_gqlArgObjForRoot = (
 	group_argumentsData: ActiveArgumentData[]
 ): Record<string, unknown> => {
@@ -173,6 +178,12 @@ export const generate_group_gqlArgObj = (
 	};
 };
 
+/**
+ * Filters items that are valid (in use or have valid children).
+ * @param items List of items to check.
+ * @param nodes Dictionary of container nodes.
+ * @returns List of valid items.
+ */
 const validItems = (
 	items: { id: string }[],
 	nodes: Record<string, ContainerData>
@@ -187,6 +198,13 @@ const validItems = (
 	});
 };
 
+/**
+ * Generates the GraphQL argument object for a group that supports operators (e.g., filters).
+ * @param items The items to process.
+ * @param group_name The name of the group.
+ * @param nodes The dictionary of container nodes.
+ * @returns The resulting argument object and a list of resulting data for items.
+ */
 export const generate_group_gqlArgObj_forHasOperators = (
 	items: { id: string }[],
 	group_name: string,
@@ -291,6 +309,11 @@ export const generate_group_gqlArgObj_forHasOperators = (
 	};
 };
 
+/**
+ * Generates the GraphQL argument object, its string representation, and validity for a group with operators.
+ * @param group The active argument group.
+ * @returns Object containing the group's argument object, string representation, and validity.
+ */
 export const generate_group_gqlArgObjAndCanRunQuery_forHasOperators = (
 	group: ActiveArgumentGroup
 ): {
@@ -360,6 +383,14 @@ export const generate_finalGqlArgObj_fromGroups = (
 	return { finalGqlArgObj, final_canRunQuery };
 };
 
+/**
+ * Generates navigation links for queries, mutations, or subscriptions.
+ * @param QMSName The type of operation ('query' | 'mutation' | 'subscription').
+ * @param parentURL The base URL for the links.
+ * @param endpointInfo The endpoint configuration store.
+ * @param schemaData The schema data store.
+ * @returns An array of objects containing the URL and title for each link.
+ */
 export const getQMSLinks = (
 	QMSName: QMSType = 'query',
 	parentURL: string,
@@ -425,6 +456,13 @@ export const getQMSLinks = (
 	return queryLinks || [];
 };
 
+/**
+ * Converts a path of fields (array of strings) into a nested object structure representing a query fragment.
+ * @param stepsOfFields The array of field names representing the path.
+ * @param excludeFirstStep Whether to exclude the first element of the path.
+ * @param dataForLastStep The value to assign to the leaf node.
+ * @returns The nested object structure.
+ */
 export const stepsOfFieldsToQueryFragmentObject = (
 	stepsOfFields: string[],
 	excludeFirstStep: boolean = true,
@@ -448,6 +486,11 @@ export const stepsOfFieldsToQueryFragmentObject = (
 	return queryObject;
 };
 
+/**
+ * Converts table column data into a query fields object.
+ * @param tableColsData The list of table column data.
+ * @returns A nested object structure representing the fields to select, or an empty string if no columns.
+ */
 export const tableColsDataToQueryFields = (
 	tableColsData: TableColumnData[]
 ): StepsOfFieldsObject | string => {
@@ -467,6 +510,15 @@ export const tableColsDataToQueryFields = (
 	return merged;
 };
 
+/**
+ * Adds default fields to a container node based on the schema.
+ * @param node The container node to add fields to.
+ * @param prefix Prefix for context or IDs.
+ * @param group The active argument group the node belongs to.
+ * @param activeArgumentsDataGrouped_Store The store managing active arguments.
+ * @param schemaData The schema data store.
+ * @param endpointInfo The endpoint configuration store.
+ */
 export const nodeAddDefaultFields = (
 	node: ContainerData,
 	prefix: string = '',
@@ -577,6 +629,14 @@ export const nodeAddDefaultFields = (
 	(node as any).addDefaultFields = false;
 };
 
+/**
+ * Generates the final GraphQL argument object and determines if the query can be run.
+ * Optionally resets pagination state.
+ * @param activeArgumentsDataGrouped All active argument groups.
+ * @param _paginationState_Store The pagination state store.
+ * @param resetPaginationState Whether to reset the pagination state.
+ * @returns The final GraphQL argument object and overall validity.
+ */
 export const generate_finalGqlArgObjAndCanRunQuery = (
 	activeArgumentsDataGrouped: ActiveArgumentGroup[],
 	_paginationState_Store: PaginationStateStore | null,
