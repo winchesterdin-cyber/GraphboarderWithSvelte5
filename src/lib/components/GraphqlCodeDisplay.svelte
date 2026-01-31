@@ -40,6 +40,10 @@
 	let showFavoriteModal = $state(false);
 	let favoriteName = $state('');
 
+	/**
+	 * Saves the current query as a favorite.
+	 * Checks for a valid name and endpoint ID before saving to the store.
+	 */
 	const handleSaveFavorite = () => {
 		if (!favoriteName.trim()) return;
 
@@ -84,8 +88,12 @@
 	let curlCopyFeedback = $state(false);
 	let fetchCopyFeedback = $state(false);
 	let tsCopyFeedback = $state(false);
+	let apolloCopyFeedback = $state(false);
 	let shareFeedback = $state(false);
 
+	/**
+	 * Copies the raw GraphQL query string to the clipboard.
+	 */
 	const copyToClipboard = () => {
 		navigator.clipboard.writeText(value);
 		copyFeedback = true;
@@ -94,6 +102,10 @@
 		}, 2000);
 	};
 
+	/**
+	 * Generates a shareable URL containing the encoded state and copies it to the clipboard.
+	 * Updates the browser's URL without reloading.
+	 */
 	const handleShare = () => {
 		if (!QMSWraperContext) {
 			console.warn('Cannot share: QMSWraperContext not available');
@@ -133,6 +145,11 @@
 		}
 	};
 
+	/**
+	 * Generates a cURL command for the current query.
+	 * Includes headers from endpoint configuration or local storage.
+	 * @returns The cURL command string.
+	 */
 	const generateCurlCommand = () => {
 		let url = 'http://localhost:4000/graphql'; // Default fallback
 		let headers = {};
@@ -174,6 +191,11 @@
 		return `curl -X POST "${url}" -H "Content-Type: application/json"${headerString} -d '${queryJson}'`;
 	};
 
+	/**
+	 * Generates a JavaScript Fetch API snippet for the current query.
+	 * Includes headers from endpoint configuration or local storage.
+	 * @returns The JavaScript code snippet.
+	 */
 	const generateFetchCommand = () => {
 		let url = 'http://localhost:4000/graphql'; // Default fallback
 		let headers: Record<string, string> = {};
@@ -219,13 +241,20 @@
 });`;
 	};
 
-	// Helper to get store value safely
+	/**
+	 * Helper function to retrieve the current value of a Svelte store.
+	 * @param store The store to get the value from.
+	 * @returns The current value of the store.
+	 */
 	function getStoreValue(store: any) {
 		let storeVal;
 		store.subscribe(($: any) => (storeVal = $))();
 		return storeVal;
 	}
 
+	/**
+	 * Copies the generated cURL command to the clipboard.
+	 */
 	const copyCurlToClipboard = () => {
 		const curl = generateCurlCommand();
 		console.debug('Copying cURL command to clipboard');
@@ -236,6 +265,9 @@
 		}, 2000);
 	};
 
+	/**
+	 * Copies the generated Fetch snippet to the clipboard.
+	 */
 	const copyFetchToClipboard = () => {
 		const fetchCmd = generateFetchCommand();
 		console.debug('Copying fetch command to clipboard');
@@ -276,6 +308,48 @@
 		}
 	};
 
+	/**
+	 * Generates a React Apollo Client hook snippet for the current query.
+	 * @returns The React code snippet.
+	 */
+	const generateApolloCommand = () => {
+		const queryMatch = value.match(/(query|mutation|subscription)\s+(\w+)/);
+		const operationType = queryMatch?.[1] || (value.trim().startsWith('mutation') ? 'mutation' : 'query');
+		const queryName = queryMatch?.[2] || 'MyQuery';
+		const hookName = `use${queryName.charAt(0).toUpperCase() + queryName.slice(1)}`;
+		const hookType = operationType === 'mutation' ? 'Mutation' : 'Query';
+		const constName = `${queryName.toUpperCase()}_${operationType.toUpperCase()}`;
+
+		return `import { gql, use${hookType} } from '@apollo/client';
+
+const ${constName} = gql\`
+${value}
+\`;
+
+export function ${hookName}() {
+  const result = use${hookType}(${constName});
+  return result;
+}`;
+	};
+
+	/**
+	 * Copies the generated Apollo Client snippet to the clipboard.
+	 */
+	const copyApolloToClipboard = () => {
+		const code = generateApolloCommand();
+		console.debug('Copying Apollo code to clipboard');
+		navigator.clipboard.writeText(code);
+		apolloCopyFeedback = true;
+		setTimeout(() => {
+			apolloCopyFeedback = false;
+		}, 2000);
+	};
+
+	/**
+	 * Synchronizes the parsed AST back to the UI state stores.
+	 * This allows the Visual Query Builder to update when the code is manually edited.
+	 * @param newAst The parsed GraphQL AST.
+	 */
 	const syncQueryToUI = (newAst: any) => {
 		try {
 			if (!QMSWraperContext || !QMSMainWraperContext) {
@@ -438,6 +512,18 @@
 				<i class="bi bi-check"></i> Copied TS!
 			{:else}
 				<i class="bi bi-filetype-ts"></i> Copy TS
+			{/if}
+		</button>
+		<button
+			class="btn normal-case btn-xs btn-primary"
+			onclick={copyApolloToClipboard}
+			aria-label="Copy Apollo Client Code"
+			title="Generate and copy React Apollo hook"
+		>
+			{#if apolloCopyFeedback}
+				<i class="bi bi-check"></i> Copied Apollo!
+			{:else}
+				<i class="bi bi-lightning-fill"></i> Copy Apollo
 			{/if}
 		</button>
 		<button
