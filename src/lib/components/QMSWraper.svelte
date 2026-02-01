@@ -42,25 +42,47 @@
 	import QMSWraperCtxDataCurrentComputations from './QMSWraperCtxDataCurrentComputations.svelte';
 	import { Create_QMSFieldToQMSGetMany_Store } from '$lib/stores/QMSFieldToQMSGetMany_Store';
 
-	// Props interface and destructuring MUST come first
+	/**
+	 * Props for QMSWraper.
+	 */
 	interface Props {
+		/** Prefix for context keys. */
 		prefix?: string;
+		/** Extra info dictionary. */
 		extraInfo?: Record<string, unknown>;
+		/** Initial arguments for the query. */
 		initialGqlArgObj?: Record<string, unknown>;
+		/** Whether this is the outermost wrapper. */
 		isOutermostQMSWraper?: boolean;
+		/** The type of QMS operation (query/mutation). */
 		QMSType?: QMSTypeType;
+		/** The name of the query/mutation. */
 		QMSName?: string;
+		/** Metadata about the QMS field. */
 		QMS_info?: FieldWithDerivedData | undefined;
+		/** The context object (output). */
 		QMSWraperContext?: QMSWraperContextType | Record<string, unknown>;
+		/** Initial value for arguments store. */
 		activeArgumentsDataGrouped_StoreInitialValue?: ActiveArgumentGroup[] | undefined;
+		/** The arguments store itself. */
 		activeArgumentsDataGrouped_Store?: ActiveArgumentsDataGroupedStore;
+		/** Initial value for table columns. */
 		tableColsData_StoreInitialValue?: TableColumnData[];
+		/** The final GraphQL arguments store. */
 		finalGqlArgObj_Store?: any;
+		/** An existing context to use (overrides internal creation). */
 		QMSWraperContextGiven?: QMSWraperContextType | any;
+		/** Whether to prefer the given context over creating a new one. */
 		preferGivenQMSWraperContext?: boolean;
+		/** Child components. */
 		children?: import('svelte').Snippet;
 	}
 
+	/**
+	 * Core component that wraps a Query/Mutation/Subscription (QMS) context.
+	 * Manages state for arguments, columns, pagination, and query generation.
+	 * It sets up the `QMSWraperContext` used by child components.
+	 */
 	let {
 		prefix = '',
 		extraInfo = {},

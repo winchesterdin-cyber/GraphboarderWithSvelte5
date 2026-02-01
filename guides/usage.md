@@ -106,16 +106,23 @@ To improve security and convenience, you can use environment variables in your h
 ## 7. History & Favorites
 
 - **History**:
-  - The application automatically tracks every query and mutation you execute in the **History** tab.
+  - The application automatically tracks every query and mutation you execute.
+  - Access the full history log from the **History** tab in the sidebar.
   - Each entry shows the timestamp, query name, and execution status (success/error).
-  - Clicking a history item restores the exact state of the query (arguments, columns) at the time of execution.
-  - **Clear History**: Click the **"Clear"** button at the top of the history list to remove all history entries.
+  - **Restore**: Clicking a history item (or the restore icon) restores the exact state of the query (arguments, columns) at the time of execution.
+  - **Clear History**: Click the **"Clear All"** button to remove all history entries globally.
+  - **Export History**: Click **"Export"** to download your history as a JSON file.
+  - **Import History**: Click **"Import"** to restore history from a JSON file.
 - **Recent**: The sidebar includes a "Recent" tab that tracks your recently visited queries and mutations (by name only) for quick navigation.
 - **Favorites**:
   - You can save frequently used queries to your **Favorites** list.
   - Click the **"Save"** (star icon) button in the query code display toolbar.
   - Enter a name for your query.
   - Access your favorite queries from the "Favorites" tab in the sidebar.
+  - **Manage Favorites**: The Favorites page displays all saved queries for the current endpoint.
+  - **Export Favorites**: Click **"Export"** to backup your favorite queries to a JSON file.
+  - **Import Favorites**: Click **"Import"** to restore favorites from a JSON file. This is useful for sharing query collections with teammates.
+  - **Delete**: Remove unwanted favorites using the trash icon.
 
 ## 8. Appearance
 

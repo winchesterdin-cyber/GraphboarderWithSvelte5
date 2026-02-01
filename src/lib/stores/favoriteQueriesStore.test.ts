@@ -106,4 +106,29 @@ describe('favoriteQueriesStore', () => {
 		const queries = get(favoriteQueries);
 		expect(queries).toHaveLength(2);
 	});
+
+	it('should import favorites', () => {
+		const importData = [
+			{
+				name: 'Imported 1',
+				query: '{ q1 }',
+				type: 'query' as const,
+				endpointId: 'ep1'
+			},
+			{
+				name: 'Imported 2',
+				query: 'mutation { m1 }',
+				type: 'mutation' as const,
+				endpointId: 'ep1'
+			}
+		];
+
+		favoriteQueries.importFavorites(importData);
+
+		const queries = get(favoriteQueries);
+		expect(queries).toHaveLength(2);
+		// Since we unshift each item, the last one processed ends up at index 0
+		expect(queries[0].name).toBe('Imported 2');
+		expect(queries[1].name).toBe('Imported 1');
+	});
 });

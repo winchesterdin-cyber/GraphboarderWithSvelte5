@@ -87,6 +87,33 @@ const createHistoryQueriesStore = () => {
 				localStorage.removeItem(STORAGE_KEY);
 			}
 			set([]);
+		},
+		/**
+		 * Imports a list of history queries.
+		 * Merges with existing history and keeps the most recent MAX_HISTORY items.
+		 * @param queries List of history items to import.
+		 */
+		importHistory: (queries: Omit<HistoryQuery, 'id'>[]) => {
+			console.debug('[HistoryQueries] Importing history items:', queries.length);
+			update((history) => {
+				const imported = queries.map((q) => ({
+					...q,
+					id: crypto.randomUUID()
+				}));
+				// Combine, sort by timestamp descending, and slice
+				const combined = [...imported, ...history]
+					.sort((a, b) => b.timestamp - a.timestamp)
+					.slice(0, MAX_HISTORY);
+
+				if (browser) {
+					try {
+						localStorage.setItem(STORAGE_KEY, JSON.stringify(combined));
+					} catch (e) {
+						console.error('[HistoryQueries] Failed to save history to localStorage', e);
+					}
+				}
+				return combined;
+			});
 		}
 	};
 };

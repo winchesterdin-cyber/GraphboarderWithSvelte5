@@ -77,6 +77,36 @@ const createFavoriteQueriesStore = () => {
 				localStorage.removeItem(STORAGE_KEY);
 			}
 			set([]);
+		},
+		/**
+		 * Imports a list of favorite queries.
+		 * Overwrites existing favorites with the same name and endpoint ID.
+		 * @param queries List of favorites to import.
+		 */
+		importFavorites: (queries: Omit<FavoriteQuery, 'id' | 'timestamp'>[]) => {
+			console.debug('[FavoriteQueries] Importing queries:', queries.length);
+			update((current) => {
+				const now = Date.now();
+				let updated = [...current];
+
+				queries.forEach((q) => {
+					// Remove existing if any
+					updated = updated.filter(
+						(existing) => !(existing.name === q.name && existing.endpointId === q.endpointId)
+					);
+					// Add new
+					updated.unshift({
+						...q,
+						id: crypto.randomUUID(),
+						timestamp: now
+					});
+				});
+
+				if (browser) {
+					localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+				}
+				return updated;
+			});
 		}
 	};
 };

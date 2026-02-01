@@ -11,12 +11,22 @@
 	import { envVars } from '$lib/stores/envVarsStore';
 	import { get } from 'svelte/store';
 
+	/**
+	 * Props for MainWraper.
+	 */
 	interface Props {
+		/** Prefix for context keys to allow nesting. */
 		prefix?: string;
+		/** Initial endpoint configuration. */
 		endpointInfoProvided?: Partial<EndpointConfiguration> | undefined;
+		/** Child components to render. */
 		children?: import('svelte').Snippet;
 	}
 
+	/**
+	 * Main wrapper component that sets up the GraphQL client and context.
+	 * Handles endpoint configuration, schema introspection, and header management.
+	 */
 	let { prefix = '', endpointInfoProvided = undefined, children }: Props = $props();
 
 	// Create stores (assuming factories return typed stores, if not, casting might be needed there, but here we treat them as provided)
