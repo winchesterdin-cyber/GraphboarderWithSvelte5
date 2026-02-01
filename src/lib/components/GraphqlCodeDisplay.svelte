@@ -8,6 +8,7 @@
 	import { getPreciseType } from '$lib/utils/usefulFunctions';
 	import { updateStoresFromAST } from '$lib/utils/astToUIState';
 	import { generateTypeScript } from '$lib/utils/graphql/typescript-generator';
+	import { calculateComplexity } from '$lib/utils/graphql/complexity';
 	import { parse, print } from 'graphql';
 	import JSON5 from 'json5';
 	import { browser } from '$app/environment';
@@ -98,6 +99,7 @@
 	let astAsString = $state('');
 	let ast: any = $state();
 	let astPrinted = $state('');
+	let complexity = $state(0);
 	let copyFeedback = $state(false);
 	let curlCopyFeedback = $state(false);
 	let fetchCopyFeedback = $state(false);
@@ -422,6 +424,7 @@ export function ${hookName}() {
 			// Only parse as GraphQL if language is graphql
 			if (value && language === 'graphql') {
 				ast = parse(value);
+				complexity = calculateComplexity(ast);
 			}
 		} catch (e) {
 			// Failed to parse, ignore
@@ -507,6 +510,9 @@ export function ${hookName}() {
 	</div>
 	<div class="absolute top-3 right-4 flex gap-2">
 		{#if language === 'graphql'}
+			<div class="badge badge-outline h-6 text-xs">
+				Complexity: {complexity}
+			</div>
 			<button
 				class="btn normal-case btn-xs btn-warning"
 				onclick={() => (showFavoriteModal = true)}

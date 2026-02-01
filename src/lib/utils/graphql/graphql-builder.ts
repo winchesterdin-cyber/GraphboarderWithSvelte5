@@ -53,11 +53,17 @@ export const build_QMS_bodyPart = (
 	QMS_type: QMSType = 'query',
 	mergedChildren_finalGqlArgObj: Record<string, unknown>
 ): string | null => {
+	console.debug('[build_QMS_bodyPart] Starting build for:', QMS_name, {
+		QMS_fields,
+		QMS_args,
+		QMS_type,
+		mergedChildren_finalGqlArgObj
+	});
+
 	if (Object.keys(QMS_fields).length == 0) {
 		console.error('no cols data,choose at least one field');
 		return null;
 	}
-	// Warning: console.info removed to reduce noise
 
 	const QMSarguments = { [QMS_name]: { QMSarguments: QMS_args } };
 	const fullObject = JSON.parse(
@@ -89,6 +95,7 @@ export const build_QMS_bodyPart = (
 
 	const QMS_bodyPart = modifiedString.slice(1, -1);
 
+	console.debug('[build_QMS_bodyPart] Result:', QMS_bodyPart);
 	return QMS_bodyPart;
 };
 
@@ -371,6 +378,11 @@ export const generate_group_gqlArgObjAndCanRunQuery_forHasOperators = (
 export const generate_finalGqlArgObj_fromGroups = (
 	activeArgumentsDataGrouped: ActiveArgumentGroup[]
 ): FinalGQLArgObj => {
+	console.debug(
+		'[generate_finalGqlArgObj_fromGroups] Processing groups:',
+		activeArgumentsDataGrouped.length
+	);
+
 	const finalGqlArgObj = {};
 	const final_canRunQuery = activeArgumentsDataGrouped.every((group) => {
 		return group.group_canRunQuery;
@@ -378,6 +390,11 @@ export const generate_finalGqlArgObj_fromGroups = (
 
 	activeArgumentsDataGrouped.forEach((group) => {
 		Object.assign(finalGqlArgObj, group.group_gqlArgObj);
+	});
+
+	console.debug('[generate_finalGqlArgObj_fromGroups] Result:', {
+		finalGqlArgObj,
+		final_canRunQuery
 	});
 
 	return { finalGqlArgObj, final_canRunQuery };

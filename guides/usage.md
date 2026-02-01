@@ -142,3 +142,19 @@ For mutations (creating/updating data):
 
 - **Loading States**: If the application takes time to load an endpoint configuration, a loading spinner will appear. If it fails to load, an error message with a "Retry" button will be displayed.
 - **Console Logs**: For advanced debugging, open your browser's developer console (F12). The application logs detailed information about data fetching, pagination logic, and configuration parsing using `console.debug`.
+
+## 11. New Features
+
+### Query Complexity Analysis
+
+The application now calculates and displays the complexity of your GraphQL query.
+- The complexity score is shown in the query code display toolbar (e.g., "Complexity: 5").
+- Complexity is calculated based on the number of fields in the query.
+- This helps you identify potentially heavy queries that might impact server performance.
+
+### Local Storage Manager
+
+A new **Storage Manager** tool is available to inspect and manage data stored in your browser's Local Storage.
+- **Access**: Click the **Database** icon (bi-database) in the bottom-left corner of the sidebar (next to the theme toggle).
+- **Inspect**: View raw JSON data for Endpoints, History, Favorites, and Environment Variables.
+- **Delete**: Individually delete specific storage keys if needed for debugging or cleanup.

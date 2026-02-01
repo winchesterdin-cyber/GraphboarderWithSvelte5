@@ -2,6 +2,7 @@
 	import { clickOutside } from '$lib/actions/clickOutside';
 	import TabContainer from '$lib/components/TabContainer.svelte';
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
+	import LocalStorageManager from '$lib/components/LocalStorageManager.svelte';
 	import { getContext } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
 	import type { QMSMainWraperContext } from '$lib/types';
@@ -29,6 +30,8 @@
 	const endpointInfo = QMSContext?.endpointInfo;
 	const schemaData = QMSContext?.schemaData;
 
+	let showStorageManager = $state(false);
+
 	/**
 	 * Downloads the current schema as a JSON file.
 	 */
@@ -41,6 +44,8 @@
 		}
 	};
 </script>
+
+<LocalStorageManager bind:show={showStorageManager} />
 
 <div
 	class="h-screen w-full {forceVisibleSidebar
@@ -59,6 +64,15 @@
 					aria-label="Download Schema"
 				>
 					<i class="bi bi-download"></i>
+				</button>
+			</div>
+			<div class="tooltip tooltip-right" data-tip="Storage Manager">
+				<button
+					class="btn btn-circle btn-ghost btn-sm"
+					onclick={() => (showStorageManager = true)}
+					aria-label="Storage Manager"
+				>
+					<i class="bi bi-database"></i>
 				</button>
 			</div>
 		</div>
