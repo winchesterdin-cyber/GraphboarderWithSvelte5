@@ -27,6 +27,7 @@
 	import { historyQueries } from '$lib/stores/historyQueriesStore';
 	import HeadersEditor from '$lib/components/HeadersEditor.svelte';
 	import EnvVarsManager from '$lib/components/EnvVarsManager.svelte';
+	import { logger } from '$lib/utils/logger';
 	import { get } from 'svelte/store';
 	import type {
 		QMSWraperContext,
@@ -126,7 +127,7 @@
 	}: {
 		detail: { loaded: () => void; complete: () => void };
 	}) {
-		console.debug('infiniteHandler triggered', { loaded, complete });
+		logger.debug('infiniteHandler triggered', { loaded, complete });
 		loadedF = loaded;
 		completeF = complete;
 		const rowLimitingArgNames = paginationTypeInfo?.get_rowLimitingArgNames?.(
@@ -150,13 +151,13 @@
 		// }
 	}
 	const runQuery = (queryBody: string) => {
-		console.debug('runQuery called', queryBody);
+		logger.debug('runQuery called', queryBody);
 		let fetching = true;
 		let error: any = false;
 		let data: any = false;
 
 		const startTime = Date.now();
-		console.debug('Query Execution Start:', new Date(startTime).toISOString());
+		logger.debug('Query Execution Start: ' + new Date(startTime).toISOString());
 		const endpointId = $page.params.endpointid;
 		const queryName = QMSName;
 
@@ -166,16 +167,16 @@
 			.then((result: any) => {
 				fetching = false;
 				const duration = Date.now() - startTime;
-				console.debug('Query Execution Completed in', duration, 'ms');
+				logger.debug('Query Execution Completed in ' + duration + ' ms');
 				let status: 'success' | 'error' = 'success';
 
 				if (result.error) {
-					console.debug('Query Error:', result.error);
+					logger.debug('Query Error:', result.error);
 					error = result.error.message;
 					status = 'error';
 				}
 				if (result.data) {
-					console.debug('Query Data Size:', JSON.stringify(result.data).length, 'bytes');
+					logger.debug('Query Data Size: ' + JSON.stringify(result.data).length + ' bytes');
 					data = result.data;
 				}
 
@@ -204,7 +205,7 @@
 						});
 					}
 				} catch (e) {
-					console.error('Failed to save query history:', e);
+					logger.error('Failed to save query history:', e);
 				}
 
 				queryData = { fetching, error, data };

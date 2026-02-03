@@ -91,6 +91,21 @@ You can modify the HTTP headers for the current session directly from the query 
 4.  Click **"Save"**.
 5.  All subsequent queries in the current session will use the new headers.
 
+### Header Presets
+
+You can save commonly used header configurations as presets for quick access.
+
+1.  **Save Preset**:
+    - Open the **Headers** editor.
+    - Enter your headers JSON.
+    - Enter a name in the "New preset name..." field.
+    - Click **"Save Current as Preset"**.
+2.  **Load Preset**:
+    - Click on any saved preset name in the list to load its headers into the editor.
+    - Click **"Save Headers"** to apply them to the current session.
+3.  **Delete Preset**:
+    - Click the **"X"** icon next to a preset name to remove it.
+
 ### Environment Variables
 
 To improve security and convenience, you can use environment variables in your headers instead of hardcoding sensitive tokens.
