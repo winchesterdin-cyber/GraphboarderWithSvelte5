@@ -1,20 +1,37 @@
 <script lang="ts">
+	/**
+	 * History page component.
+	 * Displays a list of executed queries/mutations for the current endpoint.
+	 * Allows searching, filtering, exporting, importing, and restoring history items.
+	 */
 	import { page } from '$app/stores';
 	import { historyQueries } from '$lib/stores/historyQueriesStore';
 	import { downloadJSON } from '$lib/utils/downloadUtils';
 	import { goto } from '$app/navigation';
 	import { addToast } from '$lib/stores/toastStore';
+	import { logger } from '$lib/utils/logger';
 
 	let endpointId = $derived($page.params.endpointid);
 
+	let searchTerm = $state('');
+	let filterType = $state('all');
+	let filterStatus = $state('all');
+
 	let history = $derived(
 		$historyQueries
-			.filter((q) => q.endpointId === endpointId)
+			.filter((q) => {
+				const isEndpoint = q.endpointId === endpointId;
+				const matchesSearch = q.queryName.toLowerCase().includes(searchTerm.toLowerCase());
+				const matchesType = filterType === 'all' || q.type === filterType;
+				const matchesStatus = filterStatus === 'all' || q.status === filterStatus;
+				return isEndpoint && matchesSearch && matchesType && matchesStatus;
+			})
 			.sort((a, b) => b.timestamp - a.timestamp)
 	);
 
 	const handleClear = () => {
 		if (confirm('Are you sure you want to clear ALL history for ALL endpoints?')) {
+			logger.info('User cleared all history');
 			historyQueries.clear();
 			addToast('History cleared', 'success');
 		}
@@ -25,6 +42,7 @@
 			addToast('No history to export.', 'info');
 			return;
 		}
+		logger.info('User exported history', { count: history.length, endpointId });
 		// Export without ID for portability (IDs regenerated on import)
 		const exportData = history.map(({ id, ...rest }) => rest);
 		downloadJSON(exportData, `history-${endpointId}.json`);
@@ -47,13 +65,14 @@
 			try {
 				const json = JSON.parse(event.target?.result as string);
 				if (Array.isArray(json)) {
+					logger.info('User imported history', { count: json.length });
 					historyQueries.importHistory(json);
 					addToast(`Imported ${json.length} history items`, 'success');
 				} else {
 					addToast('Invalid file format: Expected an array', 'error');
 				}
 			} catch (err) {
-				console.error(err);
+				logger.error('Failed to parse history import file', err);
 				addToast('Failed to parse JSON file', 'error');
 			}
 			target.value = '';
@@ -68,25 +87,46 @@
 </script>
 
 <div class="p-4">
-	<div class="mb-4 flex items-center justify-between">
-		<h1 class="text-2xl font-bold">History</h1>
-		<div class="flex gap-2">
-			<button class="btn btn-outline btn-sm" onclick={handleExport}>
-				<i class="bi bi-download"></i> Export
-			</button>
-			<button class="btn btn-outline btn-sm" onclick={handleImportClick}>
-				<i class="bi bi-upload"></i> Import
-			</button>
-			<button class="btn btn-outline btn-sm btn-error" onclick={handleClear}>
-				<i class="bi bi-trash"></i> Clear All
-			</button>
+	<div class="mb-4 flex flex-col gap-4">
+		<div class="flex items-center justify-between">
+			<h1 class="text-2xl font-bold">History</h1>
+			<div class="flex gap-2">
+				<button class="btn btn-outline btn-sm" onclick={handleExport}>
+					<i class="bi bi-download"></i> Export
+				</button>
+				<button class="btn btn-outline btn-sm" onclick={handleImportClick}>
+					<i class="bi bi-upload"></i> Import
+				</button>
+				<button class="btn btn-outline btn-sm btn-error" onclick={handleClear}>
+					<i class="bi bi-trash"></i> Clear All
+				</button>
+				<input
+					type="file"
+					bind:this={fileInput}
+					onchange={handleFileChange}
+					accept=".json"
+					class="hidden"
+				/>
+			</div>
+		</div>
+
+		<div class="flex flex-col gap-2 md:flex-row">
 			<input
-				type="file"
-				bind:this={fileInput}
-				onchange={handleFileChange}
-				accept=".json"
-				class="hidden"
+				type="text"
+				placeholder="Search by name..."
+				class="input-bordered input input-sm w-full md:w-1/3"
+				bind:value={searchTerm}
 			/>
+			<select class="select-bordered select select-sm" bind:value={filterType}>
+				<option value="all">All Types</option>
+				<option value="query">Query</option>
+				<option value="mutation">Mutation</option>
+			</select>
+			<select class="select-bordered select select-sm" bind:value={filterStatus}>
+				<option value="all">All Statuses</option>
+				<option value="success">Success</option>
+				<option value="error">Error</option>
+			</select>
 		</div>
 	</div>
 

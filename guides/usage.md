@@ -128,6 +128,9 @@ To improve security and convenience, you can use environment variables in your h
 - **History**:
   - The application automatically tracks every query and mutation you execute.
   - Access the full history log from the **History** tab in the sidebar.
+  - **Search & Filter**:
+    - Use the search bar to filter history items by query name.
+    - Use the dropdown filters to narrow down the list by **Type** (Query/Mutation) or **Status** (Success/Error).
   - Each entry shows the timestamp, query name, and execution status (success/error).
   - **Restore**: Clicking a history item (or the restore icon) restores the exact state of the query (arguments, columns) at the time of execution.
   - **Clear History**: Click the **"Clear All"** button to remove all history entries globally.
