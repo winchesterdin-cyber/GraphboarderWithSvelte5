@@ -69,11 +69,16 @@ As you build the query, the results are fetched and displayed automatically.
 ## 5. View Generated GraphQL
 
 - Click the **"QMS body"** button to toggle the view of the actual GraphQL query being sent to the server.
-- **Copy Query**: Click the **"Copy"** button to copy the query string to your clipboard.
-- **Copy cURL**: Click the **"Copy cURL"** button to copy a cURL command for the current query to your clipboard, allowing you to easily test it in your terminal.
-- **Copy Fetch**: Click the **"Copy Fetch"** button to copy a JavaScript `fetch` code snippet for the current query to your clipboard. This is useful for quickly integrating the query into your application code.
-- **Copy TypeScript**: Click the **"Copy TS"** button to generate and copy a TypeScript interface definition for the current query response to your clipboard. This interface is automatically derived from the schema and matches the shape of the selected fields.
-- **Copy Apollo**: Click the **"Copy Apollo"** button to generate and copy a React component example using `@apollo/client`. It includes the `gql` query definition and a custom hook wrapping `useQuery` or `useMutation`.
+- **Export Code**: Click the **"Export Code"** button to open a modal where you can generate and copy code snippets in various languages.
+  - **Supported Languages**:
+    - **cURL**: Generate a cURL command for testing in the terminal.
+    - **Fetch**: Generate a JavaScript `fetch` code snippet.
+    - **TypeScript**: Generate a TypeScript interface definition for the query response.
+    - **Apollo**: Generate a React component example using `@apollo/client`.
+    - **Python**: Generate a Python script using the `requests` library.
+    - **Go**: Generate a Go program using the `net/http` package.
+  - **Preview & Copy**: You can view the generated code in the modal and click **"Copy"** to save it to your clipboard.
+- **Copy Content**: Click the **"Copy"** button to copy the raw GraphQL query string.
 - **Share Link**: Click the **"Share"** button to generate a shareable URL for the current query state.
   - The URL contains the complete state (arguments, selected columns, etc.) encoded in a query parameter.
   - Copy this URL and send it to others. When they open it, the application will restore the query exactly as it was.
@@ -163,6 +168,7 @@ For mutations (creating/updating data):
 ### Query Complexity Analysis
 
 The application now calculates and displays the complexity of your GraphQL query.
+
 - The complexity score is shown in the query code display toolbar (e.g., "Complexity: 5").
 - Complexity is calculated based on the number of fields in the query.
 - This helps you identify potentially heavy queries that might impact server performance.
@@ -170,6 +176,7 @@ The application now calculates and displays the complexity of your GraphQL query
 ### Local Storage Manager
 
 A new **Storage Manager** tool is available to inspect and manage data stored in your browser's Local Storage.
+
 - **Access**: Click the **Database** icon (bi-database) in the bottom-left corner of the sidebar (next to the theme toggle).
 - **Inspect**: View raw JSON data for Endpoints, History, Favorites, and Environment Variables.
 - **Delete**: Individually delete specific storage keys if needed for debugging or cleanup.

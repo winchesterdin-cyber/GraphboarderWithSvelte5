@@ -107,7 +107,7 @@
 						<tr class="hover">
 							<td class="font-medium">
 								<button
-									class="link link-hover font-bold text-primary"
+									class="link font-bold text-primary link-hover"
 									onclick={() => navigateToQuery(fav)}
 								>
 									{fav.name}
@@ -129,7 +129,7 @@
 									<i class="bi bi-play-fill text-lg"></i>
 								</button>
 								<button
-									class="btn btn-ghost text-error btn-xs"
+									class="btn text-error btn-ghost btn-xs"
 									onclick={() => handleDelete(fav.id)}
 									title="Delete"
 									aria-label="Delete favorite"

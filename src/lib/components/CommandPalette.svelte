@@ -107,7 +107,12 @@
 	);
 
 	let results = $derived(
-		query ? fuse.search(query).map((r) => r.item).slice(0, 50) : items.slice(0, 20)
+		query
+			? fuse
+					.search(query)
+					.map((r) => r.item)
+					.slice(0, 50)
+			: items.slice(0, 20)
 	);
 
 	function open() {
@@ -142,7 +147,7 @@
 			e.preventDefault();
 			execute(results[selectedIndex]);
 		} else if (e.key === 'Escape') {
-            // Dialog handles escape natively usually, but we might want to ensure state sync
+			// Dialog handles escape natively usually, but we might want to ensure state sync
 			close();
 		}
 	}
@@ -158,13 +163,13 @@
 		close();
 	}
 
-    $effect(() => {
-        if (show) {
-             // ensure input focus when opened
-             // Need to wait for render
-             setTimeout(() => inputElement?.focus(), 10);
-        }
-    })
+	$effect(() => {
+		if (show) {
+			// ensure input focus when opened
+			// Need to wait for render
+			setTimeout(() => inputElement?.focus(), 10);
+		}
+	});
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
@@ -179,13 +184,13 @@
 		if (e.target === dialog) close();
 	}}
 >
-	<div class="modal-box p-0 overflow-hidden max-h-[80vh] flex flex-col">
-		<div class="p-4 border-b border-base-300">
+	<div class="modal-box flex max-h-[80vh] flex-col overflow-hidden p-0">
+		<div class="border-b border-base-300 p-4">
 			<input
 				bind:this={inputElement}
 				type="text"
 				placeholder="Type a command or search..."
-				class="input input-ghost w-full text-lg focus:outline-none focus:bg-transparent"
+				class="input w-full input-ghost text-lg focus:bg-transparent focus:outline-none"
 				bind:value={query}
 				role="combobox"
 				aria-autocomplete="list"
@@ -193,7 +198,7 @@
 				aria-controls="command-palette-results"
 			/>
 		</div>
-		<div class="overflow-y-auto flex-1 p-2">
+		<div class="flex-1 overflow-y-auto p-2">
 			{#if results.length === 0}
 				<div class="p-4 text-center text-base-content/50">No results found.</div>
 			{:else}
@@ -201,16 +206,20 @@
 					{#each results as item, index}
 						<li role="option" aria-selected={index === selectedIndex}>
 							<button
-								class="flex flex-col items-start gap-1 py-3 {index === selectedIndex ? 'active' : ''}"
+								class="flex flex-col items-start gap-1 py-3 {index === selectedIndex
+									? 'active'
+									: ''}"
 								onclick={() => execute(item)}
-                                onmouseenter={() => selectedIndex = index}
+								onmouseenter={() => (selectedIndex = index)}
 							>
-								<div class="flex items-center gap-2 w-full">
-									<span class="font-bold flex-1 truncate">{item.title}</span>
-									<span class="badge badge-sm badge-ghost">{item.type}</span>
+								<div class="flex w-full items-center gap-2">
+									<span class="flex-1 truncate font-bold">{item.title}</span>
+									<span class="badge badge-ghost badge-sm">{item.type}</span>
 								</div>
 								{#if item.description}
-									<span class="text-xs opacity-70 truncate w-full text-left">{item.description}</span>
+									<span class="w-full truncate text-left text-xs opacity-70"
+										>{item.description}</span
+									>
 								{/if}
 							</button>
 						</li>
@@ -218,14 +227,14 @@
 				</ul>
 			{/if}
 		</div>
-        <div class="p-2 border-t border-base-300 text-xs text-base-content/50 flex justify-between">
-            <span>
-                <kbd class="kbd kbd-xs">↑</kbd> <kbd class="kbd kbd-xs">↓</kbd> to navigate
-            </span>
-            <span>
-                <kbd class="kbd kbd-xs">↵</kbd> to select
-            </span>
-        </div>
+		<div class="flex justify-between border-t border-base-300 p-2 text-xs text-base-content/50">
+			<span>
+				<kbd class="kbd kbd-xs">↑</kbd> <kbd class="kbd kbd-xs">↓</kbd> to navigate
+			</span>
+			<span>
+				<kbd class="kbd kbd-xs">↵</kbd> to select
+			</span>
+		</div>
 	</div>
 	<form method="dialog" class="modal-backdrop">
 		<button onclick={close}>close</button>

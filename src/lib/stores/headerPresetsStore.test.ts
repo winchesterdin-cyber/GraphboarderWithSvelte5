@@ -27,8 +27,8 @@ describe('headerPresetsStore', () => {
 	beforeEach(() => {
 		localStorage.clear();
 		// Clear existing items
-        const presets = get(headerPresetsStore);
-        presets.forEach(p => headerPresetsStore.removePreset(p.id));
+		const presets = get(headerPresetsStore);
+		presets.forEach((p) => headerPresetsStore.removePreset(p.id));
 	});
 
 	it('should start with an empty list', () => {
@@ -38,11 +38,11 @@ describe('headerPresetsStore', () => {
 
 	it('should add a preset', () => {
 		const preset = {
-            id: '1',
-            name: 'Test Preset',
-            headers: { 'Authorization': 'Bearer test' }
-        };
-        headerPresetsStore.addPreset(preset);
+			id: '1',
+			name: 'Test Preset',
+			headers: { Authorization: 'Bearer test' }
+		};
+		headerPresetsStore.addPreset(preset);
 
 		const presets = get(headerPresetsStore);
 		expect(presets).toHaveLength(1);
@@ -51,11 +51,11 @@ describe('headerPresetsStore', () => {
 
 	it('should remove a preset', () => {
 		const preset = {
-            id: '1',
-            name: 'Test Preset',
-            headers: { 'Authorization': 'Bearer test' }
-        };
-        headerPresetsStore.addPreset(preset);
+			id: '1',
+			name: 'Test Preset',
+			headers: { Authorization: 'Bearer test' }
+		};
+		headerPresetsStore.addPreset(preset);
 
 		headerPresetsStore.removePreset('1');
 
@@ -65,17 +65,17 @@ describe('headerPresetsStore', () => {
 
 	it('should update a preset', () => {
 		const preset = {
-            id: '1',
-            name: 'Test Preset',
-            headers: { 'Authorization': 'Bearer test' }
-        };
-        headerPresetsStore.addPreset(preset);
+			id: '1',
+			name: 'Test Preset',
+			headers: { Authorization: 'Bearer test' }
+		};
+		headerPresetsStore.addPreset(preset);
 
-        const updatedPreset = {
-            ...preset,
-            name: 'Updated Preset'
-        };
-        headerPresetsStore.updatePreset(updatedPreset);
+		const updatedPreset = {
+			...preset,
+			name: 'Updated Preset'
+		};
+		headerPresetsStore.updatePreset(updatedPreset);
 
 		const presets = get(headerPresetsStore);
 		expect(presets).toHaveLength(1);

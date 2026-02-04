@@ -77,7 +77,7 @@
 		<h4 class="mb-2 text-sm font-bold">Presets</h4>
 		<div class="mb-2 flex flex-wrap gap-2">
 			{#each $headerPresetsStore as preset}
-				<div class="badge badge-neutral gap-2 p-3">
+				<div class="badge gap-2 p-3 badge-neutral">
 					<button class="hover:underline" onclick={() => loadPreset(preset)}>{preset.name}</button>
 					<button
 						class="btn btn-circle btn-ghost btn-xs"
@@ -87,18 +87,18 @@
 				</div>
 			{/each}
 			{#if $headerPresetsStore.length === 0}
-				<span class="text-xs italic text-gray-500">No presets saved.</span>
+				<span class="text-xs text-gray-500 italic">No presets saved.</span>
 			{/if}
 		</div>
 		<div class="flex gap-2">
 			<input
 				type="text"
-				class="input input-bordered input-sm grow"
+				class="input-bordered input input-sm grow"
 				placeholder="New preset name..."
 				bind:value={presetName}
 			/>
 			<button
-				class="btn btn-secondary btn-sm"
+				class="btn btn-sm btn-secondary"
 				onclick={savePreset}
 				disabled={!presetName}
 				aria-label="Save Preset">Save Current as Preset</button
@@ -107,7 +107,7 @@
 	</div>
 
 	<textarea
-		class="textarea textarea-bordered h-64 font-mono text-sm"
+		class="textarea-bordered textarea h-64 font-mono text-sm"
 		bind:value={headersString}
 		placeholder={'{ "Authorization": "Bearer ..." }'}
 	></textarea>

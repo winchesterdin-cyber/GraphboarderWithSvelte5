@@ -84,8 +84,8 @@
 								<td>{key}</td>
 								<td>{value.length}</td>
 								<td class="flex gap-2">
-									<button class="btn btn-info btn-xs" onclick={() => handleView(key)}>View</button>
-									<button class="btn btn-error btn-xs" onclick={() => handleDelete(key)}
+									<button class="btn btn-xs btn-info" onclick={() => handleView(key)}>View</button>
+									<button class="btn btn-xs btn-error" onclick={() => handleDelete(key)}
 										>Delete</button
 									>
 								</td>

@@ -77,7 +77,7 @@
 			<button class="btn btn-outline btn-sm" onclick={handleImportClick}>
 				<i class="bi bi-upload"></i> Import
 			</button>
-			<button class="btn btn-outline btn-error btn-sm" onclick={handleClear}>
+			<button class="btn btn-outline btn-sm btn-error" onclick={handleClear}>
 				<i class="bi bi-trash"></i> Clear All
 			</button>
 			<input
@@ -112,13 +112,13 @@
 						<tr class="hover">
 							<td>
 								{#if item.status === 'success'}
-									<span class="badge badge-success badge-sm">OK</span>
+									<span class="badge badge-sm badge-success">OK</span>
 								{:else}
-									<span class="badge badge-error badge-sm">ERR</span>
+									<span class="badge badge-sm badge-error">ERR</span>
 								{/if}
 							</td>
 							<td class="font-medium">
-								<button class="link link-hover font-bold" onclick={() => restoreQuery(item)}>
+								<button class="link font-bold link-hover" onclick={() => restoreQuery(item)}>
 									{item.queryName}
 								</button>
 								<span class="ml-1 text-xs opacity-50">({item.type})</span>

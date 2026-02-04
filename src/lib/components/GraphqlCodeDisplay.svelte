@@ -9,6 +9,13 @@
 	import { updateStoresFromAST } from '$lib/utils/astToUIState';
 	import { generateTypeScript } from '$lib/utils/graphql/typescript-generator';
 	import { calculateComplexity } from '$lib/utils/graphql/complexity';
+	import {
+		generateCurlCommand,
+		generateFetchCommand,
+		generateApolloCommand,
+		generatePythonCommand,
+		generateGoCommand
+	} from '$lib/utils/graphql/codegen';
 	import { parse, print } from 'graphql';
 	import JSON5 from 'json5';
 	import { browser } from '$app/environment';
@@ -20,6 +27,7 @@
 	import { get } from 'svelte/store';
 	import { goto } from '$app/navigation';
 	import { downloadText } from '$lib/utils/downloadUtils';
+	import { logger } from '$lib/utils/logger';
 
 	/**
 	 * Props for GraphqlCodeDisplay component.
@@ -54,6 +62,20 @@
 	// Favorites State
 	let showFavoriteModal = $state(false);
 	let favoriteName = $state('');
+
+	// Export Code State
+	let showExportModal = $state(false);
+	let exportLanguage = $state('curl');
+	let exportCopyFeedback = $state(false);
+
+	const exportOptions = [
+		{ id: 'curl', label: 'cURL' },
+		{ id: 'fetch', label: 'Fetch' },
+		{ id: 'ts', label: 'TypeScript' },
+		{ id: 'apollo', label: 'Apollo' },
+		{ id: 'python', label: 'Python' },
+		{ id: 'go', label: 'Go' }
+	];
 
 	/**
 	 * Saves the current query as a favorite.
@@ -101,10 +123,6 @@
 	let astPrinted = $state('');
 	let complexity = $state(0);
 	let copyFeedback = $state(false);
-	let curlCopyFeedback = $state(false);
-	let fetchCopyFeedback = $state(false);
-	let tsCopyFeedback = $state(false);
-	let apolloCopyFeedback = $state(false);
 	let shareFeedback = $state(false);
 	let downloadFeedback = $state(false);
 
@@ -179,57 +197,17 @@
 	};
 
 	/**
-	 * Generates a cURL command for the current query.
-	 * Includes headers from endpoint configuration or local storage.
-	 * @returns The cURL command string.
+	 * Helper function to retrieve the current value of a Svelte store.
+	 * @param store The store to get the value from.
+	 * @returns The current value of the store.
 	 */
-	const generateCurlCommand = () => {
-		let url = 'http://localhost:4000/graphql'; // Default fallback
-		let headers = {};
+	function getStoreValue(store: any) {
+		let storeVal;
+		store.subscribe(($: any) => (storeVal = $))();
+		return storeVal;
+	}
 
-		if (QMSMainWraperContext) {
-			const { endpointInfo } = QMSMainWraperContext;
-			// Access store value
-			const endpoint = (endpointInfo as any)?.subscribe
-				? (getStoreValue(endpointInfo) as any)
-				: endpointInfo;
-			if (endpoint?.url) {
-				url = endpoint.url;
-			}
-			if (endpoint?.headers) {
-				headers = endpoint.headers;
-			}
-		}
-
-		// Also try localStorage headers if not found in endpoint
-		if (Object.keys(headers).length === 0 && browser) {
-			const headersStr = localStorage.getItem('headers');
-			if (headersStr) {
-				try {
-					headers = JSON.parse(headersStr);
-				} catch (e) {
-					// ignore
-				}
-			}
-		}
-
-		let headerString = '';
-		for (const [key, val] of Object.entries(headers)) {
-			headerString += ` -H "${key}: ${val}"`;
-		}
-
-		// Properly escape single quotes for shell
-		const queryJson = JSON.stringify({ query: value }).replace(/'/g, "'\\''");
-
-		return `curl -X POST "${url}" -H "Content-Type: application/json"${headerString} -d '${queryJson}'`;
-	};
-
-	/**
-	 * Generates a JavaScript Fetch API snippet for the current query.
-	 * Includes headers from endpoint configuration or local storage.
-	 * @returns The JavaScript code snippet.
-	 */
-	const generateFetchCommand = () => {
+	function getEndpointDetails() {
 		let url = 'http://localhost:4000/graphql'; // Default fallback
 		let headers: Record<string, string> = {};
 
@@ -259,123 +237,51 @@
 				}
 			}
 		}
-
-		// Add Content-Type if not present
-		if (!headers['Content-Type']) {
-			headers['Content-Type'] = 'application/json';
-		}
-
-		const body = { query: value };
-
-		return `fetch("${url}", {
-  method: "POST",
-  headers: ${JSON.stringify(headers, null, 2)},
-  body: JSON.stringify(${JSON.stringify(body, null, 2)})
-});`;
-	};
-
-	/**
-	 * Helper function to retrieve the current value of a Svelte store.
-	 * @param store The store to get the value from.
-	 * @returns The current value of the store.
-	 */
-	function getStoreValue(store: any) {
-		let storeVal;
-		store.subscribe(($: any) => (storeVal = $))();
-		return storeVal;
+		return { url, headers };
 	}
 
-	/**
-	 * Copies the generated cURL command to the clipboard.
-	 */
-	const copyCurlToClipboard = () => {
-		const curl = generateCurlCommand();
-		console.debug('Copying cURL command to clipboard');
-		navigator.clipboard.writeText(curl);
-		curlCopyFeedback = true;
-		setTimeout(() => {
-			curlCopyFeedback = false;
-		}, 2000);
-	};
+	let exportCode = $derived.by(() => {
+		// Dependency on exportLanguage, value, and showExportModal
+		// We explicitly access them to ensure reactivity
+		const lang = exportLanguage;
+		const query = value;
+		// Ensure we re-generate when modal opens to capture latest endpoint details
+		const _ = showExportModal;
 
-	/**
-	 * Copies the generated Fetch snippet to the clipboard.
-	 */
-	const copyFetchToClipboard = () => {
-		const fetchCmd = generateFetchCommand();
-		console.debug('Copying fetch command to clipboard');
-		navigator.clipboard.writeText(fetchCmd);
-		fetchCopyFeedback = true;
-		setTimeout(() => {
-			fetchCopyFeedback = false;
-		}, 2000);
-	};
+		const { url, headers } = getEndpointDetails();
 
-	/**
-	 * Generates a TypeScript interface based on the current AST and Schema.
-	 * Copies the result to the clipboard and shows feedback.
-	 */
-	const copyTypeScriptToClipboard = () => {
-		if (!ast || !QMSMainWraperContext?.schemaData) {
-			console.warn('Cannot generate TypeScript: missing AST or SchemaData');
-			addToast('Cannot generate TypeScript: Schema data missing', 'warning');
-			return;
+		switch (lang) {
+			case 'curl':
+				return generateCurlCommand(url, headers, query);
+			case 'fetch':
+				return generateFetchCommand(url, headers, query);
+			case 'ts':
+				if (ast && QMSMainWraperContext?.schemaData) {
+					try {
+						return generateTypeScript(ast, QMSMainWraperContext.schemaData) || '';
+					} catch (e: any) {
+						return `// Error generating TypeScript: ${e.message}`;
+					}
+				} else {
+					return '// Schema or AST missing for TypeScript generation';
+				}
+			case 'apollo':
+				return generateApolloCommand(query);
+			case 'python':
+				return generatePythonCommand(url, headers, query);
+			case 'go':
+				return generateGoCommand(url, headers, query);
+			default:
+				return '';
 		}
+	});
 
-		try {
-			console.debug('Generating TypeScript interface...');
-			const tsCode = generateTypeScript(ast, QMSMainWraperContext.schemaData);
-			if (tsCode) {
-				navigator.clipboard.writeText(tsCode);
-				tsCopyFeedback = true;
-				addToast('TypeScript interface copied!', 'success');
-				setTimeout(() => {
-					tsCopyFeedback = false;
-				}, 2000);
-			} else {
-				addToast('Generated TypeScript was empty', 'warning');
-			}
-		} catch (e: any) {
-			console.error('Error generating TypeScript:', e);
-			addToast(`Failed to generate TypeScript: ${e.message}`, 'error');
-		}
-	};
-
-	/**
-	 * Generates a React Apollo Client hook snippet for the current query.
-	 * @returns The React code snippet.
-	 */
-	const generateApolloCommand = () => {
-		const queryMatch = value.match(/(query|mutation|subscription)\s+(\w+)/);
-		const operationType =
-			queryMatch?.[1] || (value.trim().startsWith('mutation') ? 'mutation' : 'query');
-		const queryName = queryMatch?.[2] || 'MyQuery';
-		const hookName = `use${queryName.charAt(0).toUpperCase() + queryName.slice(1)}`;
-		const hookType = operationType === 'mutation' ? 'Mutation' : 'Query';
-		const constName = `${queryName.toUpperCase()}_${operationType.toUpperCase()}`;
-
-		return `import { gql, use${hookType} } from '@apollo/client';
-
-const ${constName} = gql\`
-${value}
-\`;
-
-export function ${hookName}() {
-  const result = use${hookType}(${constName});
-  return result;
-}`;
-	};
-
-	/**
-	 * Copies the generated Apollo Client snippet to the clipboard.
-	 */
-	const copyApolloToClipboard = () => {
-		const code = generateApolloCommand();
-		console.debug('Copying Apollo code to clipboard');
-		navigator.clipboard.writeText(code);
-		apolloCopyFeedback = true;
+	const copyExportCode = () => {
+		navigator.clipboard.writeText(exportCode);
+		exportCopyFeedback = true;
+		logger.info('User copied generated code', { language: exportLanguage });
 		setTimeout(() => {
-			apolloCopyFeedback = false;
+			exportCopyFeedback = false;
 		}, 2000);
 	};
 
@@ -510,7 +416,7 @@ export function ${hookName}() {
 	</div>
 	<div class="absolute top-3 right-4 flex gap-2">
 		{#if language === 'graphql'}
-			<div class="badge badge-outline h-6 text-xs">
+			<div class="badge h-6 badge-outline text-xs">
 				Complexity: {complexity}
 			</div>
 			<button
@@ -535,50 +441,11 @@ export function ${hookName}() {
 			</button>
 			<button
 				class="btn normal-case btn-xs btn-primary"
-				onclick={copyCurlToClipboard}
-				aria-label="Copy cURL"
+				onclick={() => (showExportModal = true)}
+				aria-label="Export Code"
+				title="Export query as code"
 			>
-				{#if curlCopyFeedback}
-					<i class="bi bi-check"></i> Copied cURL!
-				{:else}
-					<i class="bi bi-terminal"></i> Copy cURL
-				{/if}
-			</button>
-			<button
-				class="btn normal-case btn-xs btn-primary"
-				onclick={copyFetchToClipboard}
-				aria-label="Copy Fetch"
-				title="Generate and copy Fetch request"
-			>
-				{#if fetchCopyFeedback}
-					<i class="bi bi-check"></i> Copied Fetch!
-				{:else}
-					<i class="bi bi-code-slash"></i> Copy Fetch
-				{/if}
-			</button>
-			<button
-				class="btn normal-case btn-xs btn-primary"
-				onclick={copyTypeScriptToClipboard}
-				aria-label="Copy TypeScript Interface"
-				title="Generate and copy TypeScript interface"
-			>
-				{#if tsCopyFeedback}
-					<i class="bi bi-check"></i> Copied TS!
-				{:else}
-					<i class="bi bi-filetype-ts"></i> Copy TS
-				{/if}
-			</button>
-			<button
-				class="btn normal-case btn-xs btn-primary"
-				onclick={copyApolloToClipboard}
-				aria-label="Copy Apollo Client Code"
-				title="Generate and copy React Apollo hook"
-			>
-				{#if apolloCopyFeedback}
-					<i class="bi bi-check"></i> Copied Apollo!
-				{:else}
-					<i class="bi bi-lightning-fill"></i> Copy Apollo
-				{/if}
+				<i class="bi bi-code-slash"></i> Export Code
 			</button>
 		{/if}
 		{#if language === 'json'}
@@ -640,5 +507,32 @@ export function ${hookName}() {
 			bind:value={favoriteName}
 			onkeydown={(e) => e.key === 'Enter' && handleSaveFavorite()}
 		/>
+	</div>
+</Modal>
+
+<Modal bind:show={showExportModal} modalIdentifier="export-code-modal" showApplyBtn={false}>
+	<h3 class="mb-4 text-lg font-bold">Export Code</h3>
+
+	<div class="tabs-boxed mb-4 tabs">
+		{#each exportOptions as option}
+			<button
+				class="tab"
+				class:tab-active={exportLanguage === option.id}
+				onclick={() => (exportLanguage = option.id)}
+			>
+				{option.label}
+			</button>
+		{/each}
+	</div>
+
+	<div class="relative h-64 overflow-hidden rounded-lg border border-base-300">
+		<CodeEditor rawValue={exportCode} language="javascript" readonly={true} />
+		<button class="btn absolute top-2 right-2 btn-sm btn-primary" onclick={copyExportCode}>
+			{#if exportCopyFeedback}
+				<i class="bi bi-check"></i> Copied!
+			{:else}
+				<i class="bi bi-clipboard"></i> Copy
+			{/if}
+		</button>
 	</div>
 </Modal>
