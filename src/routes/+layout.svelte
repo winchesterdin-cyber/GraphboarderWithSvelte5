@@ -3,6 +3,7 @@
 	import '../app.css';
 	import ToastContainer from '$lib/components/UI/ToastContainer.svelte';
 	import CommandPalette from '$lib/components/CommandPalette.svelte';
+	import PinnedResponseViewer from '$lib/components/PinnedResponseViewer.svelte';
 
 	interface Props {
 		children?: import('svelte').Snippet;
@@ -13,6 +14,7 @@
 
 <ToastContainer />
 <CommandPalette />
+<PinnedResponseViewer />
 
 <header></header>
 

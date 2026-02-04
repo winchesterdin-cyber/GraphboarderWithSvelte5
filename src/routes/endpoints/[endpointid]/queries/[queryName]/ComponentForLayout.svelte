@@ -1,7 +1,5 @@
 <script lang="ts">
-	import CodeEditor from '$lib/components/fields/CodeEditor.svelte';
 	import AddColumn from '$lib/components/AddColumn.svelte';
-	import TypeList from '$lib/components/TypeList.svelte';
 	import Table from '$lib/components/Table.svelte';
 	import { page } from '$app/stores';
 	import {
@@ -13,10 +11,8 @@
 	} from '$lib/utils/usefulFunctions';
 	import { onDestroy, onMount, getContext } from 'svelte';
 	import { goto } from '$app/navigation';
-	import Type from '$lib/components/Type.svelte';
 	import ActiveArguments from '$lib/components/ActiveArguments.svelte';
 	import { get_paginationTypes } from '$lib/stores/pagination/paginationTypes';
-	import { format } from 'graphql-formatter';
 	import hljs from 'highlight.js/lib/core';
 	import graphql from 'highlight.js/lib/languages/graphql';
 	import 'highlight.js/styles/base16/solarized-dark.css';
@@ -311,6 +307,7 @@
 	let showHeadersModal = $state(false);
 	let showVarsModal = $state(false);
 	let showActiveFilters;
+	let viewMode = $state<'table' | 'json'>('table');
 </script>
 
 <!-- <button
@@ -374,6 +371,18 @@
 			</button>
 		</div> -->
 	</div>
+
+	<div class="join">
+		<button
+			class="btn join-item btn-xs {viewMode === 'table' ? 'btn-active' : ''}"
+			onclick={() => (viewMode = 'table')}>Table</button
+		>
+		<button
+			class="btn join-item btn-xs {viewMode === 'json' ? 'btn-active' : ''}"
+			onclick={() => (viewMode = 'json')}>JSON</button
+		>
+	</div>
+
 	<button
 		class=" btn grow normal-case btn-xs"
 		onclick={() => {
@@ -466,17 +475,31 @@
 {/if}
 
 <div class="md:px-2">
-	<Table
-		{rowSelectionState}
-		{enableMultiRowSelectionState}
-		{infiniteId}
-		{infiniteHandler}
-		colsData={$tableColsData_Store}
-		{rows}
-		onHideColumn={(detail: { column: string }) => {
-			hideColumn(detail);
-		}}
-		{onRowSelectionChange}
-		{onRowClicked}
-	/>
+	{#if viewMode === 'table'}
+		<Table
+			{rowSelectionState}
+			{enableMultiRowSelectionState}
+			{infiniteId}
+			{infiniteHandler}
+			colsData={$tableColsData_Store}
+			{rows}
+			onHideColumn={(detail: { column: string }) => {
+				hideColumn(detail);
+			}}
+			{onRowSelectionChange}
+			{onRowClicked}
+		/>
+	{:else if queryData.data}
+		<div class="mt-2">
+			<GraphqlCodeDisplay
+				value={JSON.stringify(queryData.data, null, 2)}
+				enableSyncToUI={false}
+				language="json"
+				readonly={true}
+				queryName={QMSName}
+			/>
+		</div>
+	{:else}
+		<div class="p-4 text-center opacity-50">No data available</div>
+	{/if}
 </div>

@@ -28,6 +28,7 @@
 	import { goto } from '$app/navigation';
 	import { downloadText } from '$lib/utils/downloadUtils';
 	import { logger } from '$lib/utils/logger';
+	import { pinnedResponseStore } from '$lib/stores/pinnedResponseStore';
 
 	/**
 	 * Props for GraphqlCodeDisplay component.
@@ -45,6 +46,8 @@
 		language?: string;
 		/** Whether the editor should be read-only. Default: false. */
 		readonly?: boolean;
+		/** Name of the query, used for pinning responses. */
+		queryName?: string;
 	}
 
 	let {
@@ -53,7 +56,8 @@
 		enableSyncToUI = true,
 		prefix = '',
 		language = 'graphql',
-		readonly = false
+		readonly = false,
+		queryName
 	}: Props = $props();
 
 	let valueModifiedManually = $state<string>();
@@ -449,6 +453,17 @@
 			</button>
 		{/if}
 		{#if language === 'json'}
+			<button
+				class="btn normal-case btn-xs btn-secondary"
+				onclick={() => {
+					pinnedResponseStore.pin(value, queryName || 'Response');
+					addToast('Response pinned!', 'success');
+				}}
+				aria-label="Pin Response"
+				title="Pin this response for comparison"
+			>
+				<i class="bi bi-pin-angle-fill"></i> Pin
+			</button>
 			<button
 				class="btn normal-case btn-xs btn-primary"
 				onclick={handleDownloadJSON}

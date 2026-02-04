@@ -52,6 +52,7 @@ As you build the query, the results are fetched and displayed automatically.
   - **JSON**: Toggle to "JSON" view to see the raw response from the server.
     - **Syntax Highlighting**: The JSON view provides syntax highlighting for better readability.
     - **Download**: Click the **"Download JSON"** button in the JSON view toolbar to save the response body as a `.json` file.
+    - **Pin Response**: Click the **"Pin"** button to pin the current response. This allows you to compare it with subsequent queries.
 - **Metrics**:
   - **Time**: Displays the execution time of the request in milliseconds (ms).
   - **Size**: Displays the size of the response payload.
@@ -183,6 +184,17 @@ A new **Storage Manager** tool is available to inspect and manage data stored in
 - **Access**: Click the **Database** icon (bi-database) in the bottom-left corner of the sidebar (next to the theme toggle).
 - **Inspect**: View raw JSON data for Endpoints, History, Favorites, and Environment Variables.
 - **Delete**: Individually delete specific storage keys if needed for debugging or cleanup.
+
+### Response Pinning
+
+You can pin a query response to compare it with future results.
+
+1.  Execute a query.
+2.  Switch to **JSON** view.
+3.  Click the **Pin** button in the top-right corner of the code block.
+4.  The response will be pinned in a floating panel at the bottom-right of the screen.
+5.  You can collapse the panel or close it when done.
+6.  The pinned response persists even if you navigate to other pages.
 
 ## 12. Command Palette
 
