@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
+import { logger } from '$lib/utils/logger';
 
 export interface EnvVars {
 	[key: string]: string;
@@ -7,6 +8,10 @@ export interface EnvVars {
 
 const STORAGE_KEY = 'envVars';
 
+/**
+ * Creates a store for managing environment variables.
+ * These variables are stored in localStorage and can be used in dynamic headers.
+ */
 function createEnvVarsStore() {
 	const { subscribe, set, update } = writable<EnvVars>({});
 
@@ -17,23 +22,32 @@ function createEnvVarsStore() {
 			try {
 				set(JSON.parse(stored));
 			} catch (e) {
-				console.error('Failed to parse stored env vars:', e);
+				logger.error('Failed to parse stored env vars:', e);
 			}
 		}
 	}
 
 	return {
 		subscribe,
+		/**
+		 * Sets a new environment variable or updates an existing one.
+		 * @param key The variable name.
+		 * @param value The variable value.
+		 */
 		setVar: (key: string, value: string) => {
 			update((vars) => {
 				const newVars = { ...vars, [key]: value };
 				if (browser) {
 					localStorage.setItem(STORAGE_KEY, JSON.stringify(newVars));
 				}
-				console.debug(`EnvVar set: ${key}`);
+				logger.debug(`EnvVar set: ${key}`);
 				return newVars;
 			});
 		},
+		/**
+		 * Removes an environment variable.
+		 * @param key The variable name to remove.
+		 */
 		removeVar: (key: string) => {
 			update((vars) => {
 				const newVars = { ...vars };
@@ -41,10 +55,28 @@ function createEnvVarsStore() {
 				if (browser) {
 					localStorage.setItem(STORAGE_KEY, JSON.stringify(newVars));
 				}
-				console.debug(`EnvVar removed: ${key}`);
+				logger.debug(`EnvVar removed: ${key}`);
 				return newVars;
 			});
 		},
+		/**
+		 * Imports environment variables, merging with existing ones.
+		 * @param importedVars The variables to import.
+		 */
+		importVars: (importedVars: EnvVars) => {
+			update((vars) => {
+				const newVars = { ...vars, ...importedVars };
+				if (browser) {
+					localStorage.setItem(STORAGE_KEY, JSON.stringify(newVars));
+				}
+				logger.info(`Imported ${Object.keys(importedVars).length} env vars`);
+				return newVars;
+			});
+		},
+		/**
+		 * Gets a variable value (mostly for internal use, use subscription in components).
+		 * @param key The variable name.
+		 */
 		getVar: (key: string) => {
 			// Note: access via subscription or $envVars in components
 			// This helper might be useful for one-off reads if needed,

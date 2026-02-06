@@ -124,6 +124,9 @@ To improve security and convenience, you can use environment variables in your h
     - Example: `{"Authorization": "Bearer {{API_TOKEN}}"}`
 5.  The application will automatically substitute `{{API_TOKEN}}` with the actual value when making requests.
 6.  You can toggle **"Show Values"** to reveal the actual values of your variables.
+7.  **Export/Import**:
+    - **Export**: Click the download icon in the Environment Variables modal to save your variables as a JSON file.
+    - **Import**: Click the upload icon to restore variables from a JSON file. This is useful for sharing environment configurations with your team.
 
 ## 7. History & Favorites
 
