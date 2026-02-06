@@ -151,6 +151,10 @@ To improve security and convenience, you can use environment variables in your h
   - **Export Favorites**: Click **"Export"** to backup your favorite queries to a JSON file.
   - **Import Favorites**: Click **"Import"** to restore favorites from a JSON file. This is useful for sharing query collections with teammates.
   - **Delete**: Remove unwanted favorites using the trash icon.
+  - **Folders**:
+    - When saving a favorite, you can optionally specify a **Folder Name** to organize your queries.
+    - The Favorites page displays queries grouped by their assigned folder.
+    - Queries without a folder are listed under "Uncategorized".
 
 ## 8. Appearance
 

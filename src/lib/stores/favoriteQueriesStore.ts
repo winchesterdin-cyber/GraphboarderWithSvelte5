@@ -15,6 +15,8 @@ export interface FavoriteQuery {
 	type: 'query' | 'mutation';
 	/** The ID of the endpoint this query belongs to */
 	endpointId: string;
+	/** Optional folder name for organization */
+	folder?: string;
 	/** Timestamp when the query was saved */
 	timestamp: number;
 }
@@ -40,7 +42,7 @@ const createFavoriteQueriesStore = () => {
 		 * @param query The query details (excluding id and timestamp).
 		 */
 		add: (query: Omit<FavoriteQuery, 'id' | 'timestamp'>) => {
-			console.debug('[FavoriteQueries] Adding query:', query.name);
+			console.debug('[FavoriteQueries] Adding query:', query.name, 'Folder:', query.folder);
 			update((queries) => {
 				const newQuery = { ...query, id: crypto.randomUUID(), timestamp: Date.now() };
 				// Check for duplicates based on name and endpoint

@@ -68,6 +68,11 @@
 	// Favorites State
 	let showFavoriteModal = $state(false);
 	let favoriteName = $state('');
+	let favoriteFolder = $state('');
+
+	let existingFolders = $derived(
+		Array.from(new Set($favoriteQueries.map((q) => q.folder).filter(Boolean))).sort()
+	);
 
 	// Export Code State
 	let showExportModal = $state(false);
@@ -101,12 +106,14 @@
 			name: favoriteName,
 			query: value,
 			type: value.trim().startsWith('mutation') ? 'mutation' : 'query',
-			endpointId: endpointId
+			endpointId: endpointId,
+			folder: favoriteFolder.trim() || undefined
 		});
 
 		addToast(`Saved favorite: ${favoriteName}`, 'success');
 		showFavoriteModal = false;
 		favoriteName = '';
+		favoriteFolder = '';
 	};
 
 	// Try to get context if available
@@ -559,6 +566,25 @@
 			bind:value={favoriteName}
 			onkeydown={(e) => e.key === 'Enter' && handleSaveFavorite()}
 		/>
+	</div>
+	<div class="form-control mt-4 w-full">
+		<label class="label" for="fav-folder">
+			<span class="label-text">Folder (Optional)</span>
+		</label>
+		<input
+			id="fav-folder"
+			type="text"
+			placeholder="e.g. Auth, Users"
+			class="input-bordered input w-full"
+			bind:value={favoriteFolder}
+			list="folder-suggestions"
+			onkeydown={(e) => e.key === 'Enter' && handleSaveFavorite()}
+		/>
+		<datalist id="folder-suggestions">
+			{#each existingFolders as folder}
+				<option value={folder}></option>
+			{/each}
+		</datalist>
 	</div>
 </Modal>
 

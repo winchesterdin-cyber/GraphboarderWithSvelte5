@@ -131,4 +131,19 @@ describe('favoriteQueriesStore', () => {
 		expect(queries[0].name).toBe('Imported 2');
 		expect(queries[1].name).toBe('Imported 1');
 	});
+
+	it('should add a query with folder', () => {
+		favoriteQueries.add({
+			name: 'Query with Folder',
+			query: '{ test }',
+			type: 'query',
+			endpointId: 'ep1',
+			folder: 'My Folder'
+		});
+
+		const queries = get(favoriteQueries);
+		expect(queries).toHaveLength(1);
+		expect(queries[0].name).toBe('Query with Folder');
+		expect(queries[0].folder).toBe('My Folder');
+	});
 });

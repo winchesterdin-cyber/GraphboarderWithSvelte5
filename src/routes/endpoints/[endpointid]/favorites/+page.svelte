@@ -10,6 +10,24 @@
 	// Filter favorites for current endpoint
 	let favorites = $derived($favoriteQueries.filter((q) => q.endpointId === endpointId));
 
+	let groupedFavorites = $derived.by(() => {
+		const groups: Record<string, typeof favorites> = {};
+		favorites.forEach((f) => {
+			const key = f.folder || 'Uncategorized';
+			if (!groups[key]) groups[key] = [];
+			groups[key].push(f);
+		});
+		return groups;
+	});
+
+	let sortedFolders = $derived(
+		Object.keys(groupedFavorites).sort((a, b) => {
+			if (a === 'Uncategorized') return -1;
+			if (b === 'Uncategorized') return 1;
+			return a.localeCompare(b);
+		})
+	);
+
 	const handleDelete = (id: string) => {
 		if (confirm('Are you sure you want to delete this favorite?')) {
 			favoriteQueries.remove(id);
@@ -93,55 +111,72 @@
 			<span>No favorites saved for this endpoint yet. Save queries from the execution view.</span>
 		</div>
 	{:else}
-		<div class="overflow-x-auto">
-			<table class="table w-full">
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Type</th>
-						<th>Saved At</th>
-						<th class="text-right">Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					{#each favorites as fav (fav.id)}
-						<tr class="hover">
-							<td class="font-medium">
-								<button
-									class="link font-bold text-primary link-hover"
-									onclick={async () => await navigateToQuery(fav)}
-								>
-									{fav.name}
-								</button>
-							</td>
-							<td>
-								<span class="badge {fav.type === 'query' ? 'badge-primary' : 'badge-secondary'}">
-									{fav.type}
-								</span>
-							</td>
-							<td>{new Date(fav.timestamp).toLocaleString()}</td>
-							<td class="space-x-1 text-right">
-								<button
-									class="btn btn-ghost btn-xs"
-									onclick={async () => await navigateToQuery(fav)}
-									title="Run"
-									aria-label="Run query"
-								>
-									<i class="bi bi-play-fill text-lg"></i>
-								</button>
-								<button
-									class="btn text-error btn-ghost btn-xs"
-									onclick={() => handleDelete(fav.id)}
-									title="Delete"
-									aria-label="Delete favorite"
-								>
-									<i class="bi bi-trash"></i>
-								</button>
-							</td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-		</div>
+		{#each sortedFolders as folder (folder)}
+			<details
+				class="collapse collapse-arrow border-base-300 bg-base-100 rounded-box mb-2 border"
+				open
+			>
+				<summary class="collapse-title text-xl font-medium">
+					{folder}
+					<span class="badge badge-sm badge-outline ml-2">{groupedFavorites[folder].length}</span>
+				</summary>
+				<div class="collapse-content">
+					<div class="overflow-x-auto">
+						<table class="table w-full">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Type</th>
+									<th>Saved At</th>
+									<th class="text-right">Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								{#each groupedFavorites[folder] as fav (fav.id)}
+									<tr class="hover">
+										<td class="font-medium">
+											<button
+												class="link font-bold text-primary link-hover"
+												onclick={async () => await navigateToQuery(fav)}
+											>
+												{fav.name}
+											</button>
+										</td>
+										<td>
+											<span
+												class="badge {fav.type === 'query'
+													? 'badge-primary'
+													: 'badge-secondary'}"
+											>
+												{fav.type}
+											</span>
+										</td>
+										<td>{new Date(fav.timestamp).toLocaleString()}</td>
+										<td class="space-x-1 text-right">
+											<button
+												class="btn btn-ghost btn-xs"
+												onclick={async () => await navigateToQuery(fav)}
+												title="Run"
+												aria-label="Run query"
+											>
+												<i class="bi bi-play-fill text-lg"></i>
+											</button>
+											<button
+												class="btn text-error btn-ghost btn-xs"
+												onclick={() => handleDelete(fav.id)}
+												title="Delete"
+												aria-label="Delete favorite"
+											>
+												<i class="bi bi-trash"></i>
+											</button>
+										</td>
+									</tr>
+								{/each}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</details>
+		{/each}
 	{/if}
 </div>
