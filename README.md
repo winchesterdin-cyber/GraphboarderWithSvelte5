@@ -33,6 +33,8 @@ For detailed guides, please check the [guides](./guides) folder:
 - [Components Guide](./guides/components.md)
 - [Utilities Guide](./guides/utilities.md)
 - [Testing Guide](./guides/testing.md)
+- [Useful Notes](./guides/useful_notes.md)
+- [Documentation Update Log](./guides/updates_log.md)
 - [Contribution Guide](./guides/contribution.md)
 
 ## Development

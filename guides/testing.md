@@ -37,6 +37,8 @@ describe('myUtility', () => {
 
 - **Stores**: When testing stores that use `svelte-persisted-store` or browser APIs, ensure you mock `localStorage` or run in an environment that supports it.
 - **Console Logs**: Tests usually mock `console` methods to keep output clean.
+- **Normalization & Validation**: When stores sanitize input (trim names, drop empty values, or merge duplicates), include explicit cases to confirm the normalization rules.
+- **Timestamped Updates**: If a store updates timestamps (e.g., when a favorite is edited or moved), mock `Date.now()` so tests can assert exact values.
 
 ## End-to-End Testing (Playwright)
 
@@ -76,3 +78,48 @@ npm test
 ## CI/CD
 
 Tests are typically run in the CI pipeline to prevent regressions. Ensure all tests pass locally before submitting changes.
+
+## Store Test Coverage Expectations
+
+- Validate that favorites prevent duplicates by name + endpoint combinations.
+- Confirm that edits move updated favorites to the top of the list and update timestamps.
+- Ensure invalid imports (missing names, queries, or endpoints) are safely ignored.
+- Validate folder rename behaviors, including clearing folders to return favorites to "Uncategorized".
+
+## Mock GraphQL Server Testing
+
+The project includes a lightweight mock GraphQL server backed by SQLite for exercising GraphQL workflows.
+
+- **Location**: `src/lib/server/mockGraphqlServer.ts` and its accompanying test file.
+- **Features**: Introspection is enabled by default, and mutations write to an in-memory SQLite database.
+- **Usage**: Run the unit test to verify introspection and query/mutation flows:
+
+```bash
+npm run test:unit -- mockGraphqlServer
+```
+
+### App E2E Coverage with the Mock Server
+
+Playwright includes an end-to-end test that registers the mock server as an endpoint and verifies the
+Explorer UI can load and display query fields.
+
+```bash
+npm run test:e2e -- mock-graphql
+```
+
+Additional mock-driven E2E coverage validates query and mutation pages plus Explorer filtering:
+
+```bash
+npm run test:e2e -- mock-graphql-features
+```
+
+History filtering and deletion behavior is covered by a dedicated Playwright test:
+
+```bash
+npm run test:e2e -- history-filtering
+```
+
+## History Store Coverage Expectations
+
+- Verify history entries cap at 50 items and remain sorted by newest first.
+- Ensure history removal and imports update localStorage correctly.

@@ -49,10 +49,10 @@
 		addToast('History exported', 'success');
 	};
 
-	let fileInput: HTMLInputElement;
+	let fileInput = $state<HTMLInputElement | null>(null);
 
 	const handleImportClick = () => {
-		fileInput.click();
+		fileInput?.click();
 	};
 
 	const handleFileChange = (e: Event) => {
@@ -84,6 +84,13 @@
 		const url = `/endpoints/${endpointId}/${q.type === 'query' ? 'queries' : 'mutations'}/${q.queryName}?historyId=${q.id}`;
 		// eslint-disable-next-line svelte/no-navigation-without-resolve
 		await goto(url);
+	};
+
+	const handleDelete = (id: string) => {
+		if (confirm('Remove this history item?')) {
+			historyQueries.remove(id);
+			addToast('History item removed', 'success');
+		}
 	};
 </script>
 
@@ -177,6 +184,14 @@
 									aria-label="Restore query"
 								>
 									<i class="bi bi-arrow-counterclockwise text-lg"></i>
+								</button>
+								<button
+									class="btn btn-ghost btn-xs text-error"
+									onclick={() => handleDelete(item.id)}
+									title="Delete history item"
+									aria-label="Delete history item"
+								>
+									<i class="bi bi-trash text-lg"></i>
 								</button>
 							</td>
 						</tr>

@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { favoriteQueries } from '$lib/stores/favoriteQueriesStore';
+	import { favoriteQueries, type FavoriteQuery } from '$lib/stores/favoriteQueriesStore';
 	import { downloadJSON } from '$lib/utils/downloadUtils';
 	import { goto } from '$app/navigation';
 	import { addToast } from '$lib/stores/toastStore';
+	import Modal from '$lib/components/Modal.svelte';
 
 	let endpointId = $derived($page.params.endpointid);
 
@@ -28,6 +29,10 @@
 		})
 	);
 
+	let existingFolders = $derived(
+		Array.from(new Set(favorites.map((q) => q.folder).filter(Boolean))).sort()
+	);
+
 	const handleDelete = (id: string) => {
 		if (confirm('Are you sure you want to delete this favorite?')) {
 			favoriteQueries.remove(id);
@@ -47,10 +52,10 @@
 		addToast('Favorites exported', 'success');
 	};
 
-	let fileInput: HTMLInputElement;
+	let fileInput = $state<HTMLInputElement | null>(null);
 
 	const handleImportClick = () => {
-		fileInput.click();
+		fileInput?.click();
 	};
 
 	const handleFileChange = (e: Event) => {
@@ -82,6 +87,65 @@
 		const url = `/endpoints/${endpointId}/${q.type === 'query' ? 'queries' : 'mutations'}/${q.name}`;
 		// eslint-disable-next-line svelte/no-navigation-without-resolve
 		await goto(url);
+	};
+
+	let showEditModal = $state(false);
+	let editFavorite = $state<FavoriteQuery | null>(null);
+	let editName = $state('');
+	let editFolder = $state('');
+	let showRenameFolderModal = $state(false);
+	let renameFromFolder = $state('');
+	let renameToFolder = $state('');
+
+	const openEditModal = (favorite: FavoriteQuery) => {
+		editFavorite = favorite;
+		editName = favorite.name;
+		editFolder = favorite.folder ?? '';
+		showEditModal = true;
+	};
+
+	const closeEditModal = () => {
+		showEditModal = false;
+		editFavorite = null;
+		editName = '';
+		editFolder = '';
+	};
+
+	const handleUpdateFavorite = () => {
+		if (!editFavorite) return;
+		if (!editName.trim()) {
+			addToast('Favorite name is required', 'error');
+			return;
+		}
+		favoriteQueries.update(editFavorite.id, {
+			name: editName,
+			folder: editFolder
+		});
+		addToast('Favorite updated', 'success');
+		closeEditModal();
+	};
+
+	const openRenameFolderModal = (folder: string) => {
+		renameFromFolder = folder;
+		renameToFolder = folder;
+		showRenameFolderModal = true;
+	};
+
+	const closeRenameFolderModal = () => {
+		showRenameFolderModal = false;
+		renameFromFolder = '';
+		renameToFolder = '';
+	};
+
+	const handleRenameFolder = () => {
+		if (!renameFromFolder) return;
+		if (renameFromFolder === 'Uncategorized') {
+			addToast('Cannot rename the Uncategorized folder', 'error');
+			return;
+		}
+		favoriteQueries.renameFolder(endpointId, renameFromFolder, renameToFolder);
+		addToast(`Folder "${renameFromFolder}" updated`, 'success');
+		closeRenameFolderModal();
 	};
 </script>
 
@@ -117,8 +181,23 @@
 				open
 			>
 				<summary class="collapse-title text-xl font-medium">
-					{folder}
-					<span class="badge badge-sm badge-outline ml-2">{groupedFavorites[folder].length}</span>
+					<div class="flex items-center justify-between gap-2">
+						<div class="flex items-center gap-2">
+							<span>{folder}</span>
+							<span class="badge badge-sm badge-outline">{groupedFavorites[folder].length}</span>
+						</div>
+						{#if folder !== 'Uncategorized'}
+							<button
+								class="btn btn-ghost btn-xs"
+								type="button"
+								onclick|stopPropagation={() => openRenameFolderModal(folder)}
+								title="Rename folder"
+								aria-label="Rename folder"
+							>
+								<i class="bi bi-pencil-square"></i>
+							</button>
+						{/if}
+					</div>
 				</summary>
 				<div class="collapse-content">
 					<div class="overflow-x-auto">
@@ -162,6 +241,14 @@
 												<i class="bi bi-play-fill text-lg"></i>
 											</button>
 											<button
+												class="btn btn-ghost btn-xs"
+												onclick={() => openEditModal(fav)}
+												title="Edit"
+												aria-label="Edit favorite"
+											>
+												<i class="bi bi-pencil-square"></i>
+											</button>
+											<button
 												class="btn text-error btn-ghost btn-xs"
 												onclick={() => handleDelete(fav.id)}
 												title="Delete"
@@ -180,3 +267,83 @@
 		{/each}
 	{/if}
 </div>
+
+<Modal bind:show={showEditModal} showApplyBtn={false} onCancel={closeEditModal}>
+	<div class="space-y-4">
+		<h2 class="text-lg font-semibold">Edit Favorite</h2>
+		<div class="form-control">
+			<label class="label" for="favorite-name">
+				<span class="label-text">Name</span>
+			</label>
+			<input
+				id="favorite-name"
+				class="input input-bordered w-full"
+				type="text"
+				bind:value={editName}
+				placeholder="Favorite name"
+			/>
+		</div>
+		<div class="form-control">
+			<label class="label" for="favorite-folder">
+				<span class="label-text">Folder (optional)</span>
+			</label>
+			<input
+				id="favorite-folder"
+				class="input input-bordered w-full"
+				type="text"
+				list="favorite-folders"
+				bind:value={editFolder}
+				placeholder="Folder name"
+			/>
+			<datalist id="favorite-folders">
+				{#each existingFolders as folder}
+					<option value={folder}></option>
+				{/each}
+			</datalist>
+			<p class="text-xs text-base-content/60 mt-1">
+				Leave blank to move the favorite into "Uncategorized".
+			</p>
+		</div>
+		<div class="flex justify-end gap-2">
+			<button class="btn btn-ghost" onclick={closeEditModal}>Cancel</button>
+			<button class="btn btn-primary" onclick={handleUpdateFavorite}>Save</button>
+		</div>
+	</div>
+</Modal>
+
+<Modal bind:show={showRenameFolderModal} showApplyBtn={false} onCancel={closeRenameFolderModal}>
+	<div class="space-y-4">
+		<h2 class="text-lg font-semibold">Rename Folder</h2>
+		<div class="form-control">
+			<label class="label" for="rename-from-folder">
+				<span class="label-text">Current folder</span>
+			</label>
+			<input
+				id="rename-from-folder"
+				class="input input-bordered w-full"
+				type="text"
+				value={renameFromFolder}
+				disabled
+			/>
+		</div>
+		<div class="form-control">
+			<label class="label" for="rename-to-folder">
+				<span class="label-text">New folder name</span>
+			</label>
+			<input
+				id="rename-to-folder"
+				class="input input-bordered w-full"
+				type="text"
+				bind:value={renameToFolder}
+				placeholder="Folder name (leave blank to clear)"
+			/>
+			<p class="text-xs text-base-content/60 mt-1">
+				Leave blank to move favorites into "Uncategorized".
+			</p>
+		</div>
+		<div class="flex justify-end gap-2">
+			<button class="btn btn-ghost" onclick={closeRenameFolderModal}>Cancel</button>
+			<button class="btn btn-primary" onclick={handleRenameFolder}>Save</button>
+		</div>
+	</div>
+</Modal>

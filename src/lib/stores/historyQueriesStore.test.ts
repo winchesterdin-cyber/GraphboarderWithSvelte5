@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { get } from 'svelte/store';
 import { historyQueries } from './historyQueriesStore';
 
-// Mock localStorage
 const localStorageMock = (() => {
 	let store: Record<string, string> = {};
 	return {
@@ -27,113 +26,135 @@ describe('historyQueriesStore', () => {
 	beforeEach(() => {
 		localStorage.clear();
 		historyQueries.clear();
+		vi.restoreAllMocks();
 	});
 
-	it('should start with an empty list', () => {
-		const queries = get(historyQueries);
-		expect(queries).toEqual([]);
-	});
-
-	it('should add a history item', () => {
-		const item = {
-			endpointId: 'ep1',
-			queryName: 'TestQuery',
-			type: 'query' as const,
-			args: {},
-			cols: [],
-			timestamp: Date.now(),
-			duration: 100,
-			status: 'success' as const
-		};
-
-		historyQueries.add(item);
-
-		const queries = get(historyQueries);
-		expect(queries).toHaveLength(1);
-		expect(queries[0].queryName).toBe('TestQuery');
-		expect(queries[0].id).toBeDefined();
-	});
-
-	it('should limit history to 50 items', () => {
-		for (let i = 0; i < 60; i++) {
-			historyQueries.add({
-				endpointId: 'ep1',
-				queryName: `Query ${i}`,
-				type: 'query' as const,
-				args: {},
-				cols: [],
-				timestamp: Date.now() + i, // Ensure distinct timestamps
-				duration: 100,
-				status: 'success' as const
-			});
-		}
-
-		const queries = get(historyQueries);
-		expect(queries).toHaveLength(50);
-		// The most recent one (Query 59) should be at the top (index 0)
-		expect(queries[0].queryName).toBe('Query 59');
-	});
-
-	it('should clear history', () => {
+	it('adds history entries and preserves newest first', () => {
 		historyQueries.add({
 			endpointId: 'ep1',
-			queryName: 'TestQuery',
-			type: 'query' as const,
+			queryName: 'First',
+			type: 'query',
 			args: {},
 			cols: [],
-			timestamp: Date.now(),
-			duration: 100,
-			status: 'success' as const
+			timestamp: 1,
+			duration: 10,
+			status: 'success',
+			queryBody: 'query { first }'
+		});
+		historyQueries.add({
+			endpointId: 'ep1',
+			queryName: 'Second',
+			type: 'query',
+			args: {},
+			cols: [],
+			timestamp: 2,
+			duration: 20,
+			status: 'success',
+			queryBody: 'query { second }'
+		});
+
+		const items = get(historyQueries);
+		expect(items[0].queryName).toBe('Second');
+		expect(items[1].queryName).toBe('First');
+	});
+
+	it('removes an item by id', () => {
+		historyQueries.add({
+			endpointId: 'ep1',
+			queryName: 'Remove Me',
+			type: 'query',
+			args: {},
+			cols: [],
+			timestamp: 1,
+			duration: 10,
+			status: 'success',
+			queryBody: 'query { removeMe }'
+		});
+
+		const [item] = get(historyQueries);
+		historyQueries.remove(item.id);
+
+		expect(get(historyQueries)).toHaveLength(0);
+	});
+
+	it('clears all history', () => {
+		historyQueries.add({
+			endpointId: 'ep1',
+			queryName: 'One',
+			type: 'query',
+			args: {},
+			cols: [],
+			timestamp: 1,
+			duration: 10,
+			status: 'success',
+			queryBody: 'query { one }'
 		});
 
 		historyQueries.clear();
-		const queries = get(historyQueries);
-		expect(queries).toHaveLength(0);
+		expect(get(historyQueries)).toEqual([]);
 	});
 
-	it('should import history and merge/sort', () => {
-		// Add existing item
+	it('limits stored history to the latest 50 items', () => {
+		for (let i = 0; i < 55; i += 1) {
+			historyQueries.add({
+				endpointId: 'ep1',
+				queryName: `Query ${i}`,
+				type: 'query',
+				args: {},
+				cols: [],
+				timestamp: i,
+				duration: 10,
+				status: 'success',
+				queryBody: `query { q${i} }`
+			});
+		}
+
+		const items = get(historyQueries);
+		expect(items).toHaveLength(50);
+		expect(items[0].queryName).toBe('Query 54');
+		expect(items[49].queryName).toBe('Query 5');
+	});
+
+	it('imports history and keeps most recent timestamps', () => {
 		historyQueries.add({
 			endpointId: 'ep1',
 			queryName: 'Existing',
-			type: 'query' as const,
+			type: 'query',
 			args: {},
 			cols: [],
-			timestamp: 1000,
-			duration: 100,
-			status: 'success' as const
+			timestamp: 10,
+			duration: 10,
+			status: 'success',
+			queryBody: 'query { existing }'
 		});
 
-		// Import items (one older, one newer)
-		const importItems = [
+		historyQueries.importHistory([
 			{
 				endpointId: 'ep1',
-				queryName: 'Old',
-				type: 'query' as const,
-				args: {},
+				queryName: 'Imported New',
+				type: 'mutation',
+				args: { name: 'Alpha' },
 				cols: [],
-				timestamp: 500,
-				duration: 100,
-				status: 'success' as const
+				timestamp: 30,
+				duration: 40,
+				status: 'success',
+				queryBody: 'mutation { addItem(name: "Alpha") { id } }'
 			},
 			{
 				endpointId: 'ep1',
-				queryName: 'New',
-				type: 'query' as const,
+				queryName: 'Imported Old',
+				type: 'query',
 				args: {},
 				cols: [],
-				timestamp: 2000,
-				duration: 100,
-				status: 'success' as const
+				timestamp: 5,
+				duration: 15,
+				status: 'success',
+				queryBody: 'query { old }'
 			}
-		];
+		]);
 
-		historyQueries.importHistory(importItems);
-
-		const queries = get(historyQueries);
-		expect(queries).toHaveLength(3);
-		expect(queries[0].queryName).toBe('New');
-		expect(queries[1].queryName).toBe('Existing');
-		expect(queries[2].queryName).toBe('Old');
+		const items = get(historyQueries);
+		expect(items[0].queryName).toBe('Imported New');
+		expect(items[items.length - 1].queryName).toBe('Imported Old');
 	});
 });
