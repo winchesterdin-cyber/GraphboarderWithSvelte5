@@ -445,6 +445,7 @@ export interface AvailableEndpoint extends EndpointConfiguration {
 	url: string;
 	description?: string;
 	isMaintained?: boolean;
+	isFavorite?: boolean;
 	headers?: Record<string, string>;
 	namings?: Record<string, string>;
 	authToken?: string;

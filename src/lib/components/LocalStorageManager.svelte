@@ -9,7 +9,13 @@
 
 	let { show = $bindable(false) }: Props = $props();
 
-	let storageKeys = ['localStorageEndpoints', 'historyQueries', 'favoriteQueries', 'envVars'];
+	let storageKeys = [
+		'localStorageEndpoints',
+		'favoriteEndpointIds',
+		'historyQueries',
+		'favoriteQueries',
+		'envVars'
+	];
 	let selectedKey = $state('');
 	let selectedValue = $state('');
 	let viewMode = $state(false);
