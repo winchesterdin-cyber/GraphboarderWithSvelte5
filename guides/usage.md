@@ -8,6 +8,9 @@ From the home page, click **"Get Started"** to navigate to the **Endpoint Picker
 
 - **Select**: Click on an endpoint card to connect to it. Cards indicate if an endpoint is **"Maintained"** (built-in and verified) or **"User Defined"**.
 - **Search**: Use the search bar to filter endpoints by name.
+- **Status Filter & Summary**:
+  - Use the **Status** dropdown to filter endpoints by **Online**, **Offline**, or **Pending**.
+  - The Status Summary badges show counts for each state; click a badge to apply that filter quickly.
 - **Add Endpoint**:
   - Click "Add Endpoint" to configure a new custom GraphQL endpoint.
   - **ID**: A unique name for your endpoint (saved locally).

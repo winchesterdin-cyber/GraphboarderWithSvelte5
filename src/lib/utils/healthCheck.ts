@@ -1,3 +1,5 @@
+import { logger } from '$lib/utils/logger';
+
 export interface HealthCheckResult {
 	healthy: boolean;
 	latency?: number;
@@ -16,7 +18,7 @@ export const checkEndpointHealth = async (
 ): Promise<HealthCheckResult> => {
 	const startTime = performance.now();
 	try {
-		console.debug(`[HealthCheck] Checking ${url}...`);
+		logger.debug('Health check started', { url });
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
@@ -29,7 +31,12 @@ export const checkEndpointHealth = async (
 		const latency = Math.round(performance.now() - startTime);
 
 		if (!response.ok) {
-			console.debug(`[HealthCheck] Failed ${url}: ${response.status} ${response.statusText}`);
+			logger.warn('Health check failed', {
+				url,
+				status: response.status,
+				statusText: response.statusText,
+				latency
+			});
 			return {
 				healthy: false,
 				latency,
@@ -39,7 +46,7 @@ export const checkEndpointHealth = async (
 
 		const result = await response.json();
 		if (result.errors) {
-			console.debug(`[HealthCheck] GraphQL Error ${url}:`, result.errors);
+			logger.warn('Health check GraphQL error', { url, latency, errors: result.errors });
 			return {
 				healthy: false,
 				latency,
@@ -47,14 +54,14 @@ export const checkEndpointHealth = async (
 			};
 		}
 
-		console.debug(`[HealthCheck] Success ${url} in ${latency}ms`);
+		logger.info('Health check succeeded', { url, latency });
 		return {
 			healthy: true,
 			latency
 		};
 	} catch (error: any) {
 		const latency = Math.round(performance.now() - startTime);
-		console.debug(`[HealthCheck] Network Error ${url}:`, error);
+		logger.error('Health check network error', { url, latency, error });
 		return {
 			healthy: false,
 			latency,
