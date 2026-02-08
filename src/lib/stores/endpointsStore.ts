@@ -4,6 +4,7 @@ import { localEndpoints } from '$lib/stores/testData/testEndpoints';
 import { getSortedAndOrderedEndpoints } from '$lib/utils/usefulFunctions';
 import type { AvailableEndpoint } from '$lib/types';
 import { browser } from '$app/environment';
+import { logger } from '$lib/utils/logger';
 
 /**
  * @deprecated This store appears to be unused. Use localStorageEndpoints instead.
@@ -40,7 +41,7 @@ const migrateLegacyEndpoints = () => {
 				}
 			}
 		} catch (e) {
-			console.error('Failed to parse legacy endpoints', e);
+			logger.error('Failed to parse legacy endpoints', e);
 		}
 	}
 };
@@ -59,7 +60,7 @@ export const endpoints = derived(localStorageEndpoints, ($localStorageEndpoints)
 	const merged = [...localEndpoints, ...userUniqueEndpoints];
 	// IDs can be string or number, getSortedAndOrderedEndpoints now handles both.
 	const result = getSortedAndOrderedEndpoints(merged);
-	console.debug('Endpoints updated:', result);
+	logger.debug('Endpoints updated', { count: result.length });
 	return result;
 });
 
@@ -70,7 +71,7 @@ export const endpoints = derived(localStorageEndpoints, ($localStorageEndpoints)
  * @param endpoint - The endpoint object to add or update.
  */
 export const addEndpoint = (endpoint: AvailableEndpoint) => {
-	console.debug('Adding endpoint:', endpoint);
+	logger.info('Adding endpoint', { id: endpoint.id, url: endpoint.url });
 	localStorageEndpoints.update((current) => {
 		const filtered = current.filter((e) => e.id !== endpoint.id);
 		return [...filtered, endpoint];
@@ -83,7 +84,7 @@ export const addEndpoint = (endpoint: AvailableEndpoint) => {
  * @param id - The unique identifier of the endpoint to remove.
  */
 export const removeEndpoint = (id: string) => {
-	console.debug('Removing endpoint with id:', id);
+	logger.info('Removing endpoint', { id });
 	localStorageEndpoints.update((current) => {
 		return current.filter((e) => e.id !== id);
 	});

@@ -19,6 +19,7 @@
 	import { addToast } from '$lib/stores/toastStore';
 	import type { AvailableEndpoint } from '$lib/types';
 	import { checkEndpointHealth } from '$lib/utils/healthCheck';
+	import { logger } from '$lib/utils/logger';
 
 	interface Props {
 		endpoints: AvailableEndpoint[];
@@ -31,6 +32,7 @@
 
 	let searchTerm = $state('');
 	let sortOption = $state<'name-asc' | 'name-desc'>('name-asc');
+	let statusFilter = $state<'all' | 'online' | 'offline' | 'pending'>('all');
 	let showDeleteModal = $state(false);
 	let endpointToDelete = $state<AvailableEndpoint | null>(null);
 
@@ -39,6 +41,18 @@
 		{}
 	);
 	let isChecking = $state<Record<string, boolean>>({});
+
+	/**
+	 * Determines the current health status bucket for an endpoint.
+	 * "pending" covers the initial load and any in-progress checks.
+	 */
+	const getEndpointStatus = (endpoint: AvailableEndpoint) => {
+		if (isChecking[endpoint.id] || !healthStatus[endpoint.id]) {
+			return 'pending';
+		}
+
+		return healthStatus[endpoint.id]?.healthy ? 'online' : 'offline';
+	};
 
 	const runHealthCheck = async (endpoint: AvailableEndpoint) => {
 		if (isChecking[endpoint.id]) return;
@@ -64,10 +78,12 @@
 		endpoints
 			.filter((endpoint) => {
 				const term = searchTerm.toLowerCase();
+				const status = getEndpointStatus(endpoint);
 				return (
-					endpoint.id.toLowerCase().includes(term) ||
-					endpoint.url.toLowerCase().includes(term) ||
-					(endpoint.description && endpoint.description?.toLowerCase().includes(term))
+					(statusFilter === 'all' || statusFilter === status) &&
+					(endpoint.id.toLowerCase().includes(term) ||
+						endpoint.url.toLowerCase().includes(term) ||
+						(endpoint.description && endpoint.description?.toLowerCase().includes(term)))
 				);
 			})
 			.sort((a, b) => {
@@ -78,6 +94,21 @@
 				}
 			})
 	);
+
+	let statusCounts = $derived(() => {
+		const counts = {
+			online: 0,
+			offline: 0,
+			pending: 0
+		};
+
+		endpoints.forEach((endpoint) => {
+			const status = getEndpointStatus(endpoint);
+			counts[status] += 1;
+		});
+
+		return counts;
+	});
 
 	const handleEndpointClick = (endpoint: AvailableEndpoint) => {
 		goto(`${base}/endpoints/${endpoint.id}`);
@@ -121,6 +152,7 @@
 		<button
 			class="btn gap-2 btn-ghost btn-sm"
 			onclick={() => {
+				logger.info('Refreshing endpoint health checks', { count: endpoints.length });
 				healthStatus = {};
 				endpoints.forEach((ep) => runHealthCheck(ep));
 			}}
@@ -128,11 +160,49 @@
 		>
 			<i class="bi bi-arrow-clockwise"></i> Refresh Status
 		</button>
+		<select bind:value={statusFilter} class="select-bordered select">
+			<option value="all">All Statuses</option>
+			<option value="online">Online</option>
+			<option value="offline">Offline</option>
+			<option value="pending">Pending</option>
+		</select>
 		<select bind:value={sortOption} class="select-bordered select">
 			<option value="name-asc">Name (A-Z)</option>
 			<option value="name-desc">Name (Z-A)</option>
 		</select>
 	</div>
+</div>
+
+<div class="mb-6 flex flex-wrap items-center gap-2 text-xs text-base-content/60">
+	<span class="font-semibold uppercase tracking-wide">Status Summary</span>
+	<button
+		class="badge badge-success gap-2 border-0"
+		onclick={() => (statusFilter = 'online')}
+		title="Show only online endpoints"
+	>
+		Online {statusCounts.online}
+	</button>
+	<button
+		class="badge badge-error gap-2 border-0"
+		onclick={() => (statusFilter = 'offline')}
+		title="Show only offline endpoints"
+	>
+		Offline {statusCounts.offline}
+	</button>
+	<button
+		class="badge badge-ghost gap-2 border-0"
+		onclick={() => (statusFilter = 'pending')}
+		title="Show only pending endpoints"
+	>
+		Pending {statusCounts.pending}
+	</button>
+	<button
+		class="badge badge-outline gap-2"
+		onclick={() => (statusFilter = 'all')}
+		title="Clear status filter"
+	>
+		All {endpoints.length}
+	</button>
 </div>
 
 {#if endpoints.length === 0}
@@ -149,9 +219,13 @@
 {:else if filteredEndpoints.length === 0}
 	<div class="p-10 text-center">
 		<h3 class="text-lg font-semibold opacity-70">No matching endpoints found</h3>
-		<p class="mt-2 text-base-content/60">Try adjusting your search terms.</p>
-		<button class="btn mt-2 btn-ghost btn-sm" onclick={() => (searchTerm = '')}>Clear Search</button
-		>
+		<p class="mt-2 text-base-content/60">Try adjusting your search or status filters.</p>
+		<div class="mt-2 flex flex-wrap justify-center gap-2">
+			<button class="btn btn-ghost btn-sm" onclick={() => (searchTerm = '')}>Clear Search</button>
+			<button class="btn btn-ghost btn-sm" onclick={() => (statusFilter = 'all')}>
+				Clear Status Filter
+			</button>
+		</div>
 	</div>
 {:else}
 	<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">

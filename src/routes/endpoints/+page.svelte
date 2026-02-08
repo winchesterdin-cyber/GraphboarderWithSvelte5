@@ -6,6 +6,7 @@
 	import { get } from 'svelte/store';
 	import { addToast } from '$lib/stores/toastStore';
 	import type { AvailableEndpoint } from '$lib/types';
+	import { logger } from '$lib/utils/logger';
 
 	let showAddModal = $state(false);
 	let editingEndpoint = $state<AvailableEndpoint | null>(null);
@@ -26,6 +27,7 @@
 
 	const handleExport = () => {
 		const data = get(localStorageEndpoints);
+		logger.info('Exporting endpoints', { count: data.length });
 		const json = JSON.stringify(data, null, 2);
 		const blob = new Blob([json], { type: 'application/json' });
 		const url = URL.createObjectURL(blob);
@@ -44,20 +46,35 @@
 		const file = target.files?.[0];
 		if (!file) return;
 
+		logger.info('Importing endpoints from file', { name: file.name, size: file.size });
+
 		try {
 			const text = await file.text();
 			const data = JSON.parse(text);
-			if (!Array.isArray(data)) throw new Error('Invalid format: not an array');
+			if (!Array.isArray(data)) {
+				logger.warn('Import failed: payload is not an array');
+				throw new Error('Invalid format: not an array');
+			}
 
 			let count = 0;
+			let skipped = 0;
 			for (const ep of data) {
 				if (ep.id && ep.url) {
 					addEndpoint(ep);
 					count++;
+				} else {
+					skipped++;
 				}
 			}
-			addToast(`Imported ${count} endpoints`, 'success');
+			if (count === 0) {
+				logger.warn('Import completed with no valid endpoints', { skipped });
+				addToast('No valid endpoints found in the file', 'warning');
+			} else {
+				logger.info('Import completed', { count, skipped });
+				addToast(`Imported ${count} endpoints${skipped ? ` (${skipped} skipped)` : ''}`, 'success');
+			}
 		} catch (e: any) {
+			logger.error('Import failed', e);
 			addToast(`Import failed: ${e.message}`, 'error');
 		}
 		target.value = '';
