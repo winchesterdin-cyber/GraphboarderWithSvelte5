@@ -20,6 +20,9 @@ From the home page, click **"Get Started"** to navigate to the **Endpoint Picker
   - **Test Connection**: Use the "Test Connection" button to verify if the URL and headers are correct before saving.
 - **Edit/Delete**: User-defined endpoints can be edited or deleted using the buttons on the card.
 - **Duplicate**: Click the duplicate icon (copy) on any endpoint card to create a copy of its configuration. This is useful for creating variations of endpoints (e.g., Development vs. Production) without re-entering all details.
+- **Favorites**:
+  - Click the **star** icon on an endpoint card to favorite it.
+  - Favorited endpoints appear at the top of the list and can be filtered using the **Favorites** toggle and badge.
 - **Export/Import**: You can export your user-defined endpoints to a JSON file and import them later.
 - **Health Check**:
   - The application automatically checks the connectivity of endpoints.

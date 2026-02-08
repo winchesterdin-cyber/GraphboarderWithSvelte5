@@ -14,7 +14,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
-	import { removeEndpoint } from '$lib/stores/endpointsStore';
+	import { removeEndpoint, toggleEndpointFavorite } from '$lib/stores/endpointsStore';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 	import { addToast } from '$lib/stores/toastStore';
 	import type { AvailableEndpoint } from '$lib/types';
@@ -33,6 +33,7 @@
 	let searchTerm = $state('');
 	let sortOption = $state<'name-asc' | 'name-desc'>('name-asc');
 	let statusFilter = $state<'all' | 'online' | 'offline' | 'pending'>('all');
+	let favoriteFilter = $state<'all' | 'favorites'>('all');
 	let showDeleteModal = $state(false);
 	let endpointToDelete = $state<AvailableEndpoint | null>(null);
 
@@ -81,12 +82,17 @@
 				const status = getEndpointStatus(endpoint);
 				return (
 					(statusFilter === 'all' || statusFilter === status) &&
+					(favoriteFilter === 'all' || endpoint.isFavorite) &&
 					(endpoint.id.toLowerCase().includes(term) ||
 						endpoint.url.toLowerCase().includes(term) ||
 						(endpoint.description && endpoint.description?.toLowerCase().includes(term)))
 				);
 			})
 			.sort((a, b) => {
+				if (a.isFavorite !== b.isFavorite) {
+					return a.isFavorite ? -1 : 1;
+				}
+
 				if (sortOption === 'name-asc') {
 					return a.id.localeCompare(b.id);
 				} else {
@@ -110,6 +116,10 @@
 		return counts;
 	});
 
+	let favoriteCount = $derived(
+		() => endpoints.filter((endpoint) => endpoint.isFavorite).length
+	);
+
 	const handleEndpointClick = (endpoint: AvailableEndpoint) => {
 		goto(`${base}/endpoints/${endpoint.id}`);
 	};
@@ -127,6 +137,18 @@
 			showDeleteModal = false;
 			endpointToDelete = null;
 		}
+	};
+
+	/**
+	 * Toggles the favorite state for an endpoint, keeping the action from triggering navigation.
+	 */
+	const handleFavoriteToggle = (endpoint: AvailableEndpoint, event: Event) => {
+		event.stopPropagation();
+		toggleEndpointFavorite(endpoint.id);
+		addToast(
+			`${endpoint.isFavorite ? 'Removed from' : 'Added to'} favorites`,
+			'info'
+		);
 	};
 </script>
 
@@ -203,6 +225,15 @@
 	>
 		All {endpoints.length}
 	</button>
+	<button
+		class={`badge gap-2 ${favoriteFilter === 'favorites' ? 'badge-warning border-0' : 'badge-outline'}`}
+		onclick={() =>
+			(favoriteFilter = favoriteFilter === 'favorites' ? 'all' : 'favorites')
+		}
+		title={favoriteFilter === 'favorites' ? 'Show all endpoints' : 'Show favorite endpoints'}
+	>
+		Favorites {favoriteCount}
+	</button>
 </div>
 
 {#if endpoints.length === 0}
@@ -218,12 +249,21 @@
 	</div>
 {:else if filteredEndpoints.length === 0}
 	<div class="p-10 text-center">
-		<h3 class="text-lg font-semibold opacity-70">No matching endpoints found</h3>
-		<p class="mt-2 text-base-content/60">Try adjusting your search or status filters.</p>
+		<h3 class="text-lg font-semibold opacity-70">
+			{favoriteFilter === 'favorites' ? 'No favorites yet' : 'No matching endpoints found'}
+		</h3>
+		<p class="mt-2 text-base-content/60">
+			{favoriteFilter === 'favorites'
+				? 'Star an endpoint to keep it at the top of your list.'
+				: 'Try adjusting your search or status filters.'}
+		</p>
 		<div class="mt-2 flex flex-wrap justify-center gap-2">
 			<button class="btn btn-ghost btn-sm" onclick={() => (searchTerm = '')}>Clear Search</button>
 			<button class="btn btn-ghost btn-sm" onclick={() => (statusFilter = 'all')}>
 				Clear Status Filter
+			</button>
+			<button class="btn btn-ghost btn-sm" onclick={() => (favoriteFilter = 'all')}>
+				Clear Favorites Filter
 			</button>
 		</div>
 	</div>
@@ -298,6 +338,14 @@
 				</div>
 
 				<div class="absolute top-2 right-2 z-20 flex gap-1">
+					<button
+						class="btn btn-square text-warning opacity-100 btn-ghost transition-opacity btn-xs md:opacity-0 md:group-hover:opacity-100"
+						onclick={(event) => handleFavoriteToggle(endpoint, event)}
+						onkeydown={(e) => e.stopPropagation()}
+						title={endpoint.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+					>
+						<i class={endpoint.isFavorite ? 'bi bi-star-fill' : 'bi bi-star'}></i>
+					</button>
 					{#if onDuplicateEndpoint}
 						<button
 							class="btn btn-square text-primary opacity-100 btn-ghost transition-opacity btn-xs md:opacity-0 md:group-hover:opacity-100"

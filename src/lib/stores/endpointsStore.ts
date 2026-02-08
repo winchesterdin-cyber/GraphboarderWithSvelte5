@@ -24,6 +24,15 @@ export const localStorageEndpoints: Writable<AvailableEndpoint[]> = persisted<Av
 );
 
 /**
+ * Persisted store tracking user favorite endpoint IDs.
+ * Stored under the 'favoriteEndpointIds' key in localStorage.
+ */
+export const favoriteEndpointIds: Writable<string[]> = persisted<string[]>(
+	'favoriteEndpointIds',
+	[]
+);
+
+/**
  * Migrates endpoints from the legacy 'endpoints' localStorage key to the new 'localStorageEndpoints' store.
  * This runs once on module initialization in the browser.
  */
@@ -52,17 +61,24 @@ migrateLegacyEndpoints();
  * A derived store that combines hardcoded local endpoints with user-defined endpoints from localStorage.
  * It ensures uniqueness by ID and sorts the endpoints.
  */
-export const endpoints = derived(localStorageEndpoints, ($localStorageEndpoints) => {
-	const userUniqueEndpoints = $localStorageEndpoints.filter(
-		(e) => !localEndpoints.find((le) => le.id === e.id)
-	);
+export const endpoints = derived(
+	[localStorageEndpoints, favoriteEndpointIds],
+	([$localStorageEndpoints, $favoriteEndpointIds]) => {
+		const favoriteSet = new Set($favoriteEndpointIds.map((id) => id.toString()));
+		const userUniqueEndpoints = $localStorageEndpoints.filter(
+			(e) => !localEndpoints.find((le) => le.id === e.id)
+		);
 
-	const merged = [...localEndpoints, ...userUniqueEndpoints];
-	// IDs can be string or number, getSortedAndOrderedEndpoints now handles both.
-	const result = getSortedAndOrderedEndpoints(merged);
-	logger.debug('Endpoints updated', { count: result.length });
-	return result;
-});
+		const merged = [...localEndpoints, ...userUniqueEndpoints];
+		// IDs can be string or number, getSortedAndOrderedEndpoints now handles both.
+		const result = getSortedAndOrderedEndpoints(merged).map((endpoint) => ({
+			...endpoint,
+			isFavorite: favoriteSet.has(endpoint.id.toString())
+		}));
+		logger.debug('Endpoints updated', { count: result.length });
+		return result;
+	}
+);
 
 /**
  * Adds or updates an endpoint in the user's localStorage.
@@ -87,5 +103,22 @@ export const removeEndpoint = (id: string) => {
 	logger.info('Removing endpoint', { id });
 	localStorageEndpoints.update((current) => {
 		return current.filter((e) => e.id !== id);
+	});
+	favoriteEndpointIds.update((current) => current.filter((favoriteId) => favoriteId !== id));
+};
+
+/**
+ * Toggles the favorite status for an endpoint ID.
+ *
+ * @param id - The endpoint ID to toggle.
+ */
+export const toggleEndpointFavorite = (id: string) => {
+	logger.info('Toggling endpoint favorite', { id });
+	favoriteEndpointIds.update((current) => {
+		const normalizedId = id.toString();
+		if (current.includes(normalizedId)) {
+			return current.filter((favoriteId) => favoriteId !== normalizedId);
+		}
+		return [...current, normalizedId];
 	});
 };
