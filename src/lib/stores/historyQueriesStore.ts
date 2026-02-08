@@ -68,6 +68,24 @@ const createHistoryQueriesStore = () => {
 			});
 		},
 		/**
+		 * Removes a history item by ID.
+		 * @param id The ID of the history item to remove.
+		 */
+		remove: (id: string) => {
+			console.debug('[HistoryQueries] Removing item:', id);
+			update((history) => {
+				const updated = history.filter((item) => item.id !== id);
+				if (browser) {
+					try {
+						localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+					} catch (e) {
+						console.error('[HistoryQueries] Failed to save history to localStorage', e);
+					}
+				}
+				return updated;
+			});
+		},
+		/**
 		 * Retrieves a history item by ID.
 		 * @param id The ID of the history item.
 		 */
