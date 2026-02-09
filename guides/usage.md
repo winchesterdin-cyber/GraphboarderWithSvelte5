@@ -26,6 +26,7 @@ From the home page, click **"Get Started"** to navigate to the **Endpoint Picker
 - **Recent Endpoints**:
   - The picker keeps a short list of recently visited endpoints for quick access.
   - Click any recent badge to jump back in, or use **Clear** to reset the list.
+- **Copy URL**: Use the clipboard icon on an endpoint card to copy its URL to your clipboard for quick sharing or debugging.
 - **Export/Import**: You can export your user-defined endpoints to a JSON file and import them later.
 - **Health Check**:
   - The application automatically checks the connectivity of endpoints.

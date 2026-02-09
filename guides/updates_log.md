@@ -4,6 +4,7 @@ This log captures notable documentation and workflow updates for the Graphboarde
 
 ## Unreleased
 
+- Added a one-click action to copy endpoint URLs from the endpoint picker cards.
 - Added recent endpoint tracking with quick-access badges and documentation updates for the endpoint picker.
 - Standardized Favorites view event handlers to avoid build-time Svelte syntax conflicts.
 - Disabled Tailwind Lightning CSS optimization in Vite to suppress @property build warnings during builds.
