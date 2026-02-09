@@ -82,7 +82,14 @@
 			slowCount,
 			successRate
 		};
-	});
+	}) as unknown as {
+		total: number;
+		successCount: number;
+		errorCount: number;
+		avgDuration: number;
+		slowCount: number;
+		successRate: number;
+	};
 
 	const handleClear = () => {
 		if (confirm('Are you sure you want to clear ALL history for ALL endpoints?')) {

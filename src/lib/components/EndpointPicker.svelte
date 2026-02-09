@@ -19,7 +19,8 @@
 		recordRecentEndpoint,
 		removeEndpoint,
 		recentEndpoints,
-		toggleEndpointFavorite
+		toggleEndpointFavorite,
+		type RecentEndpointEntry
 	} from '$lib/stores/endpointsStore';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 	import { addToast } from '$lib/stores/toastStore';
@@ -44,7 +45,10 @@
 	let endpointToDelete = $state<AvailableEndpoint | null>(null);
 
 	// Derived list used for the "Recent endpoints" quick-access badges.
-	const recentEndpointList = $derived($recentEndpoints);
+	const recentEndpointList = $derived($recentEndpoints) as Array<{
+		entry: RecentEndpointEntry;
+		endpoint: AvailableEndpoint;
+	}>;
 
 	// Health Check State
 	let healthStatus = $state<Record<string, { healthy: boolean; latency?: number; error?: string }>>(
@@ -123,7 +127,7 @@
 		});
 
 		return counts;
-	});
+	}) as unknown as { online: number; offline: number; pending: number };
 
 	let favoriteCount = $derived(() => endpoints.filter((endpoint) => endpoint.isFavorite).length);
 

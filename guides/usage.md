@@ -28,6 +28,8 @@ From the home page, click **"Get Started"** to navigate to the **Endpoint Picker
   - Click any recent badge to jump back in, or use **Clear** to reset the list.
 - **Copy URL**: Use the clipboard icon on an endpoint card to copy its URL to your clipboard for quick sharing or debugging.
 - **Export/Import**: You can export your user-defined endpoints to a JSON file and import them later.
+  - **Import from URL**: Use the **Import URL** button to paste a link to a JSON file that contains an array of endpoints (for example, a shared team export).
+  - **Skip Existing**: When importing from a URL, you can choose to skip endpoints that already exist so shared lists never overwrite local customizations.
 - **Health Check**:
   - The application automatically checks the connectivity of endpoints.
   - A green dot indicates the endpoint is Online (with latency in ms).

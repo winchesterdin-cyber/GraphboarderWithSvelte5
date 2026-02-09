@@ -37,6 +37,11 @@ export interface RecentEndpointEntry {
 	lastVisited: number;
 }
 
+type ResolvedRecentEndpoint = {
+	entry: RecentEndpointEntry;
+	endpoint: AvailableEndpoint & { isFavorite: boolean };
+};
+
 /**
  * Persisted store tracking recently visited endpoints (by ID and last visit time).
  * Stored under the 'recentEndpointEntries' key in localStorage.
@@ -106,9 +111,7 @@ export const recentEndpoints = derived(
 				entry,
 				endpoint: endpointMap.get(entry.id)
 			}))
-			.filter((item): item is { entry: RecentEndpointEntry; endpoint: AvailableEndpoint } =>
-				Boolean(item.endpoint)
-			)
+			.filter((item): item is ResolvedRecentEndpoint => Boolean(item.endpoint))
 			.sort((a, b) => b.entry.lastVisited - a.entry.lastVisited);
 	}
 );
