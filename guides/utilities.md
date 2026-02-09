@@ -31,6 +31,7 @@ Functions to transform data between raw types and UI-ready formats (often used f
 
 - `string_transformer`: Prepares a string for GraphQL usage (e.g., escaping).
 - `stringToQMSString_transformer`: Reverses the transformation.
+- `ISO8601_transformer` / `ISO8601_transformerREVERSE`: Convert date inputs (strings, `Date` objects, or millisecond timestamps) to/from GraphQL-safe ISO 8601 values, warning and falling back safely on invalid input.
 
 ## `graphql/`
 

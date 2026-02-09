@@ -4,6 +4,7 @@ This log captures notable documentation and workflow updates for the Graphboarde
 
 ## Unreleased
 
+- Added Date/timestamp input support for ISO 8601 transformers with explicit logging and fallback behavior.
 - Added a one-click action to copy endpoint URLs from the endpoint picker cards.
 - Added recent endpoint tracking with quick-access badges and documentation updates for the endpoint picker.
 - Standardized Favorites view event handlers to avoid build-time Svelte syntax conflicts.
