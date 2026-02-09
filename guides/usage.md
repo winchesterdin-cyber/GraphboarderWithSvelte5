@@ -23,6 +23,9 @@ From the home page, click **"Get Started"** to navigate to the **Endpoint Picker
 - **Favorites**:
   - Click the **star** icon on an endpoint card to favorite it.
   - Favorited endpoints appear at the top of the list and can be filtered using the **Favorites** toggle and badge.
+- **Recent Endpoints**:
+  - The picker keeps a short list of recently visited endpoints for quick access.
+  - Click any recent badge to jump back in, or use **Clear** to reset the list.
 - **Export/Import**: You can export your user-defined endpoints to a JSON file and import them later.
 - **Health Check**:
   - The application automatically checks the connectivity of endpoints.

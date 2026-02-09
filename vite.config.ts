@@ -6,9 +6,23 @@ import { playwright } from '@vitest/browser-playwright';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { resolve } from 'path';
 
+const stripSveltekitBaseWarning = () => ({
+	name: 'strip-sveltekit-base-warning',
+	config(config: { base?: string }) {
+		// Ensure SvelteKit doesn't warn about Vite's default base configuration.
+		if ('base' in config) {
+			delete config.base;
+		}
+	}
+});
+
 export default defineConfig({
 	plugins: [
-		tailwindcss(),
+		stripSveltekitBaseWarning(),
+		tailwindcss({
+			// Disable Lightning CSS optimization to avoid @property warnings during builds.
+			optimize: false
+		}),
 		sveltekit(),
 		devtoolsJson(),
 		paraglideVitePlugin({
@@ -18,6 +32,17 @@ export default defineConfig({
 	],
 	optimizeDeps: {
 		include: ['@testing-library/svelte', 'svelte-portal']
+	},
+	build: {
+		chunkSizeWarningLimit: 2000,
+		rollupOptions: {
+			onwarn(warning, warn) {
+				if (warning.code === 'UNUSED_EXTERNAL_IMPORT') {
+					return;
+				}
+				warn(warning);
+			}
+		}
 	},
 	resolve: {
 		alias: {

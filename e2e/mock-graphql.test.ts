@@ -27,11 +27,16 @@ test('can explore a mocked GraphQL endpoint', async ({ page }) => {
 
 	await card.click();
 
-	await expect(page.locator('button:has-text("Queries")')).toBeVisible();
-	await page.click('button:has-text("Queries")');
-	await page.click('button:has-text("Explorer")');
+	const queriesLink = page.locator('a[href="/endpoints/mock-graphql/queries"]');
+	const explorerLink = page.locator('a[href="/endpoints/mock-graphql/explorer"]');
 
-	await expect(page.locator('text=items')).toBeVisible();
+	await expect(queriesLink).toBeVisible();
+	await queriesLink.click();
+	await explorerLink.click();
+
+	await page.locator('[data-testid="explorer-view-toggle"]').click();
+	await page.locator('[data-testid="explorer-scope-queries"]').click();
+	await expect(page.locator('section').locator('.btn-info', { hasText: 'items' })).toBeVisible();
 
 	await page.goto('/endpoints');
 	const deleteCard = page.locator('.card', { hasText: 'mock-graphql' });

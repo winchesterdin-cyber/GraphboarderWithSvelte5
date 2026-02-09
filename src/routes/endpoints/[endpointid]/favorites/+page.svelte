@@ -190,7 +190,10 @@
 							<button
 								class="btn btn-ghost btn-xs"
 								type="button"
-								onclick|stopPropagation={() => openRenameFolderModal(folder)}
+								onclick={(event) => {
+									event.stopPropagation();
+									openRenameFolderModal(folder);
+								}}
 								title="Rename folder"
 								aria-label="Rename folder"
 							>
