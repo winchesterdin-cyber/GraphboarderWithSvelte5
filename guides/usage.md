@@ -142,8 +142,16 @@ To improve security and convenience, you can use environment variables in your h
   - **Search & Filter**:
     - Use the search bar to filter history items by query name.
     - Use the dropdown filters to narrow down the list by **Type** (Query/Mutation) or **Status** (Success/Error).
+    - Toggle **Slow only** to focus on queries that took ≥ 1000 ms.
+    - Use **Min/Max ms** to filter by duration range, then hit **Reset filters** to clear everything quickly.
+    - Duration inputs are capped at 10 minutes to avoid extreme filtering values.
+  - **Insights**: The history page shows a summary of total runs, success rate, average duration, and slow runs (≥ 1000 ms) for the current endpoint and filters.
+  - **Copy Insights**: Use the **Copy Insights** button to share the current summary and filter context.
+  - **Download Insights**: Use **Download Insights** to save the summary as a text file for offline sharing.
+  - **Download CSV**: Use **Download CSV** to export the filtered history list as a spreadsheet-friendly file.
   - Each entry shows the timestamp, query name, and execution status (success/error).
   - **Restore**: Clicking a history item (or the restore icon) restores the exact state of the query (arguments, columns) at the time of execution.
+  - **Details & Copy**: Use the info icon to open a details drawer with arguments and the query body, then copy the query body to your clipboard.
   - **Clear History**: Click the **"Clear All"** button to remove all history entries globally.
   - **Export History**: Click **"Export"** to download your history as a JSON file.
   - **Import History**: Click **"Import"** to restore history from a JSON file.

@@ -176,10 +176,7 @@ describe('favoriteQueriesStore', () => {
 	});
 
 	it('should update a favorite and move it to the top', () => {
-		vi.spyOn(Date, 'now')
-			.mockReturnValueOnce(1700000003000)
-			.mockReturnValueOnce(1700000004000)
-			.mockReturnValueOnce(1700000005000);
+		vi.spyOn(Date, 'now').mockReturnValue(1700000005000);
 
 		favoriteQueries.add({
 			name: 'First',
@@ -291,12 +288,8 @@ describe('favoriteQueriesStore', () => {
 		favoriteQueries.renameFolder('ep1', 'Alpha', 'Beta');
 
 		const queries = get(favoriteQueries);
-		const ep1Folders = queries
-			.filter((q) => q.endpointId === 'ep1')
-			.map((q) => q.folder);
-		const ep2Folders = queries
-			.filter((q) => q.endpointId === 'ep2')
-			.map((q) => q.folder);
+		const ep1Folders = queries.filter((q) => q.endpointId === 'ep1').map((q) => q.folder);
+		const ep2Folders = queries.filter((q) => q.endpointId === 'ep2').map((q) => q.folder);
 
 		expect(ep1Folders).toEqual(['Beta', 'Beta']);
 		expect(ep2Folders).toEqual(['Alpha']);

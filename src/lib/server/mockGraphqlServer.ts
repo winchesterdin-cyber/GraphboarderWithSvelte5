@@ -58,17 +58,9 @@ export const startMockGraphqlServer = async (): Promise<MockGraphqlServer> => {
 				const { query, variables } = JSON.parse(body);
 				const rootValue = {
 					items: () =>
-						db
-							.prepare(
-								'SELECT id, name, created_at as createdAt FROM items ORDER BY id ASC'
-							)
-							.all(),
+						db.prepare('SELECT id, name, created_at as createdAt FROM items ORDER BY id ASC').all(),
 					item: ({ id }: { id: string }) =>
-						db
-							.prepare(
-								'SELECT id, name, created_at as createdAt FROM items WHERE id = ?'
-							)
-							.get(id),
+						db.prepare('SELECT id, name, created_at as createdAt FROM items WHERE id = ?').get(id),
 					addItem: ({ name }: { name: string }) => {
 						const createdAt = new Date().toISOString();
 						const info = db

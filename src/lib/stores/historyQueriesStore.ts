@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
+import { logger } from '$lib/utils/logger';
 
 /**
  * Interface representing a query executed in history.
@@ -39,7 +40,7 @@ const createHistoryQueriesStore = () => {
 		try {
 			initial = JSON.parse(localStorage.getItem(STORAGE_KEY) as string);
 		} catch (e) {
-			console.error('Failed to parse history queries from localStorage', e);
+			logger.error('Failed to parse history queries from localStorage', e);
 		}
 	}
 
@@ -53,7 +54,13 @@ const createHistoryQueriesStore = () => {
 		 * @param item The history item to add (excluding id).
 		 */
 		add: (item: Omit<HistoryQuery, 'id'>) => {
-			console.debug('[HistoryQueries] Adding item:', item.queryName);
+			logger.info('History item added', {
+				endpointId: item.endpointId,
+				queryName: item.queryName,
+				type: item.type,
+				status: item.status,
+				duration: item.duration
+			});
 			update((history) => {
 				const newItem = { ...item, id: crypto.randomUUID() };
 				const updated = [newItem, ...history].slice(0, MAX_HISTORY);
@@ -61,7 +68,7 @@ const createHistoryQueriesStore = () => {
 					try {
 						localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
 					} catch (e) {
-						console.error('[HistoryQueries] Failed to save history to localStorage', e);
+						logger.warn('Failed to save history to localStorage', e);
 					}
 				}
 				return updated;
@@ -72,14 +79,14 @@ const createHistoryQueriesStore = () => {
 		 * @param id The ID of the history item to remove.
 		 */
 		remove: (id: string) => {
-			console.debug('[HistoryQueries] Removing item:', id);
+			logger.info('History item removed', { id });
 			update((history) => {
 				const updated = history.filter((item) => item.id !== id);
 				if (browser) {
 					try {
 						localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
 					} catch (e) {
-						console.error('[HistoryQueries] Failed to save history to localStorage', e);
+						logger.warn('Failed to save history to localStorage', e);
 					}
 				}
 				return updated;
@@ -100,7 +107,7 @@ const createHistoryQueriesStore = () => {
 		 * Clears all history.
 		 */
 		clear: () => {
-			console.debug('[HistoryQueries] Clearing history');
+			logger.info('History cleared');
 			if (browser) {
 				localStorage.removeItem(STORAGE_KEY);
 			}
@@ -112,7 +119,7 @@ const createHistoryQueriesStore = () => {
 		 * @param queries List of history items to import.
 		 */
 		importHistory: (queries: Omit<HistoryQuery, 'id'>[]) => {
-			console.debug('[HistoryQueries] Importing history items:', queries.length);
+			logger.info('History import started', { count: queries.length });
 			update((history) => {
 				const imported = queries.map((q) => ({
 					...q,
@@ -127,7 +134,7 @@ const createHistoryQueriesStore = () => {
 					try {
 						localStorage.setItem(STORAGE_KEY, JSON.stringify(combined));
 					} catch (e) {
-						console.error('[HistoryQueries] Failed to save history to localStorage', e);
+						logger.warn('Failed to save history to localStorage', e);
 					}
 				}
 				return combined;

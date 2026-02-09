@@ -116,9 +116,7 @@
 		return counts;
 	});
 
-	let favoriteCount = $derived(
-		() => endpoints.filter((endpoint) => endpoint.isFavorite).length
-	);
+	let favoriteCount = $derived(() => endpoints.filter((endpoint) => endpoint.isFavorite).length);
 
 	const handleEndpointClick = (endpoint: AvailableEndpoint) => {
 		goto(`${base}/endpoints/${endpoint.id}`);
@@ -145,10 +143,7 @@
 	const handleFavoriteToggle = (endpoint: AvailableEndpoint, event: Event) => {
 		event.stopPropagation();
 		toggleEndpointFavorite(endpoint.id);
-		addToast(
-			`${endpoint.isFavorite ? 'Removed from' : 'Added to'} favorites`,
-			'info'
-		);
+		addToast(`${endpoint.isFavorite ? 'Removed from' : 'Added to'} favorites`, 'info');
 	};
 </script>
 
@@ -196,40 +191,38 @@
 </div>
 
 <div class="mb-6 flex flex-wrap items-center gap-2 text-xs text-base-content/60">
-	<span class="font-semibold uppercase tracking-wide">Status Summary</span>
+	<span class="font-semibold tracking-wide uppercase">Status Summary</span>
 	<button
-		class="badge badge-success gap-2 border-0"
+		class="badge gap-2 border-0 badge-success"
 		onclick={() => (statusFilter = 'online')}
 		title="Show only online endpoints"
 	>
 		Online {statusCounts.online}
 	</button>
 	<button
-		class="badge badge-error gap-2 border-0"
+		class="badge gap-2 border-0 badge-error"
 		onclick={() => (statusFilter = 'offline')}
 		title="Show only offline endpoints"
 	>
 		Offline {statusCounts.offline}
 	</button>
 	<button
-		class="badge badge-ghost gap-2 border-0"
+		class="badge gap-2 border-0 badge-ghost"
 		onclick={() => (statusFilter = 'pending')}
 		title="Show only pending endpoints"
 	>
 		Pending {statusCounts.pending}
 	</button>
 	<button
-		class="badge badge-outline gap-2"
+		class="badge gap-2 badge-outline"
 		onclick={() => (statusFilter = 'all')}
 		title="Clear status filter"
 	>
 		All {endpoints.length}
 	</button>
 	<button
-		class={`badge gap-2 ${favoriteFilter === 'favorites' ? 'badge-warning border-0' : 'badge-outline'}`}
-		onclick={() =>
-			(favoriteFilter = favoriteFilter === 'favorites' ? 'all' : 'favorites')
-		}
+		class={`badge gap-2 ${favoriteFilter === 'favorites' ? 'border-0 badge-warning' : 'badge-outline'}`}
+		onclick={() => (favoriteFilter = favoriteFilter === 'favorites' ? 'all' : 'favorites')}
 		title={favoriteFilter === 'favorites' ? 'Show all endpoints' : 'Show favorite endpoints'}
 	>
 		Favorites {favoriteCount}

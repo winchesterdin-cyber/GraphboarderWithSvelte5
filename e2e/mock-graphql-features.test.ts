@@ -1,5 +1,8 @@
 import { expect, test } from '@playwright/test';
-import { startMockGraphqlServer, type MockGraphqlServer } from '../src/lib/server/mockGraphqlServer';
+import {
+	startMockGraphqlServer,
+	type MockGraphqlServer
+} from '../src/lib/server/mockGraphqlServer';
 
 let mockServer: MockGraphqlServer;
 

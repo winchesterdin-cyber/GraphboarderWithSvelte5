@@ -50,11 +50,7 @@ describe('mockGraphqlServer', () => {
 				`query { items { name } }`
 			);
 
-			expect(updatedResult.data.items.map((item) => item.name)).toEqual([
-				'Alpha',
-				'Beta',
-				'Gamma'
-			]);
+			expect(updatedResult.data.items.map((item) => item.name)).toEqual(['Alpha', 'Beta', 'Gamma']);
 		} finally {
 			await server.close();
 		}

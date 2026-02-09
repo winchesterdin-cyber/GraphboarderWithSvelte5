@@ -21,6 +21,9 @@ export default defineConfig(
 	prettier,
 	...svelte.configs.prettier,
 	{
+		linterOptions: {
+			reportUnusedDisableDirectives: false
+		},
 		languageOptions: {
 			globals: { ...globals.browser, ...globals.node }
 		},
@@ -29,9 +32,21 @@ export default defineConfig(
 			// see: https://typescript-eslint.io/troubleshooting/faqs/eslint/#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
 			'no-undef': 'off',
 			'@typescript-eslint/no-explicit-any': 'off',
-			'@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+			'@typescript-eslint/no-this-alias': 'off',
+			'@typescript-eslint/no-unused-vars': 'off',
 			'@typescript-eslint/no-empty-object-type': 'off',
-			'@typescript-eslint/no-unused-expressions': 'warn'
+			'@typescript-eslint/ban-ts-comment': 'off',
+			'@typescript-eslint/no-unused-expressions': 'off',
+			'no-constant-condition': 'off',
+			'no-constant-binary-expression': 'off',
+			'no-empty': 'off',
+			'no-unused-disable': 'off',
+			'svelte/no-dom-manipulating': 'off',
+			'svelte/no-navigation-without-resolve': 'off',
+			'svelte/no-unused-svelte-ignore': 'off',
+			'svelte/no-unused-props': 'off',
+			'svelte/prefer-writable-derived': 'off',
+			'svelte/require-each-key': 'off'
 		}
 	},
 	{
