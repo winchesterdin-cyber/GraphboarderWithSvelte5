@@ -4,6 +4,10 @@ This log captures notable documentation and workflow updates for the Graphboarde
 
 ## Unreleased
 
+- Added an Import URL option that can skip existing endpoints and de-duplicate payload entries.
+- Added Paraglide type stubs to keep svelte-check clean without committing generated runtime files.
+- Tightened derived state typings in the endpoint picker and history summary to satisfy svelte-check.
+- Added an Import URL option for endpoints, including timeout handling and documentation updates.
 - Added Date/timestamp input support for ISO 8601 transformers with explicit logging and fallback behavior.
 - Added a one-click action to copy endpoint URLs from the endpoint picker cards.
 - Added recent endpoint tracking with quick-access badges and documentation updates for the endpoint picker.

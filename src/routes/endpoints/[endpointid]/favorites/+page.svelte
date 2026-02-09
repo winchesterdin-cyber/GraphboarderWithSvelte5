@@ -6,7 +6,7 @@
 	import { addToast } from '$lib/stores/toastStore';
 	import Modal from '$lib/components/Modal.svelte';
 
-	let endpointId = $derived($page.params.endpointid);
+	let endpointId = $derived($page.params.endpointid ?? '');
 
 	// Filter favorites for current endpoint
 	let favorites = $derived($favoriteQueries.filter((q) => q.endpointId === endpointId));
