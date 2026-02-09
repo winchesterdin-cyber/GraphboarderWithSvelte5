@@ -13,9 +13,10 @@
 	let qmsMainWraperContext = getContext(`${prefix}QMSMainWraperContext`) as QMSMainWraperContext;
 	const schemaData = qmsMainWraperContext?.schemaData;
 
-	let rootTypes = $schemaData.rootTypes;
-	let queries = $schemaData.queryFields;
-	let mutations = $schemaData.mutationFields;
+	// Keep explorer data reactive to schema loading.
+	let rootTypes = $derived($schemaData.rootTypes);
+	let queries = $derived($schemaData.queryFields);
+	let mutations = $derived($schemaData.mutationFields);
 	let whatToShow = $state<any[]>([]);
 	let whatToShowLastUsed = $state();
 	let sortingInputValue = $state('');
@@ -306,6 +307,7 @@
 						class="btn join-item btn-sm"
 						class:btn-neutral={showExplorer}
 						onclick={toggleExplorer}
+						data-testid="explorer-view-toggle"
 					>
 						<i class="bi bi-list-nested"></i> Explorer
 					</button>
@@ -326,7 +328,8 @@
 					<button
 						class="btn join-item btn-sm"
 						onclick={showQueries}
-						class:btn-active={whatToShowLastUsed === showQueries}>Queries</button
+						class:btn-active={whatToShowLastUsed === showQueries}
+						data-testid="explorer-scope-queries">Queries</button
 					>
 					<button
 						class="btn join-item btn-sm"

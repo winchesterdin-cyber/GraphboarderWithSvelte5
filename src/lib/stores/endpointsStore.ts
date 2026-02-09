@@ -32,6 +32,19 @@ export const favoriteEndpointIds: Writable<string[]> = persisted<string[]>(
 	[]
 );
 
+export interface RecentEndpointEntry {
+	id: string;
+	lastVisited: number;
+}
+
+/**
+ * Persisted store tracking recently visited endpoints (by ID and last visit time).
+ * Stored under the 'recentEndpointEntries' key in localStorage.
+ */
+export const recentEndpointEntries: Writable<RecentEndpointEntry[]> = persisted<
+	RecentEndpointEntry[]
+>('recentEndpointEntries', []);
+
 /**
  * Migrates endpoints from the legacy 'endpoints' localStorage key to the new 'localStorageEndpoints' store.
  * This runs once on module initialization in the browser.
@@ -81,6 +94,26 @@ export const endpoints = derived(
 );
 
 /**
+ * Derived store that resolves recent endpoint entries to full endpoint data.
+ * It filters out entries for endpoints that no longer exist.
+ */
+export const recentEndpoints = derived(
+	[recentEndpointEntries, endpoints],
+	([$recentEndpointEntries, $endpoints]) => {
+		const endpointMap = new Map($endpoints.map((endpoint) => [endpoint.id.toString(), endpoint]));
+		return $recentEndpointEntries
+			.map((entry) => ({
+				entry,
+				endpoint: endpointMap.get(entry.id)
+			}))
+			.filter((item): item is { entry: RecentEndpointEntry; endpoint: AvailableEndpoint } =>
+				Boolean(item.endpoint)
+			)
+			.sort((a, b) => b.entry.lastVisited - a.entry.lastVisited);
+	}
+);
+
+/**
  * Adds or updates an endpoint in the user's localStorage.
  * If an endpoint with the same ID exists, it will be replaced.
  *
@@ -121,4 +154,32 @@ export const toggleEndpointFavorite = (id: string) => {
 		}
 		return [...current, normalizedId];
 	});
+};
+
+/**
+ * Records an endpoint visit for the "Recent endpoints" list.
+ * The list is de-duplicated, ordered by recency, and capped for usability.
+ *
+ * @param id - The endpoint ID to record.
+ * @param maxEntries - Maximum number of recent endpoints to keep.
+ */
+export const recordRecentEndpoint = (id: string, maxEntries = 5) => {
+	const normalizedId = id.toString();
+	recentEndpointEntries.update((current) => {
+		const now = Date.now();
+		const next = [
+			{ id: normalizedId, lastVisited: now },
+			...current.filter((entry) => entry.id !== normalizedId)
+		].slice(0, maxEntries);
+		logger.info('Recorded recent endpoint', { id: normalizedId, total: next.length });
+		return next;
+	});
+};
+
+/**
+ * Clears the recently visited endpoint list.
+ */
+export const clearRecentEndpoints = () => {
+	logger.warn('Clearing recent endpoints');
+	recentEndpointEntries.set([]);
 };

@@ -14,6 +14,7 @@ This guide describes the key components in the library and how to use them.
 
 - **Purpose**: Renders a grid of available GraphQL endpoints.
 - **Usage**: Displays endpoints from the store and allows selection.
+- **Recent Endpoints**: Shows a quick-access list of recently visited endpoints with a clear action.
 
 ### CodeEditor (`src/lib/components/fields/CodeEditor.svelte`)
 

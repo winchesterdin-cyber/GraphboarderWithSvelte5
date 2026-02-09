@@ -77,7 +77,7 @@ test.describe('Endpoints Page', () => {
 		// We might have other endpoints, but A-Endpoint should be before Z-Endpoint
 
 		// Select Z-A
-		await page.selectOption('select', 'name-desc');
+		await page.locator('[data-testid="sort-filter"]').selectOption('name-desc');
 
 		// Now Z-Endpoint should be before A-Endpoint (relative order)
 		// Let's just check the text content of the first few cards or specific logic

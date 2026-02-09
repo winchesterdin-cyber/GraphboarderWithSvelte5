@@ -1,3 +1,5 @@
+import { logger } from '$lib/utils/logger';
+
 /**
  * Encodes a state object into a URL-safe Base64 string.
  * Handles Unicode characters correctly.
@@ -15,7 +17,7 @@ export function encodeState(state: any): string {
 		);
 		return encoded;
 	} catch (e) {
-		console.error('Error encoding state:', e);
+		logger.debug('Error encoding state', { error: e });
 		return '';
 	}
 }
@@ -39,7 +41,7 @@ export function decodeState(encoded: string): any {
 		);
 		return JSON.parse(decoded);
 	} catch (e) {
-		console.error('Error decoding state:', e);
+		logger.debug('Error decoding state', { error: e });
 		return null;
 	}
 }

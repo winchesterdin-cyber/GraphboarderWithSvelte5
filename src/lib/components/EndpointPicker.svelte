@@ -14,7 +14,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
-	import { removeEndpoint, toggleEndpointFavorite } from '$lib/stores/endpointsStore';
+	import {
+		clearRecentEndpoints,
+		recordRecentEndpoint,
+		removeEndpoint,
+		recentEndpoints,
+		toggleEndpointFavorite
+	} from '$lib/stores/endpointsStore';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 	import { addToast } from '$lib/stores/toastStore';
 	import type { AvailableEndpoint } from '$lib/types';
@@ -36,6 +42,9 @@
 	let favoriteFilter = $state<'all' | 'favorites'>('all');
 	let showDeleteModal = $state(false);
 	let endpointToDelete = $state<AvailableEndpoint | null>(null);
+
+	// Derived list used for the "Recent endpoints" quick-access badges.
+	const recentEndpointList = $derived($recentEndpoints);
 
 	// Health Check State
 	let healthStatus = $state<Record<string, { healthy: boolean; latency?: number; error?: string }>>(
@@ -119,6 +128,8 @@
 	let favoriteCount = $derived(() => endpoints.filter((endpoint) => endpoint.isFavorite).length);
 
 	const handleEndpointClick = (endpoint: AvailableEndpoint) => {
+		recordRecentEndpoint(endpoint.id.toString());
+		logger.info('Navigating to endpoint', { id: endpoint.id, url: endpoint.url });
 		goto(`${base}/endpoints/${endpoint.id}`);
 	};
 
@@ -145,9 +156,35 @@
 		toggleEndpointFavorite(endpoint.id);
 		addToast(`${endpoint.isFavorite ? 'Removed from' : 'Added to'} favorites`, 'info');
 	};
+
+	/**
+	 * Clears recent endpoints and notifies the user.
+	 */
+	const handleClearRecents = () => {
+		clearRecentEndpoints();
+		addToast('Recent endpoints cleared', 'success');
+	};
 </script>
 
 <div class="mb-6 flex flex-col items-center justify-between gap-4 md:flex-row">
+	<div class="flex w-full flex-col gap-2 md:w-auto">
+		{#if recentEndpointList.length > 0}
+			<div class="flex flex-wrap items-center gap-2">
+				<span class="text-xs font-semibold text-base-content/60 uppercase">Recent</span>
+				{#each recentEndpointList as { endpoint, entry }}
+					<button
+						class="badge badge-outline"
+						onclick={() => handleEndpointClick(endpoint)}
+						title={`Last visited ${new Date(entry.lastVisited).toLocaleString()}`}
+					>
+						<i class="bi bi-clock-history"></i>
+						{endpoint.id}
+					</button>
+				{/each}
+				<button class="btn btn-ghost btn-xs" onclick={handleClearRecents}>Clear</button>
+			</div>
+		{/if}
+	</div>
 	<div class="flex w-full flex-1 gap-4 md:w-auto">
 		<div class="relative w-full max-w-md">
 			<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -177,13 +214,13 @@
 		>
 			<i class="bi bi-arrow-clockwise"></i> Refresh Status
 		</button>
-		<select bind:value={statusFilter} class="select-bordered select">
+		<select bind:value={statusFilter} class="select-bordered select" data-testid="status-filter">
 			<option value="all">All Statuses</option>
 			<option value="online">Online</option>
 			<option value="offline">Offline</option>
 			<option value="pending">Pending</option>
 		</select>
-		<select bind:value={sortOption} class="select-bordered select">
+		<select bind:value={sortOption} class="select-bordered select" data-testid="sort-filter">
 			<option value="name-asc">Name (A-Z)</option>
 			<option value="name-desc">Name (Z-A)</option>
 		</select>

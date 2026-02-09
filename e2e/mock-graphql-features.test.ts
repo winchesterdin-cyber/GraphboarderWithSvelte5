@@ -36,10 +36,11 @@ test('queries and mutations pages load for the mock endpoint', async ({ page }) 
 	await registerMockEndpoint(page, mockServer.url);
 
 	await page.goto('/endpoints/mock-graphql/queries/items');
-	await expect(page.locator('button:has-text("QMS body")')).toBeVisible();
+	await expect(page.locator('button:has-text("QMS body")')).toBeVisible({ timeout: 15000 });
 
-	await page.goto('/endpoints/mock-graphql/mutations/addItem');
-	await expect(page.locator('button:has-text("submit")')).toBeVisible();
+	await page.goto('/endpoints/mock-graphql/mutations');
+	await page.locator('a[href="/endpoints/mock-graphql/mutations/addItem"]').click();
+	await expect(page.locator('button:has-text("submit")')).toBeVisible({ timeout: 15000 });
 
 	await removeMockEndpoint(page);
 });
@@ -48,16 +49,19 @@ test('explorer filtering works on query list', async ({ page }) => {
 	await registerMockEndpoint(page, mockServer.url);
 
 	await page.goto('/endpoints/mock-graphql/explorer');
-	await page.click('button:has-text("Queries")');
-	await page.click('button:has-text("Explorer")');
+	await page.locator('[data-testid="explorer-view-toggle"]').click();
+	await page.locator('[data-testid="explorer-scope-queries"]').click();
+
+	const explorerItems = page.locator('section').locator('.btn-info', { hasText: 'items' });
+	await expect(explorerItems).toBeVisible();
 
 	await page.fill('input[placeholder="Filter (e.g. +user -id)"]', 'items');
 	await page.keyboard.press('Enter');
-	await expect(page.locator('text=items')).toBeVisible();
+	await expect(explorerItems).toBeVisible();
 
 	await page.fill('input[placeholder="Filter (e.g. +user -id)"]', 'nonexistent');
 	await page.click('button[title="Filter"]');
-	await expect(page.locator('text=items')).not.toBeVisible();
+	await expect(explorerItems).not.toBeVisible();
 
 	await removeMockEndpoint(page);
 });

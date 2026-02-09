@@ -303,13 +303,22 @@
 				placeholder="Search by name..."
 				class="input-bordered input input-sm w-full md:w-1/3"
 				bind:value={searchTerm}
+				data-testid="history-search"
 			/>
-			<select class="select-bordered select select-sm" bind:value={filterType}>
+			<select
+				class="select-bordered select select-sm"
+				bind:value={filterType}
+				data-testid="history-type-filter"
+			>
 				<option value="all">All Types</option>
 				<option value="query">Query</option>
 				<option value="mutation">Mutation</option>
 			</select>
-			<select class="select-bordered select select-sm" bind:value={filterStatus}>
+			<select
+				class="select-bordered select select-sm"
+				bind:value={filterStatus}
+				data-testid="history-status-filter"
+			>
 				<option value="all">All Statuses</option>
 				<option value="success">Success</option>
 				<option value="error">Error</option>

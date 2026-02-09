@@ -17,8 +17,7 @@
 		generateGoCommand,
 		generateRustCommand
 	} from '$lib/utils/graphql/codegen';
-	import { parse, print } from 'graphql';
-	import JSON5 from 'json5';
+	import { parse } from 'graphql';
 	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import Modal from '$lib/components/Modal.svelte';
@@ -384,19 +383,29 @@
 	});
 
 	$effect(() => {
-		if (ast) {
+		if (!ast) return;
+
+		const updatePrintedAst = async () => {
 			try {
+				const { print } = await import('graphql');
 				astPrinted = print(ast);
 			} catch {
 				// Failed to print, ignore
 			}
-		}
+		};
+
+		void updatePrintedAst();
 	});
 
 	$effect(() => {
-		if (ast && getPreciseType(ast) == 'object') {
+		if (!ast || getPreciseType(ast) !== 'object') return;
+
+		const updateAstString = async () => {
+			const { default: JSON5 } = await import('json5');
 			astAsString = JSON5.stringify(ast);
-		}
+		};
+
+		void updateAstString();
 	});
 </script>
 
