@@ -133,6 +133,29 @@
 		goto(`${base}/endpoints/${endpoint.id}`);
 	};
 
+	/**
+	 * Copies the endpoint URL to the clipboard with user feedback and structured logging.
+	 * Clipboard access can be unavailable in some browser contexts, so we surface a warning.
+	 */
+	const handleCopyUrl = async (endpoint: AvailableEndpoint, event: Event) => {
+		event.stopPropagation();
+
+		if (!navigator?.clipboard) {
+			logger.warn('Clipboard unavailable when copying endpoint URL', { id: endpoint.id });
+			addToast('Clipboard unavailable in this browser context', 'warning');
+			return;
+		}
+
+		try {
+			await navigator.clipboard.writeText(endpoint.url);
+			logger.info('Copied endpoint URL to clipboard', { id: endpoint.id, url: endpoint.url });
+			addToast('Endpoint URL copied', 'success');
+		} catch (error) {
+			logger.error('Failed to copy endpoint URL', error);
+			addToast('Failed to copy endpoint URL', 'error');
+		}
+	};
+
 	const confirmDelete = (endpoint: AvailableEndpoint, event: Event) => {
 		event.stopPropagation();
 		endpointToDelete = endpoint;
@@ -368,6 +391,14 @@
 				</div>
 
 				<div class="absolute top-2 right-2 z-20 flex gap-1">
+					<button
+						class="btn btn-square text-info opacity-100 btn-ghost transition-opacity btn-xs md:opacity-0 md:group-hover:opacity-100"
+						onclick={(event) => handleCopyUrl(endpoint, event)}
+						onkeydown={(e) => e.stopPropagation()}
+						title="Copy Endpoint URL"
+					>
+						<i class="bi bi-clipboard"></i>
+					</button>
 					<button
 						class="btn btn-square text-warning opacity-100 btn-ghost transition-opacity btn-xs md:opacity-0 md:group-hover:opacity-100"
 						onclick={(event) => handleFavoriteToggle(endpoint, event)}
