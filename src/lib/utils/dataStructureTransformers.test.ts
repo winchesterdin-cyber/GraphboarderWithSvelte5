@@ -16,6 +16,7 @@ describe('dataStructureTransformers', () => {
 	beforeEach(() => {
 		// Clear console mocks
 		vi.spyOn(console, 'log').mockImplementation(() => {});
+		vi.spyOn(console, 'info').mockImplementation(() => {});
 		vi.spyOn(console, 'warn').mockImplementation(() => {});
 	});
 
@@ -144,6 +145,38 @@ describe('dataStructureTransformers', () => {
 			expect(typeof result).toBe('string');
 			expect(result).toContain("'");
 		});
+
+		it('should return input and warn for invalid date strings', () => {
+			const dateStr = 'not-a-date';
+			const result = ISO8601_transformer(dateStr);
+			expect(result).toBe(dateStr);
+			expect(console.warn).toHaveBeenCalledWith('ISO8601_transformer: invalid date input', dateStr);
+		});
+
+		it('should normalize Date inputs and log info', () => {
+			const date = new Date('2024-01-02T03:04:05.000Z');
+			const result = ISO8601_transformer(date);
+			expect(result).toBe("'2024-01-02T03:04:05.000Z'");
+			expect(console.info).toHaveBeenCalledWith('ISO8601_transformer: normalizing Date input');
+		});
+
+		it('should normalize numeric timestamps and log info', () => {
+			const result = ISO8601_transformer(1704164645000);
+			expect(result).toBe("'2024-01-02T03:04:05.000Z'");
+			expect(console.info).toHaveBeenCalledWith(
+				'ISO8601_transformer: normalizing numeric timestamp input'
+			);
+		});
+
+		it('should return input and warn if input type is unsupported', () => {
+			const input = { date: '2024-01-02' };
+			const result = ISO8601_transformer(input);
+			expect(result).toBe(input);
+			expect(console.warn).toHaveBeenCalledWith(
+				'ISO8601_transformer: unsupported input type',
+				input
+			);
+		});
 	});
 
 	describe('ISO8601_transformerREVERSE', () => {
@@ -165,6 +198,43 @@ describe('dataStructureTransformers', () => {
 			const result = ISO8601_transformerREVERSE(isoString);
 			// Month and day should be zero-padded
 			expect(result).toContain('2023-01-05');
+		});
+
+		it('should return empty string and warn for invalid ISO inputs', () => {
+			const isoString = "'invalid-iso'";
+			const result = ISO8601_transformerREVERSE(isoString);
+			expect(result).toBe('');
+			expect(console.warn).toHaveBeenCalledWith(
+				'ISO8601_transformerREVERSE: invalid date input',
+				isoString
+			);
+		});
+
+		it('should normalize Date inputs and log info', () => {
+			const date = new Date('2024-01-02T03:04:05.000Z');
+			const result = ISO8601_transformerREVERSE(date);
+			expect(result).toBe('2024-01-02T03:04');
+			expect(console.info).toHaveBeenCalledWith(
+				'ISO8601_transformerREVERSE: normalizing Date input'
+			);
+		});
+
+		it('should normalize numeric timestamps and log info', () => {
+			const result = ISO8601_transformerREVERSE(1704164645000);
+			expect(result).toBe('2024-01-02T03:04');
+			expect(console.info).toHaveBeenCalledWith(
+				'ISO8601_transformerREVERSE: normalizing numeric timestamp input'
+			);
+		});
+
+		it('should return empty string and warn when input type is unsupported', () => {
+			const input = { date: '2024-01-02' };
+			const result = ISO8601_transformerREVERSE(input);
+			expect(result).toBe('');
+			expect(console.warn).toHaveBeenCalledWith(
+				'ISO8601_transformerREVERSE: unsupported input type',
+				input
+			);
 		});
 	});
 

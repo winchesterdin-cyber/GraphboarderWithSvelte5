@@ -72,25 +72,73 @@ export const ISO8601_transformerGETDEFAULTVAl = (): string => {
 	return ISO8601_transformerREVERSE(string_transformer(new Date().toISOString()));
 };
 /**
- * Transforms a date string into an ISO 8601 format wrapped for GraphQL.
+ * Normalizes date-like inputs into ISO 8601 strings wrapped for GraphQL.
  *
- * @param value - The date string.
- * @returns The ISO 8601 string transformed for GraphQL.
+ * Supports:
+ * - ISO date strings (existing behavior)
+ * - Date objects (new)
+ * - numeric timestamps in milliseconds (new)
  */
-export const ISO8601_transformer = (value: string): string | unknown => {
-	const date_ISO8601 = new Date(value).toISOString();
+export const ISO8601_transformer = (value: unknown): string | unknown => {
+	const valueType = getPreciseType(value);
+	let date: Date;
+
+	if (valueType === 'string') {
+		date = new Date(value as string);
+	} else if (valueType === 'date') {
+		console.info('ISO8601_transformer: normalizing Date input');
+		date = value as Date;
+	} else if (valueType === 'number') {
+		console.info('ISO8601_transformer: normalizing numeric timestamp input');
+		date = new Date(value as number);
+	} else {
+		console.warn('ISO8601_transformer: unsupported input type', value);
+		return value;
+	}
+
+	if (Number.isNaN(date.getTime())) {
+		// Explicitly handle invalid date strings instead of throwing.
+		console.warn('ISO8601_transformer: invalid date input', value);
+		return value;
+	}
+	const date_ISO8601 = date.toISOString();
 	return string_transformer(date_ISO8601);
 };
 
 /**
- * Reverses the ISO 8601 transformation to return a `YYYY-MM-DDTHH:mm` string.
+ * Converts ISO 8601 inputs into the `YYYY-MM-DDTHH:mm` format used by datetime-local.
  *
- * @param value - The transformed ISO string.
- * @returns A date string formatted as `YYYY-MM-DDTHH:mm`.
+ * Supports:
+ * - ISO 8601 strings wrapped for GraphQL (existing behavior)
+ * - Date objects (new)
+ * - numeric timestamps in milliseconds (new)
  */
 export const ISO8601_transformerREVERSE = (value: unknown): string => {
-	// Convert ISO 8601 string to Date object
-	const dateObject = new Date(string_transformerREVERSE(value, true) as string);
+	const valueType = getPreciseType(value);
+	let dateObject: Date;
+	if (valueType === 'date') {
+		console.info('ISO8601_transformerREVERSE: normalizing Date input');
+		dateObject = value as Date;
+	} else if (valueType === 'number') {
+		console.info('ISO8601_transformerREVERSE: normalizing numeric timestamp input');
+		dateObject = new Date(value as number);
+	} else if (valueType === 'string') {
+		const rawValue = string_transformerREVERSE(value, true);
+		if (getPreciseType(rawValue) !== 'string') {
+			console.warn('ISO8601_transformerREVERSE: unexpected unwrapped value', rawValue);
+			return '';
+		}
+		dateObject = new Date(rawValue as string);
+	} else {
+		console.warn('ISO8601_transformerREVERSE: unsupported input type', value);
+		return '';
+	}
+
+	if (Number.isNaN(dateObject.getTime())) {
+		// Guard against invalid dates producing NaN components.
+		console.warn('ISO8601_transformerREVERSE: invalid date input', value);
+		return '';
+	}
 	// Extract individual components
 	const year = dateObject.getFullYear().toString().padStart(4, '0');
 	const preMonth = dateObject.getMonth() + 1; // Months are zero-indexed
