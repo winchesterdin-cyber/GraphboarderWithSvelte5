@@ -61,7 +61,12 @@ const createFavoriteQueriesStore = () => {
 				console.warn('[FavoriteQueries] Skipping add: missing required fields');
 				return;
 			}
-			console.debug('[FavoriteQueries] Adding query:', normalized.name, 'Folder:', normalized.folder);
+			console.debug(
+				'[FavoriteQueries] Adding query:',
+				normalized.name,
+				'Folder:',
+				normalized.folder
+			);
 			update((queries) => {
 				const newQuery = { ...normalized, id: crypto.randomUUID(), timestamp: Date.now() };
 				// Check for duplicates based on name and endpoint
@@ -100,9 +105,7 @@ const createFavoriteQueriesStore = () => {
 				}
 
 				const withoutDuplicates = queries.filter(
-					(q) =>
-						q.id === id ||
-						!(q.name === merged.name && q.endpointId === merged.endpointId)
+					(q) => q.id === id || !(q.name === merged.name && q.endpointId === merged.endpointId)
 				);
 
 				const reordered = [merged, ...withoutDuplicates.filter((q) => q.id !== id)];

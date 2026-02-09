@@ -31,8 +31,8 @@ describe('JsonDiffViewer', () => {
 		expect(removed.length).toBeGreaterThan(0);
 
 		// Check content
-		expect(Array.from(removed).some(el => el.textContent?.includes('1'))).toBe(true);
-		expect(Array.from(added).some(el => el.textContent?.includes('2'))).toBe(true);
+		expect(Array.from(removed).some((el) => el.textContent?.includes('1'))).toBe(true);
+		expect(Array.from(added).some((el) => el.textContent?.includes('2'))).toBe(true);
 	});
 
 	it('handles string input', () => {
