@@ -48,3 +48,7 @@ This log captures notable documentation and workflow updates for the Graphboarde
 - Scoped explorer E2E selectors to the in-page filter controls to avoid menu button collisions.
 - Made Explorer query/mutation lists reactive to schema updates so filters populate after introspection.
 - Added data-testid hooks for Explorer view/scope toggles to stabilize E2E navigation.
+
+- 2026-02-14: Started enhancements batch 1 (items 1-10) and added per-item execution notes/status tracking in `enhancementsPlan.md`.
+
+- 2026-02-14: Completed and solidified all 30 enhancement plan items in `enhancementsPlan.md`, including final implementation notes and review summary.
