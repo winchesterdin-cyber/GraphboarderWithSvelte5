@@ -1,0 +1,24 @@
+name: Quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run check
+      - run: npm run test:unit -- --run src/lib/observability/logger.test.ts src/lib/security/rbac.test.ts src/lib/server/auditTrail.test.ts src/lib/search/globalSearch.test.ts src/lib/importExport/importExport.test.ts src/lib/revisions/revisionStore.test.ts
+      - run: npm run check:performance
+      - run: npm run check:locales
+      - run: npm run check:secrets
+      - run: npm audit --audit-level=high

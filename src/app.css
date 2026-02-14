@@ -4,3 +4,17 @@
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 @plugin 'daisyui';
+
+:root {
+	--gb-color-brand-500: oklch(0.62 0.2 264);
+	--gb-color-brand-700: oklch(0.49 0.18 264);
+	--gb-space-1: 0.25rem;
+	--gb-space-2: 0.5rem;
+	--gb-space-3: 0.75rem;
+	--gb-radius-md: 0.5rem;
+	--gb-font-ui: 'Inter', system-ui, sans-serif;
+}
+
+body {
+	font-family: var(--gb-font-ui);
+}

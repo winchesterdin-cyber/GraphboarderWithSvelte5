@@ -19,7 +19,11 @@
 		"db:migrate": "drizzle-kit migrate",
 		"db:studio": "drizzle-kit studio",
 		"storybook": "storybook dev -p 6006",
-		"build-storybook": "storybook build"
+		"build-storybook": "storybook build",
+		"check:performance": "node scripts/check-performance-budget.mjs",
+		"check:locales": "node scripts/check-locales.mjs",
+		"check:secrets": "node scripts/check-secrets.mjs",
+		"test:visual": "playwright test e2e/visual-regression.test.ts"
 	},
 	"files": [
 		"dist",
