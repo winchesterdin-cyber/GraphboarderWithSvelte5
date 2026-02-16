@@ -25,3 +25,11 @@ Quick reference notes to keep day-to-day work smooth while using Graphboarder.
 - The Playwright mock-graphql test pairs with the mock server to validate end-to-end Explorer behavior.
 - The mock-graphql-features test extends coverage to query, mutation, and filtering flows.
 - The history-filtering E2E test validates per-item deletion and filtering combinations.
+
+## Observability and Telemetry
+
+- Use `setLogLevelThreshold` to reduce noisy logs in shared environments while preserving warnings/errors.
+- Structured logger payloads now normalize complex runtime values (`Error`, `Map`, `Set`, `bigint`) to avoid serialization failures.
+- Sensitive fields like `token`, `password`, and `authorization` are automatically redacted in logs and telemetry context.
+- Telemetry now keeps a bounded local queue, suppresses burst duplicates, and assigns a stable session id for correlation.
+- Use telemetry helper APIs to inspect (`getTelemetryEvents`, `getTelemetryMeta`) or clear (`clearTelemetryEvents`) local event state during debugging.
