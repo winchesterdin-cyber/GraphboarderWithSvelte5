@@ -4,6 +4,7 @@ This log captures notable documentation and workflow updates for the Graphboarde
 
 ## Unreleased
 
+- Hardened observability/telemetry with log-level thresholds, context redaction, safe payload normalization, session-aware telemetry, dedupe windows, queue limits, and expanded automated tests.
 - Added an Import URL option that can skip existing endpoints and de-duplicate payload entries.
 - Added Paraglide type stubs to keep svelte-check clean without committing generated runtime files.
 - Tightened derived state typings in the endpoint picker and history summary to satisfy svelte-check.
