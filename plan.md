@@ -1,77 +1,63 @@
-# Comprehensive Enhancement Plan: Observability and Telemetry Hardening
+# Comprehensive Enhancement Plan: Observability + Telemetry Reliability Program
 
-## Objective
+## Goal
 
-Strengthen the existing observability and telemetry features so they are safer, more diagnosable, and easier to operate in production-like environments while preserving backward compatibility.
+Deliver an extensive reliability and diagnostics upgrade across the existing logging and telemetry feature set with production-safe defaults, stronger privacy controls, and deeper test coverage.
 
 ## Scope
 
-This plan upgrades `src/lib/observability/logger.ts` and `src/lib/analytics/telemetry.ts` with comprehensive behavior and full automated verification.
+Implementation targets:
 
-## Major Improvements (12)
+- `src/lib/observability/logger.ts`
+- `src/lib/observability/logger.test.ts`
+- `src/lib/analytics/telemetry.ts`
+- `src/lib/analytics/telemetry.test.ts`
+- Documentation updates in `guides/updates_log.md`
 
-1. **Configurable log-level thresholding**
-   - Add a runtime threshold to suppress low-priority logs in noisy environments.
-   - Preserve current defaults so existing behavior remains stable.
+## Major Improvements (22)
 
-2. **Safe log-payload normalization**
-   - Ensure logs serialize cleanly by converting `Error`, `Map`, `Set`, and `bigint` values into stable objects/strings.
-   - Prevent runtime exceptions from circular references.
+1. Add runtime logger configuration API.
+2. Add logger config reset API for deterministic tests.
+3. Add configurable string truncation for large payload safety.
+4. Add normalization max-depth protection for nested payloads.
+5. Add configurable redaction placeholder value.
+6. Add customizable sensitive-key fragments for redaction.
+7. Add temporary log-level scope helper.
+8. Add structured log sequence numbering.
+9. Add log subscriber hook/unsubscribe support.
+10. Add logger config snapshot getter.
+11. Add telemetry runtime configuration API.
+12. Add telemetry state reset helper for deterministic tests.
+13. Add telemetry event-name validation guard.
+14. Add telemetry context-type validation guard.
+15. Add telemetry sample-rate filtering.
+16. Add telemetry allowlist/blocklist filtering.
+17. Add telemetry context max-depth capping.
+18. Add telemetry event TTL pruning utility.
+19. Add telemetry export/import utilities with replace/merge modes.
+20. Add telemetry session rotation API.
+21. Add telemetry flush-to-transport API with batch handling.
+22. Add telemetry health report with drop counters + flush timestamp.
 
-3. **Context sanitization for sensitive keys**
-   - Mask values for security-sensitive keys (`password`, `token`, `authorization`, etc.) before emitting logs.
+## Testing + Verification Requirements
 
-4. **Child logger creation utility**
-   - Add a helper to create child loggers with immutable base context (e.g., feature/module metadata).
+For full completion:
 
-5. **Deterministic trace ID fallback improvements**
-   - Strengthen fallback trace-id generation for non-crypto environments and keep format consistent.
+1. Run formatting/lint checks.
+2. Run focused unit tests for logger and telemetry suites.
+3. Ensure all new behavior has explicit assertions.
+4. Confirm no unexpected warnings/errors from changed modules.
 
-6. **Telemetry storage safety wrappers**
-   - Add guarded localStorage read/write helpers to avoid crashes from malformed JSON or quota errors.
+## Completion Status
 
-7. **Telemetry event queue size limit with eviction**
-   - Bound event queue size and evict oldest entries when capacity is exceeded.
+- ✅ All 22 improvements listed above are fully implemented.
+- ✅ Logger tests expanded from baseline to cover new config/subscriber/normalization behaviors.
+- ✅ Telemetry tests expanded to cover validation, sampling, import/export, pruning, flushing, timers, and health metrics.
+- ✅ Linting and focused unit suites pass after implementation.
 
-8. **Telemetry payload sanitization**
-   - Sanitize telemetry context keys using the same sensitive-field masking strategy as logs.
+## Follow-up Review Fixes
 
-9. **Telemetry duplicate-event suppression window**
-   - Deduplicate bursty duplicate events (same name/context) within a configurable cooldown window.
-
-10. **Telemetry session correlation support**
-    - Generate and persist a telemetry session id so related events can be grouped.
-
-11. **Telemetry inspection and maintenance helpers**
-    - Add APIs to list events, clear events, and return queue metadata for diagnostics/testing.
-
-12. **Comprehensive test expansion**
-    - Add robust tests for sanitization, serialization safety, dedupe behavior, queue limits, session ids, and opt-out logic.
-
-## Implementation Notes
-
-- Add explanatory comments around every new feature and behavior branch.
-- Emit explicit diagnostic logs for dropped/deduplicated telemetry events.
-- Keep APIs deterministic and test-friendly through optional configuration parameters.
-
-## Validation Plan
-
-For full verification:
-
-1. Run linting and formatting checks.
-2. Run focused unit tests for logger + telemetry modules.
-3. Run full unit suite to ensure no regressions.
-
-## Completion Criteria
-
-- All 12 improvements are implemented.
-- New/updated tests assert each behavior.
-- Lint and unit tests pass.
-- Documentation update log reflects the completed enhancement set.
-
-## Implementation Status
-
-- ✅ All 12 planned improvements have been implemented in code.
-- ✅ Logger and telemetry unit tests were expanded and are passing.
-- ✅ Repository lint checks and full unit suite were executed after implementation.
-- ✅ Missing Playwright browser/runtime dependencies required for full test execution were installed.
+- ✅ Corrected logger truncation configuration semantics (`maxStringLength`) so runtime overrides are respected without hidden minimums.
+- ✅ Reduced sanitization overhead with pre-normalized base sensitive-key lookups.
+- ✅ Normalized and cloned telemetry allow/block lists to avoid implicit behavior changes caused by external array mutation.
+- ✅ Added/updated tests to verify the above review-driven fixes.

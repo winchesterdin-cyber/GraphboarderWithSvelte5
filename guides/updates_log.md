@@ -4,6 +4,8 @@ This log captures notable documentation and workflow updates for the Graphboarde
 
 ## Unreleased
 
+- Follow-up hardening pass: fixed logger truncation configurability to honor explicit low limits, optimized sensitive-key matching, and normalized/cloned telemetry allow/block lists to prevent caller-side mutation side effects.
+- Completed a 22-item observability + telemetry reliability program (runtime config, subscriber hooks, sequence IDs, sample-rate controls, allow/block lists, TTL pruning, flush transport, health counters, import/export, session rotation) with expanded unit tests and contextual in-code comments.
 - Hardened observability/telemetry with log-level thresholds, context redaction, safe payload normalization, session-aware telemetry, dedupe windows, queue limits, and expanded automated tests.
 - Added an Import URL option that can skip existing endpoints and de-duplicate payload entries.
 - Added Paraglide type stubs to keep svelte-check clean without committing generated runtime files.
