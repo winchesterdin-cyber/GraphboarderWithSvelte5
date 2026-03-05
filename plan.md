@@ -1,63 +1,53 @@
-# Comprehensive Enhancement Plan: Observability + Telemetry Reliability Program
+# Comprehensive Feature Enhancement Plan (Search & Discovery Reliability Program)
 
-## Goal
+## Objective
 
-Deliver an extensive reliability and diagnostics upgrade across the existing logging and telemetry feature set with production-safe defaults, stronger privacy controls, and deeper test coverage.
+Deliver a fully implemented, thoroughly tested expansion of the existing search/discovery feature set with stronger filtering, predictable sorting/pagination, richer diagnostics, and compatibility-preserving APIs.
 
 ## Scope
 
-Implementation targets:
-
-- `src/lib/observability/logger.ts`
-- `src/lib/observability/logger.test.ts`
-- `src/lib/analytics/telemetry.ts`
-- `src/lib/analytics/telemetry.test.ts`
-- Documentation updates in `guides/updates_log.md`
+- `src/lib/search/globalSearch.ts`
+- `src/lib/search/globalSearch.test.ts`
+- `guides/updates_log.md`
 
 ## Major Improvements (22)
 
-1. Add runtime logger configuration API.
-2. Add logger config reset API for deterministic tests.
-3. Add configurable string truncation for large payload safety.
-4. Add normalization max-depth protection for nested payloads.
-5. Add configurable redaction placeholder value.
-6. Add customizable sensitive-key fragments for redaction.
-7. Add temporary log-level scope helper.
-8. Add structured log sequence numbering.
-9. Add log subscriber hook/unsubscribe support.
-10. Add logger config snapshot getter.
-11. Add telemetry runtime configuration API.
-12. Add telemetry state reset helper for deterministic tests.
-13. Add telemetry event-name validation guard.
-14. Add telemetry context-type validation guard.
-15. Add telemetry sample-rate filtering.
-16. Add telemetry allowlist/blocklist filtering.
-17. Add telemetry context max-depth capping.
-18. Add telemetry event TTL pruning utility.
-19. Add telemetry export/import utilities with replace/merge modes.
-20. Add telemetry session rotation API.
-21. Add telemetry flush-to-transport API with batch handling.
-22. Add telemetry health report with drop counters + flush timestamp.
+1. Introduce a new advanced `searchEntities` API that returns both results and metadata.
+2. Preserve the legacy `filterEntities` API as a compatibility wrapper.
+3. Add support for exclusion tags (`excludeTags`).
+4. Add configurable text matching modes (`contains`, `exact`, `prefix`, `token-all`).
+5. Add case-sensitivity controls.
+6. Add diacritic normalization controls (e.g., Málaga ⇔ malaga).
+7. Add tokenized query processing.
+8. Add `requireAllTokens` behavior for strict matching.
+9. Add configurable searchable fields (`name`, `description`, `tags`).
+10. Add archived-entity inclusion/exclusion controls.
+11. Add status-based filtering support.
+12. Add include-ID allowlist filtering.
+13. Add exclude-ID blocklist filtering.
+14. Add synonyms expansion for query terms.
+15. Add minimum query length controls to prevent noisy short-query matching.
+16. Add deterministic deduplication by entity ID.
+17. Add custom filter callback support for domain-specific predicates.
+18. Add scoring for relevance-based ranking.
+19. Add configurable sorting (`score`, `name`, `id`) with direction controls.
+20. Add pagination (`offset`, `limit`) at the search layer.
+21. Add rich diagnostics payload with dropped-reason counters.
+22. Add diagnostics callback hook (`onDiagnostics`) for observability workflows.
 
-## Testing + Verification Requirements
+## Implementation Notes
 
-For full completion:
+- Added comments around key utility functions and branch behavior requiring context.
+- Added diagnostics counters for every filtering stage so behavior can be audited deterministically.
+- Maintained existing behavior for old call sites by returning only entities from `filterEntities`.
 
-1. Run formatting/lint checks.
-2. Run focused unit tests for logger and telemetry suites.
-3. Ensure all new behavior has explicit assertions.
-4. Confirm no unexpected warnings/errors from changed modules.
+## Verification Checklist
+
+- [x] Linting executed and passing.
+- [x] Unit tests for search behavior executed and passing.
+- [x] New behaviors validated with direct assertions.
+- [x] Update log documentation amended to record this enhancement set.
 
 ## Completion Status
 
-- ✅ All 22 improvements listed above are fully implemented.
-- ✅ Logger tests expanded from baseline to cover new config/subscriber/normalization behaviors.
-- ✅ Telemetry tests expanded to cover validation, sampling, import/export, pruning, flushing, timers, and health metrics.
-- ✅ Linting and focused unit suites pass after implementation.
-
-## Follow-up Review Fixes
-
-- ✅ Corrected logger truncation configuration semantics (`maxStringLength`) so runtime overrides are respected without hidden minimums.
-- ✅ Reduced sanitization overhead with pre-normalized base sensitive-key lookups.
-- ✅ Normalized and cloned telemetry allow/block lists to avoid implicit behavior changes caused by external array mutation.
-- ✅ Added/updated tests to verify the above review-driven fixes.
+All 22 planned improvements above are implemented and verified with automated unit tests.
